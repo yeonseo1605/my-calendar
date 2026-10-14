@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=88">
+  <link rel="stylesheet" href="styles.css?v=89">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -92,7 +92,7 @@
           <label><input type="checkbox" id="searchSelectAll"> <strong id="searchResultSummary">검색 결과 0개</strong></label>
           <span>일정을 선택하면 이름과 라벨을 한 번에 바꿀 수 있습니다.</span>
         </div>
-        <div class="search-table-head"><span></span><button type="button" data-column-filter="date">날짜 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="time">시간 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="label">라벨 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="title">제목 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="address">장소 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button></div>
+        <div class="search-table-head"><span></span><button type="button" data-column-filter="date">날짜 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="time">시간 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="label">라벨 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="title">제목 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="guests">참석자 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="repeat">반복 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="reminder">알림 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="address">장소 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button></div>
         <div class="column-filter-menu hidden" id="columnFilterMenu"></div>
         <div id="searchResultRows"></div>
       </section>
@@ -221,6 +221,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=96"></script>
+  <script src="app.js?v=97"></script>
 </body>
 </html>
