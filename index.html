@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=106">
+  <link rel="stylesheet" href="styles.css?v=107">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -180,6 +180,9 @@
     <section class="settings-section theme-builder">
       <h3>화면 색상</h3>
       <div class="color-entry"><input type="color" id="themeColor" value="#20242d" aria-label="배경색 선택"><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"><button type="button" class="btn secondary" id="saveThemePreset">프리셋 저장</button></div>
+      <div class="theme-preset-menu hidden" id="themePresetMenu"><button type="button" data-preset-action="add">현재 색상 추가</button><button type="button" class="danger" data-preset-action="delete">프리셋 삭제</button><button type="button" data-preset-action="cancel">취소</button></div>
+      <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 프리셋</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">프리셋 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
+      <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><strong>삭제할 색상 선택</strong><button type="button" class="text-btn" id="finishThemePresetDelete">완료</button></div>
       <div class="theme-presets" id="themePresets" aria-label="저장한 색상 프리셋"></div>
       <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
       <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
@@ -220,6 +223,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=107"></script>
+  <script src="app.js?v=108"></script>
 </body>
 </html>
