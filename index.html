@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=68">
+  <link rel="stylesheet" href="styles.css?v=69">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -94,13 +94,6 @@
         </div>
         <div class="search-table-head"><span></span><span>날짜</span><span>시간</span><span>라벨</span><span>제목</span><span>장소</span></div>
         <div id="searchResultRows"></div>
-        <div class="bulk-editor" id="bulkEditor">
-          <strong><span id="bulkSelectedCount">0</span>개 선택됨</strong>
-          <input id="bulkTitle" placeholder="변경할 이름 (선택 사항)">
-          <div class="bulk-color-palette" id="bulkColorPalette" aria-label="라벨 색상 선택"></div>
-          <select id="bulkLabel" class="hidden"><option value="">라벨 유지</option></select>
-          <button class="btn primary" id="bulkApplyBtn" type="button">한 번에 적용</button>
-        </div>
       </section>
       <section class="calendar-card">
         <div class="week-header"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
@@ -119,6 +112,16 @@
   </nav>
 
   <div class="drawer-backdrop hidden" id="backdrop"></div>
+
+  <aside class="drawer bulk-editor-panel hidden" id="bulkEditor" aria-label="선택 항목 수정">
+    <div class="drawer-head"><div><small>오른쪽 편집 패널</small><h2>선택 항목 수정</h2></div><button class="icon-btn" id="closeBulkEditor" type="button">×</button></div>
+    <strong class="bulk-count"><span id="bulkSelectedCount">0</span>개 일정 선택</strong>
+    <section class="bulk-panel-section"><h3>이름 일괄 변경</h3><input id="bulkTitle" placeholder="변경할 이름"></section>
+    <section class="bulk-panel-section"><h3>라벨 및 색상</h3><div class="bulk-current-label" id="bulkCurrentLabel"><i></i><span>라벨 유지</span></div><div class="bulk-color-palette" id="bulkColorPalette" aria-label="라벨 색상 선택"></div><select id="bulkLabel" class="hidden"><option value="">라벨 유지</option></select></section>
+    <button class="btn primary full-btn" id="bulkApplyBtn" type="button">변경 적용</button>
+    <button class="btn danger-outline full-btn" id="bulkDeleteBtn" type="button">선택 일정 삭제</button>
+    <section class="bulk-panel-section bulk-label-management"><h3>⌄　라벨 자체 관리</h3><p>사용 중인 라벨은 일정을 이동한 후 삭제할 수 있습니다.</p><div id="bulkManagedLabels"></div></section>
+  </aside>
 
   <aside class="drawer hidden" id="eventDrawer" aria-label="일정 상세">
     <div class="drawer-head"><h2 id="drawerTitle">새 일정</h2><button class="icon-btn" data-close="eventDrawer">×</button></div>
@@ -219,6 +222,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=79"></script>
+  <script src="app.js?v=80"></script>
 </body>
 </html>

@@ -153,7 +153,7 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 .sidebar-nav .install-nav span{font-size:24px;color:var(--accent)}
 
 /* 설정은 달력을 확인하면서 조절할 수 있는 오른쪽 패널입니다. */
-#settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned{
+#settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned,#bulkEditor,#bulkEditor.user-positioned{
   left:auto!important;right:0!important;top:0!important;
   width:var(--settings-panel-width,clamp(360px,32vw,480px))!important;max-width:480px!important;height:100vh!important;
   padding:20px 22px!important;background:var(--panel)!important;
@@ -171,6 +171,7 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 #eventDrawer .time-row .field>input{grid-column:2}
 #eventDrawer .map-preview{min-height:150px;margin-left:92px}
 #tasksDrawer{overflow-y:auto}
+#bulkEditor{overflow-y:auto}.bulk-editor-panel .drawer-head{align-items:flex-start;padding-bottom:18px;border-bottom:1px solid var(--border)}.bulk-editor-panel .drawer-head small{color:var(--accent);font-weight:750}.bulk-editor-panel .drawer-head h2{margin-top:22px;font-size:28px}.bulk-count{display:block;margin:0 0 24px;color:#aebff0;font-size:18px}.bulk-panel-section{padding:18px 0;border-top:1px solid var(--border)}.bulk-panel-section h3{margin:0 0 14px;font-size:20px}.bulk-panel-section>input{width:100%;height:52px;padding:0 14px;border:1px solid var(--border);border-radius:10px;background:var(--panel2)}.bulk-current-label{height:54px;display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid var(--border);border-radius:10px;background:var(--panel2)}.bulk-current-label i{width:15px;height:15px;border-radius:50%;background:var(--muted)}.bulk-editor-panel .bulk-color-palette{margin-top:14px;padding:6px 2px;border:0;background:transparent}.bulk-editor-panel .bulk-color-palette button{width:36px;height:36px}.bulk-editor-panel>.full-btn{height:56px;margin-top:14px;font-size:16px}.danger-outline{border:1px solid #ff5364;background:transparent;color:#ff6575}.bulk-label-management{margin-top:18px}.bulk-label-management p{color:var(--muted);font-size:12px;line-height:1.5}.bulk-managed-row{display:grid;grid-template-columns:16px 1fr auto auto;align-items:center;gap:12px;margin-top:10px;padding:13px;border:1px solid var(--border);border-radius:11px;background:var(--panel2)}.bulk-managed-row i{width:15px;height:15px;border-radius:50%}.bulk-managed-row button{border:0;background:transparent;color:var(--text);cursor:pointer}.bulk-managed-row .delete-managed-label{color:#ff6575}
 #settingsDrawer .drawer-head{max-width:none;margin:0 0 16px}
 #settingsDrawer>*:not(.drawer-head){max-width:none;margin-left:0;margin-right:0}
 #settingsDrawer .drawer-head>.icon-btn{display:grid!important;place-items:center}
@@ -185,7 +186,7 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
   body.settings-open .event-chip{min-width:0}
 }
 @media(max-width:900px){
-  #settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned{left:0!important;width:100%!important;max-width:none!important;padding:16px!important}
+  #settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned,#bulkEditor,#bulkEditor.user-positioned{left:0!important;width:100%!important;max-width:none!important;padding:16px!important}
 }
 .preset-color-grid{grid-template-columns:42px 1fr;align-items:center}.preset-color-grid>span{font-size:12px;color:var(--muted)}.preset-color-grid>div{display:grid;grid-template-columns:repeat(5,34px);gap:10px 13px}
 @media(max-width:520px){.preset-color-grid{grid-template-columns:36px 1fr}.preset-color-grid>div{grid-template-columns:repeat(5,30px);gap:9px}.preset-label-color,.recent-label-color{width:28px;height:28px}}
