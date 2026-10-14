@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=72">
+  <link rel="stylesheet" href="styles.css?v=73">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -118,8 +118,7 @@
     <strong class="bulk-count"><span id="bulkSelectedCount">0</span>개 일정 선택</strong>
     <section class="bulk-panel-section"><h3>이름 일괄 변경</h3><input id="bulkTitle" placeholder="변경할 이름"></section>
     <section class="bulk-panel-section"><h3>라벨 및 색상</h3><div class="bulk-current-label" id="bulkCurrentLabel"><i></i><span>라벨 유지</span></div><div class="bulk-color-palette" id="bulkColorPalette" aria-label="라벨 색상 선택"></div><select id="bulkLabel" class="hidden"><option value="">라벨 유지</option></select></section>
-    <button class="btn primary full-btn" id="bulkApplyBtn" type="button">변경 적용</button>
-    <button class="btn danger-outline full-btn" id="bulkDeleteBtn" type="button">선택 일정 삭제</button>
+    <div class="bulk-action-row"><button class="btn primary" id="bulkApplyBtn" type="button">변경 적용</button><button class="btn danger-outline" id="bulkDeleteBtn" type="button">선택 일정 삭제</button></div>
     <section class="bulk-panel-section bulk-label-management">
       <div class="bulk-label-heading"><h3>라벨 자체 관리</h3></div>
       <div id="bulkManagedLabels"></div>
