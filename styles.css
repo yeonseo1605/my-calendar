@@ -288,6 +288,14 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .day-cell.selected .lunar-date,.day-cell.today .lunar-date{color:var(--text)}
 .day-number[role="button"]{cursor:pointer}
 .day-number[role="button"]:hover,.day-number[role="button"]:focus-visible{color:var(--accent)!important;text-decoration:underline;text-underline-offset:3px;outline:0}
+.search-workspace{margin-bottom:14px}
+.search-quick-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search-quick-filters button{height:42px;min-width:104px;padding:0 22px;border:1px solid transparent;border-radius:11px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;transition:filter .15s ease,transform .15s ease,box-shadow .15s ease}
+.search-quick-filters button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.search-quick-filters .period-month{background:#197b75;border-color:#2aa49c}
+.search-quick-filters .period-all{background:#365fba;border-color:#5c84df}
+.search-quick-filters .filter-label{background:#7652b8;border-color:#9b78dc}
+.search-quick-filters button.active{box-shadow:0 0 0 2px var(--panel),0 0 0 4px currentColor;filter:brightness(1.12)}
 
 /* 목록 보기: 검색 결과와 같은 표 구조 */
 .agenda-view.list-table-view{min-height:0;padding:0;overflow-x:auto;background:transparent}

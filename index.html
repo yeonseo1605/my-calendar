@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=104">
+  <link rel="stylesheet" href="styles.css?v=105">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -63,7 +63,7 @@
       </section>
       <section class="view-range" id="viewRange">
         <div class="segmented" id="viewTabs">
-          <button class="active" data-view="month">월</button><button data-view="week">주</button><button data-view="day">일</button><button data-view="list">목록</button>
+          <button class="active" data-view="month">월</button><button data-view="week">주</button><button data-view="day">일</button>
         </div>
         <div class="range-navigation">
           <button class="icon-btn" id="rangePrevBtn" aria-label="이전 기간">‹</button>
@@ -75,13 +75,12 @@
         <div class="date-picker-panel hidden" id="datePickerPanel"></div>
       </section>
       <section class="search-workspace hidden" id="searchWorkspace">
-        <h1>일정 검색</h1>
-        <div class="detail-search"><svg class="filled-search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.67 13.37L20.8 22 22 20.8l-5.63-5.63A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/></svg><input id="detailSearchInput" placeholder="제목, 주소, 참석자, 설명 검색"><button class="btn primary" id="detailSearchBtn" type="button">검색</button></div>
-        <div class="search-filter-chips" id="searchFieldFilters"><button class="active" data-search-field="all">전체</button><button data-search-field="title">제목</button><button data-search-field="address">주소</button><button data-search-field="guests">참석자</button><button data-search-field="notes">설명</button><button data-search-field="label">라벨</button></div>
+        <input class="hidden" id="detailSearchInput"><button class="hidden" id="detailSearchBtn" type="button">검색</button>
+        <div class="search-quick-filters" id="searchFieldFilters"><button class="period-month" data-search-period="month">이번 달</button><button class="period-all active" data-search-period="all">전체</button><button class="filter-label" data-search-field="label">라벨</button></div>
         <div class="search-label-band hidden" id="searchLabelBand">
           <div class="search-label-pills" id="searchLabelPills"></div>
         </div>
-        <div class="search-date-filters"><input type="date" id="searchDateFrom"><span>~</span><input type="date" id="searchDateTo"><button data-search-period="today">오늘</button><button data-search-period="week">이번 주</button><button data-search-period="month">이번 달</button><button data-search-period="all" class="active">전체</button></div>
+        <input type="date" class="hidden" id="searchDateFrom"><input type="date" class="hidden" id="searchDateTo">
       </section>
       <section class="label-workspace hidden" id="labelWorkspace">
         <div class="label-workspace-head"><div><h1>라벨별 일정</h1><p>선택한 라벨의 과거·현재·미래 일정을 한 번에 확인하고 수정합니다.</p></div><div class="label-workspace-actions"><button class="btn secondary" id="labelRenameFocusBtn" type="button">이름 변경</button><button class="btn secondary" id="labelColorFocusBtn" type="button">라벨 색상 변경</button></div></div>
@@ -221,6 +220,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=105"></script>
+  <script src="app.js?v=106"></script>
 </body>
 </html>
