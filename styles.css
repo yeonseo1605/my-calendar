@@ -221,23 +221,25 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 #eventDrawer .event-field-icon{width:20px;height:20px;display:grid;place-items:center;flex:0 0 20px;color:var(--muted)}
 #eventDrawer .event-field-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #eventDrawer .event-field-name{display:block;min-width:0;color:var(--text);font-size:inherit;font-weight:750;line-height:1.25;white-space:nowrap}
-#eventDrawer .field{display:grid;grid-template-columns:92px minmax(0,1fr);gap:6px;align-items:center;margin:0;padding:7px 0}
+#eventDrawer .field>label,#eventDrawer .inline-field-label,#eventDrawer .event-field-name{font-size:16px!important}
+#eventDrawer .field input,#eventDrawer .field select,#eventDrawer .field textarea,#eventDrawer .label-select-button,#eventDrawer .date-all-day-row>input,#eventDrawer .time-row input[type="time"],#eventDrawer .toggle-line{font-size:16px!important}
+#eventDrawer .field{display:grid;grid-template-columns:100px minmax(0,1fr);gap:6px;align-items:center;margin:0;padding:7px 0}
 #eventDrawer .field>label,#eventDrawer .inline-field-label{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin:0;color:var(--text)}
 #eventDrawer .field>input,#eventDrawer .field>select,#eventDrawer .field>textarea,#eventDrawer .field>.input-action,#eventDrawer .field>.label-select-wrap,#eventDrawer .field>.repeat-end-input{grid-column:2}
 #eventDrawer .field input,#eventDrawer .field select,#eventDrawer .field textarea,#eventDrawer .label-select-button,#eventDrawer .date-all-day-row>input,#eventDrawer .time-row input[type="time"]{border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none!important;padding:10px 8px}
 #eventDrawer .field input:focus,#eventDrawer .field select:focus,#eventDrawer .field textarea:focus,#eventDrawer .date-all-day-row>input:focus,#eventDrawer .time-row input[type="time"]:focus{border-bottom-color:var(--accent)}
-#eventDrawer .autocomplete-field{grid-template-columns:92px minmax(0,1fr);padding-top:0}
-#eventDrawer .autocomplete-field>input{font-size:17px;font-weight:700}
-#eventDrawer .autocomplete-field .suggestions{left:98px;top:48px}
-#eventDrawer .date-all-day-row{display:grid;grid-template-columns:92px minmax(0,1fr) 88px;gap:6px;align-items:center;margin:0;padding:7px 0}
+#eventDrawer .autocomplete-field{grid-template-columns:100px minmax(0,1fr);padding-top:0}
+#eventDrawer .autocomplete-field>input{font-size:16px;font-weight:700}
+#eventDrawer .autocomplete-field .suggestions{left:106px;top:48px}
+#eventDrawer .date-all-day-row{display:grid;grid-template-columns:100px minmax(0,1fr) 88px;gap:6px;align-items:center;margin:0;padding:7px 0}
 #eventDrawer .date-all-day-row .toggle-line{height:40px;border:0;border-radius:0;background:transparent;padding:0 4px}
-#eventDrawer .time-row{display:grid;grid-template-columns:92px minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center;margin:0;padding:7px 0}
+#eventDrawer .time-row{display:grid;grid-template-columns:100px minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center;margin:0;padding:7px 0}
 #eventDrawer .time-row .field{display:contents}
 #eventDrawer .time-row .field:first-child>label{grid-column:1}
 #eventDrawer .time-row .field:first-child>input{grid-column:2}
 #eventDrawer .time-row .field:nth-child(2)>label{display:none}
 #eventDrawer .time-row .field:nth-child(2)>input{grid-column:3}
-#eventDrawer .repeat-details{margin:2px 0 4px 98px;padding:10px 12px;border-left:2px solid var(--border);background:color-mix(in srgb,var(--panel2) 55%,transparent)}
+#eventDrawer .repeat-details{margin:2px 0 4px 106px;padding:10px 12px;border-left:2px solid var(--border);background:color-mix(in srgb,var(--panel2) 55%,transparent)}
 #eventDrawer .repeat-details .field,#eventDrawer .repeat-details .two-col .field{grid-template-columns:92px minmax(0,1fr)}
 #eventDrawer .repeat-details .field>label{font-size:11px;color:var(--muted)}
 #eventDrawer .field>.map-preview{grid-column:2;min-height:135px;margin:8px 0 0}
@@ -245,11 +247,11 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 #eventDrawer .input-action .btn{flex:0 0 auto}
 #eventDrawer .drawer-actions{padding-top:10px;border-top:1px solid var(--border)}
 @media(max-width:480px){
-  #eventDrawer .field,#eventDrawer .autocomplete-field{grid-template-columns:88px minmax(0,1fr)}
-  #eventDrawer .date-all-day-row{grid-template-columns:88px minmax(0,1fr);gap:6px}.date-all-day-row .toggle-line{grid-column:2}
-  #eventDrawer .time-row{grid-template-columns:88px minmax(0,1fr);gap:6px}.event-form .time-row .field{display:grid;grid-template-columns:88px minmax(0,1fr);grid-column:1/-1}.event-form .time-row .field:first-child>label{grid-column:1}.event-form .time-row .field>input{grid-column:2!important}.event-form .time-row .field:nth-child(2)>label{display:flex}
+  #eventDrawer .field,#eventDrawer .autocomplete-field{grid-template-columns:96px minmax(0,1fr)}
+  #eventDrawer .date-all-day-row{grid-template-columns:96px minmax(0,1fr);gap:6px}.date-all-day-row .toggle-line{grid-column:2}
+  #eventDrawer .time-row{grid-template-columns:96px minmax(0,1fr);gap:6px}.event-form .time-row .field{display:grid;grid-template-columns:96px minmax(0,1fr);grid-column:1/-1}.event-form .time-row .field:first-child>label{grid-column:1}.event-form .time-row .field>input{grid-column:2!important}.event-form .time-row .field:nth-child(2)>label{display:flex}
   #eventDrawer .repeat-details{margin-left:0}
-  #eventDrawer .autocomplete-field .suggestions{left:94px}
+  #eventDrawer .autocomplete-field .suggestions{left:102px}
 }
 
 /* 화면 위로 펼쳐지는 모든 목록은 배경 투명도를 사용하지 않습니다. */
