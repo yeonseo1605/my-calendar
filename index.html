@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=66">
+  <link rel="stylesheet" href="styles.css?v=67">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -184,7 +184,7 @@
 
   <aside class="drawer tasks-drawer hidden" id="tasksDrawer" aria-label="할 일">
     <div class="drawer-head"><div><h2>할 일</h2><p>개인적인 할 일을 일정과 함께 관리하세요.</p></div><button class="icon-btn" data-close="tasksDrawer">×</button></div>
-    <form class="task-form" id="taskForm"><input id="taskInput" placeholder="할 일을 입력하세요" required><input type="date" id="taskDue"><select id="taskLabel"></select><button class="btn primary">추가</button></form>
+    <form class="task-form" id="taskForm"><input id="taskInput" placeholder="할 일을 입력하세요" required><input type="date" id="taskDue"><div class="label-select-wrap task-label-wrap"><button type="button" class="label-select-button" id="taskLabelButton"><i class="label-select-dot" id="taskLabelDot"></i><span id="taskLabelText">라벨 선택</span><b>⌄</b></button><div class="label-options hidden" id="taskLabelOptions"></div><select class="hidden" id="taskLabel" aria-hidden="true" tabindex="-1"></select></div><button class="btn primary">추가</button></form>
     <div class="task-filter segmented full" id="taskFilter"><button data-task-filter="open" class="active">남은 일</button><button data-task-filter="done">완료</button><button data-task-filter="all">전체</button></div>
     <div class="task-list" id="taskList"></div>
   </aside>
@@ -219,6 +219,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=77"></script>
+  <script src="app.js?v=78"></script>
 </body>
 </html>
