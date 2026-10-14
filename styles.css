@@ -287,7 +287,8 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .day-cell.other .lunar-date{opacity:.4}
 .day-cell.selected .lunar-date,.day-cell.today .lunar-date{color:var(--text)}
 .day-number[role="button"]{cursor:pointer}
-.day-number[role="button"]:hover,.day-number[role="button"]:focus-visible{color:var(--accent)!important;text-decoration:underline;text-underline-offset:3px;outline:0}
+.day-number[role="button"]:hover,.day-number[role="button"]:focus-visible{text-decoration:underline;text-underline-offset:3px;outline:0;filter:brightness(1.18)}
+.day-cell.selected .day-number[role="button"]:hover,.day-cell.selected .day-number[role="button"]:focus-visible{color:#fff!important}
 .search-workspace{margin-bottom:14px}
 .search-quick-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .search-quick-filters button{height:42px;min-width:104px;padding:0 22px;border:1px solid transparent;border-radius:11px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;transition:filter .15s ease,transform .15s ease,box-shadow .15s ease}
