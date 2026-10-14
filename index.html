@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=89">
+  <link rel="stylesheet" href="styles.css?v=90">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -141,35 +141,35 @@
       <input type="hidden" id="eventId">
       <input type="hidden" id="seriesId">
       <div class="field autocomplete-field">
-        <label for="eventTitle">일정 제목</label>
+        <label for="eventTitle" class="event-title-label"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg></span><span class="event-field-name">일정 제목</span></label>
         <input id="eventTitle" required autocomplete="off" placeholder="예: 업무 미팅">
         <div class="suggestions hidden" id="suggestions"></div>
       </div>
       <div class="date-all-day-row">
-        <label class="inline-field-label" for="eventDate">날짜</label>
+        <label class="inline-field-label" for="eventDate"><span class="event-field-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span class="event-field-name">날짜</span></label>
         <input type="date" id="eventDate" required>
         <label class="toggle-line"><input type="checkbox" id="allDay"><span>종일</span></label>
       </div>
       <div class="two-col time-row">
-        <div class="field"><label for="startTime">시작</label><input type="time" id="startTime"></div>
-        <div class="field"><label for="endTime">종료</label><input type="time" id="endTime"></div>
+        <div class="field"><label for="startTime"><span class="event-field-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="event-field-name">시간</span></label><input type="time" id="startTime"></div>
+        <div class="field"><label for="endTime"><span class="event-field-name">종료</span></label><input type="time" id="endTime"></div>
       </div>
-      <div class="field"><label for="repeatType">반복</label><select id="repeatType"><option value="none">반복 안 함</option><option value="daily">매일</option><option value="weekly">매주</option><option value="monthly">매월</option><option value="yearly">매년</option></select></div>
+      <div class="field"><label for="repeatType"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg></span><span class="event-field-name">반복</span></label><select id="repeatType"><option value="none">반복 안 함</option><option value="daily">매일</option><option value="weekly">매주</option><option value="monthly">매월</option><option value="yearly">매년</option></select></div>
       <div class="repeat-details hidden" id="repeatDetails">
         <div class="field"><label>반복 요일</label><div class="weekday-pills" id="weekdayPills"><button type="button">일</button><button type="button">월</button><button type="button">화</button><button type="button">수</button><button type="button">목</button><button type="button">금</button><button type="button">토</button></div></div>
         <div class="two-col repeat-end-row"><div class="field"><label for="repeatEndType">반복 종료</label><select id="repeatEndType"><option value="never">종료일 없음</option><option value="date">날짜까지</option><option value="count">횟수 지정</option></select></div><div class="field"><label for="repeatEndValue" id="repeatEndLabel">종료 값</label><div class="repeat-end-input"><input id="repeatEndValue" disabled placeholder="종료 값 없음"><span id="repeatEndUnit" class="hidden"></span></div><small id="repeatEndHelp" class="field-help">계속 반복됩니다.</small></div></div>
       </div>
-      <div class="field"><label for="labelSelectButton">라벨</label><div class="label-select-wrap" id="labelSelectWrap"><button type="button" class="label-select-button" id="labelSelectButton"><i class="label-select-dot" id="labelSelectDot"></i><span id="labelSelectText">라벨 선택</span><b>⌄</b></button><div class="label-options hidden" id="labelOptions"></div><select class="hidden" id="labelSelect" aria-hidden="true" tabindex="-1"></select></div></div>
+      <div class="field"><label for="labelSelectButton"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M20 13 11 22l-9-9V4h9l9 9Z"/><circle cx="7" cy="9" r="1"/></svg></span><span class="event-field-name">라벨</span></label><div class="label-select-wrap" id="labelSelectWrap"><button type="button" class="label-select-button" id="labelSelectButton"><i class="label-select-dot" id="labelSelectDot"></i><span id="labelSelectText">라벨 선택</span><b>⌄</b></button><div class="label-options hidden" id="labelOptions"></div><select class="hidden" id="labelSelect" aria-hidden="true" tabindex="-1"></select></div></div>
       <div class="field map-field">
-        <label for="eventAddress">주소</label>
+        <label for="eventAddress"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></span><span class="event-field-name">주소</span></label>
         <div class="input-action"><input id="eventAddress" placeholder="주소를 입력하세요"><button type="button" class="btn secondary" id="mapPreviewBtn">지도</button></div>
         <div class="map-preview hidden" id="mapPreview"><div class="map-pin">●</div><strong id="mapAddressText"></strong><button type="button" class="text-btn" id="openNaverMapBtn">네이버 지도에서 보기 ↗</button></div>
       </div>
-      <div class="field"><label for="eventGuests">참석자</label><input id="eventGuests" placeholder="이름 또는 이메일, 쉼표로 구분"></div>
-      <div class="field"><label for="eventVideo">화상회의</label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
-      <div class="field"><label for="eventReminder">알림</label><select id="eventReminder"><option>없음</option><option>10분 전</option><option>30분 전</option><option>1시간 전</option><option>1일 전</option></select></div>
-      <div class="field"><label for="eventNotes">설명</label><textarea id="eventNotes" rows="3" placeholder="메모를 입력하세요"></textarea></div>
-      <div class="field"><label for="eventAttachment">첨부파일</label><input type="file" id="eventAttachment"><small class="file-note" id="fileNote">이 로컬 데모에서는 파일명만 일정에 저장됩니다.</small></div>
+      <div class="field"><label for="eventGuests"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8M16 8h6M19 5v6"/></svg></span><span class="event-field-name">참석자</span></label><input id="eventGuests" placeholder="이름 또는 이메일, 쉼표로 구분"></div>
+      <div class="field"><label for="eventVideo"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m16 13 5 3V8l-5 3M3 6h13v12H3z"/></svg></span><span class="event-field-name">화상회의</span></label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
+      <div class="field"><label for="eventReminder"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span><span class="event-field-name">알림</span></label><select id="eventReminder"><option>없음</option><option>10분 전</option><option>30분 전</option><option>1시간 전</option><option>1일 전</option></select></div>
+      <div class="field"><label for="eventNotes"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="event-field-name">설명</span></label><textarea id="eventNotes" rows="3" placeholder="메모를 입력하세요"></textarea></div>
+      <div class="field"><label for="eventAttachment"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m21 12-8.5 8.5a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.7 5.7l-9 9a2 2 0 0 1-2.8-2.8L15 6.8"/></svg></span><span class="event-field-name">첨부파일</span></label><input type="file" id="eventAttachment"><small class="file-note" id="fileNote">이 로컬 데모에서는 파일명만 일정에 저장됩니다.</small></div>
       <div class="drawer-actions"><button type="button" class="btn danger hidden" id="deleteEventBtn">삭제</button><span></span><button type="button" class="btn ghost" data-close="eventDrawer">취소</button><button type="submit" class="btn primary">저장</button></div>
     </form>
   </aside>
