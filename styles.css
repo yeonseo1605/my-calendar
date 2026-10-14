@@ -277,3 +277,5 @@ html[data-theme="light"] #eventReminder{color-scheme:light}
 .week-header{font-size:14px!important}
 .day-number{font-size:14px!important}
 .result-count{font-size:14px!important;font-weight:700}
+.search-results-head,.search-table-head,.search-result-row{min-width:1080px}
+.search-table-head,.search-result-row{grid-template-columns:38px 118px 76px 90px minmax(178px,1.15fr) minmax(125px,.85fr) 92px 82px minmax(210px,1.45fr)}
