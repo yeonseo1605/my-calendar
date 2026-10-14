@@ -121,15 +121,15 @@
     <button class="btn primary full-btn" id="bulkApplyBtn" type="button">변경 적용</button>
     <button class="btn danger-outline full-btn" id="bulkDeleteBtn" type="button">선택 일정 삭제</button>
     <section class="bulk-panel-section bulk-label-management">
-      <div class="bulk-label-heading"><h3>라벨 자체 관리</h3><button class="text-btn bulk-label-add" id="bulkAddLabelBtn" type="button" aria-label="새 라벨 만들기">＋</button></div>
-      <section class="new-label-card hidden" id="newLabelCard">
+      <div class="bulk-label-heading"><h3>라벨 자체 관리</h3></div>
+      <div id="bulkManagedLabels"></div>
+      <section class="new-label-card" id="newLabelCard">
         <div class="new-label-head"><h3 id="newLabelCardTitle">새 라벨 만들기</h3></div>
         <label class="field inline-label-name"><span>라벨 이름</span><input id="newLabelName" maxlength="30" placeholder="예: 운동"></label>
         <div class="label-color-section"><strong>기본 색상</strong><div class="preset-color-grid" id="presetLabelColors"></div></div>
         <div class="label-color-section"><strong>직접 선택</strong><div class="custom-color-row"><input type="color" id="newLabelColor" value="#3B82F6"><input id="newLabelHex" value="#3B82F6" maxlength="7" aria-label="HEX 색상"></div></div>
         <div class="new-label-actions"><button class="btn secondary" id="cancelNewLabel" type="button">취소</button><button class="btn primary" id="addNewLabel" type="button">추가</button></div>
       </section>
-      <div id="bulkManagedLabels"></div>
     </section>
   </aside>
 
@@ -219,6 +219,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=85"></script>
+  <script src="app.js?v=86"></script>
 </body>
 </html>

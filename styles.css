@@ -202,3 +202,4 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 @media(max-width:520px){.inline-label-name{grid-template-columns:1fr;gap:6px}}
 .search-label-band{padding:12px 16px}.search-label-pills{min-height:36px}
 .new-label-card+.label-manager{margin-top:18px}
+#bulkEditor .bulk-label-management .new-label-card{margin:12px 0 0}
