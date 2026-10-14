@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=82">
+  <link rel="stylesheet" href="styles.css?v=83">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -40,7 +40,7 @@
     </header>
 
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><span class="brand-mark"><img src="./assets/brand-calendar-transparent.png" alt="" aria-hidden="true"></span><span>My Calendar</span></div>
+      <button type="button" class="sidebar-brand" id="brandHome" aria-label="캘린더로 이동"><span class="brand-mark"><img src="./assets/brand-calendar-transparent.png" alt="" aria-hidden="true"></span><span>My Calendar</span></button>
       <button class="create-btn" id="createBtn"><span>＋</span> 새 일정</button>
       <nav class="sidebar-nav" aria-label="주요 메뉴">
         <button class="active" id="calendarNavBtn"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7.5 3.5v4M16.5 3.5v4M3.5 9.5h17"/></svg></span>캘린더</button>
@@ -221,6 +221,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=93"></script>
+  <script src="app.js?v=94"></script>
 </body>
 </html>
