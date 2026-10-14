@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=102">
+  <link rel="stylesheet" href="styles.css?v=103">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -140,9 +140,12 @@
     <form class="event-form" id="eventForm">
       <input type="hidden" id="eventId">
       <input type="hidden" id="seriesId">
-      <div class="field autocomplete-field">
+      <div class="field autocomplete-field event-title-field">
         <label for="eventTitle" class="event-title-label"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg></span><span class="event-field-name">일정 제목</span></label>
-        <input id="eventTitle" required autocomplete="off" placeholder="예: 업무 미팅">
+        <div class="event-title-input-row"><button type="button" class="title-label-button" id="labelSelectButton" aria-label="라벨 선택"><i class="label-select-dot" id="labelSelectDot"></i></button><input id="eventTitle" required autocomplete="off" placeholder="예: 업무 미팅"></div>
+        <div class="label-options title-label-options hidden" id="labelOptions"></div>
+        <select class="hidden" id="labelSelect" aria-hidden="true" tabindex="-1"></select>
+        <span class="hidden" id="labelSelectText"></span>
         <div class="suggestions hidden" id="suggestions"></div>
       </div>
       <div class="date-all-day-row">
@@ -159,7 +162,6 @@
         <div class="field"><label>반복 요일</label><div class="weekday-pills" id="weekdayPills"><button type="button">일</button><button type="button">월</button><button type="button">화</button><button type="button">수</button><button type="button">목</button><button type="button">금</button><button type="button">토</button></div></div>
         <div class="two-col repeat-end-row"><div class="field"><label for="repeatEndType">반복 종료</label><select id="repeatEndType"><option value="never">종료일 없음</option><option value="date">날짜까지</option><option value="count">횟수 지정</option></select></div><div class="field"><label for="repeatEndValue" id="repeatEndLabel">종료 값</label><div class="repeat-end-input"><input id="repeatEndValue" disabled placeholder="종료 값 없음"><span id="repeatEndUnit" class="hidden"></span></div><small id="repeatEndHelp" class="field-help">계속 반복됩니다.</small></div></div>
       </div>
-      <div class="field"><label for="labelSelectButton"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M20 13 11 22l-9-9V4h9l9 9Z"/><circle cx="7" cy="9" r="1"/></svg></span><span class="event-field-name">라벨</span></label><div class="label-select-wrap" id="labelSelectWrap"><button type="button" class="label-select-button" id="labelSelectButton"><i class="label-select-dot" id="labelSelectDot"></i><span id="labelSelectText">라벨 선택</span><b>⌄</b></button><div class="label-options hidden" id="labelOptions"></div><select class="hidden" id="labelSelect" aria-hidden="true" tabindex="-1"></select></div></div>
       <div class="field map-field">
         <label for="eventAddress"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></span><span class="event-field-name">주소</span></label>
         <div class="input-action"><input id="eventAddress" placeholder="주소를 입력하세요"><button type="button" class="btn secondary" id="mapPreviewBtn">지도</button></div>
@@ -220,6 +222,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=102"></script>
+  <script src="app.js?v=103"></script>
 </body>
 </html>
