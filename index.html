@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=86">
+  <link rel="stylesheet" href="styles.css?v=87">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -31,7 +31,7 @@
     <header class="topbar">
       <button class="icon-btn mobile-menu" id="menuBtn" aria-label="메뉴 열기">☰</button>
       <div class="mobile-top-brand">My Calendar</div>
-      <label class="search"><span>⌕</span><input id="globalSearch" placeholder="일정, 사람, 장소 검색"></label>
+      <label class="search"><svg class="filled-search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.67 13.37L20.8 22 22 20.8l-5.63-5.63A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/></svg><input id="globalSearch" placeholder="일정, 사람, 장소 검색"></label>
       <div class="top-right">
         <button class="icon-btn" id="themeQuickBtn" aria-label="테마 전환">◐</button>
         <button class="icon-btn" id="settingsBtn" aria-label="설정">⚙</button>
@@ -76,7 +76,7 @@
       </section>
       <section class="search-workspace hidden" id="searchWorkspace">
         <h1>일정 검색</h1>
-        <div class="detail-search"><span>⌕</span><input id="detailSearchInput" placeholder="제목, 주소, 참석자, 설명 검색"><button class="btn primary" id="detailSearchBtn" type="button">검색</button></div>
+        <div class="detail-search"><svg class="filled-search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.67 13.37L20.8 22 22 20.8l-5.63-5.63A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/></svg><input id="detailSearchInput" placeholder="제목, 주소, 참석자, 설명 검색"><button class="btn primary" id="detailSearchBtn" type="button">검색</button></div>
         <div class="search-filter-chips" id="searchFieldFilters"><button class="active" data-search-field="all">전체</button><button data-search-field="title">제목</button><button data-search-field="address">주소</button><button data-search-field="guests">참석자</button><button data-search-field="notes">설명</button><button data-search-field="label">라벨</button></div>
         <div class="search-label-band hidden" id="searchLabelBand">
           <div class="search-label-pills" id="searchLabelPills"></div>
@@ -92,7 +92,7 @@
           <label><input type="checkbox" id="searchSelectAll"> <strong id="searchResultSummary">검색 결과 0개</strong></label>
           <span>일정을 선택하면 이름과 라벨을 한 번에 바꿀 수 있습니다.</span>
         </div>
-        <div class="search-table-head"><span></span><button type="button" data-column-filter="date">날짜 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button><button type="button" data-column-filter="time">시간 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button><button type="button" data-column-filter="label">라벨 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button><button type="button" data-column-filter="title">제목 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button><button type="button" data-column-filter="address">장소 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button></div>
+        <div class="search-table-head"><span></span><button type="button" data-column-filter="date">날짜 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="time">시간 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="label">라벨 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="title">제목 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="address">장소 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button></div>
         <div class="column-filter-menu hidden" id="columnFilterMenu"></div>
         <div id="searchResultRows"></div>
       </section>
