@@ -251,3 +251,17 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
   #eventDrawer .repeat-details{margin-left:0}
   #eventDrawer .autocomplete-field .suggestions{left:94px}
 }
+
+/* 화면 위로 펼쳐지는 모든 목록은 배경 투명도를 사용하지 않습니다. */
+.suggestions,
+.label-options,
+.date-picker-panel,
+.column-filter-menu,
+.modal-card{
+  background:var(--panel-solid,#242832)!important;
+  opacity:1!important;
+  backdrop-filter:none!important;
+}
+.suggestions,.label-options{z-index:120!important}
+.suggestion,.label-option{background:var(--panel-solid,#242832)}
+.suggestion:hover,.label-option:hover,.label-option.selected{background:var(--panel2-solid,var(--panel2))}
