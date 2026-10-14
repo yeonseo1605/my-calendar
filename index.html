@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=97">
+  <link rel="stylesheet" href="styles.css?v=98">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -169,7 +169,6 @@
       <div class="field"><label for="eventVideo"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m16 13 5 3V8l-5 3M3 6h13v12H3z"/></svg></span><span class="event-field-name">화상회의</span></label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
       <div class="field"><label for="eventReminder"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span><span class="event-field-name">알림</span></label><select id="eventReminder"><option>없음</option><option>10분 전</option><option>30분 전</option><option>1시간 전</option><option>1일 전</option></select></div>
       <div class="field"><label for="eventNotes"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="event-field-name">설명</span></label><textarea id="eventNotes" rows="3" placeholder="메모를 입력하세요"></textarea></div>
-      <div class="field"><label for="eventAttachment"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m21 12-8.5 8.5a6 6 0 0 1-8.5-8.5l9-9a4 4 0 0 1 5.7 5.7l-9 9a2 2 0 0 1-2.8-2.8L15 6.8"/></svg></span><span class="event-field-name">첨부파일</span></label><input type="file" id="eventAttachment"><small class="file-note hidden" id="fileNote"></small></div>
       <div class="drawer-actions"><button type="button" class="btn danger hidden" id="deleteEventBtn">삭제</button><span></span><button type="button" class="btn ghost" data-close="eventDrawer">취소</button><button type="submit" class="btn primary">저장</button></div>
     </form>
   </aside>
@@ -221,6 +220,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=99"></script>
+  <script src="app.js?v=100"></script>
 </body>
 </html>
