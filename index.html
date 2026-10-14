@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=71">
+  <link rel="stylesheet" href="styles.css?v=72">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -50,7 +50,7 @@
         <button class="install-nav" id="installBtn"><span aria-hidden="true">⇩</span>앱으로 설치</button>
       </nav>
       <section class="side-section">
-        <div class="section-head"><strong>내 라벨</strong><button class="text-btn label-add" id="labelManageBtn" aria-label="라벨 관리">＋</button></div>
+        <div class="section-head"><strong>내 라벨</strong></div>
         <div id="labelFilters" class="label-filters"></div>
       </section>
       <div class="sidebar-hidden-controls" aria-hidden="true"><input type="checkbox" id="showWeekends" checked><input type="checkbox" id="compactMode"><span id="taskSummary"></span></div>
@@ -120,7 +120,17 @@
     <section class="bulk-panel-section"><h3>라벨 및 색상</h3><div class="bulk-current-label" id="bulkCurrentLabel"><i></i><span>라벨 유지</span></div><div class="bulk-color-palette" id="bulkColorPalette" aria-label="라벨 색상 선택"></div><select id="bulkLabel" class="hidden"><option value="">라벨 유지</option></select></section>
     <button class="btn primary full-btn" id="bulkApplyBtn" type="button">변경 적용</button>
     <button class="btn danger-outline full-btn" id="bulkDeleteBtn" type="button">선택 일정 삭제</button>
-    <section class="bulk-panel-section bulk-label-management"><h3>라벨 자체 관리</h3><div id="bulkManagedLabels"></div></section>
+    <section class="bulk-panel-section bulk-label-management">
+      <div class="bulk-label-heading"><h3>라벨 자체 관리</h3><button class="text-btn bulk-label-add" id="bulkAddLabelBtn" type="button" aria-label="새 라벨 만들기">＋</button></div>
+      <section class="new-label-card hidden" id="newLabelCard">
+        <div class="new-label-head"><h3 id="newLabelCardTitle">새 라벨 만들기</h3></div>
+        <label class="field inline-label-name"><span>라벨 이름</span><input id="newLabelName" maxlength="30" placeholder="예: 운동"></label>
+        <div class="label-color-section"><strong>기본 색상</strong><div class="preset-color-grid" id="presetLabelColors"></div></div>
+        <div class="label-color-section"><strong>직접 선택</strong><div class="custom-color-row"><input type="color" id="newLabelColor" value="#3B82F6"><input id="newLabelHex" value="#3B82F6" maxlength="7" aria-label="HEX 색상"></div></div>
+        <div class="new-label-actions"><button class="btn secondary" id="cancelNewLabel" type="button">취소</button><button class="btn primary" id="addNewLabel" type="button">추가</button></div>
+      </section>
+      <div id="bulkManagedLabels"></div>
+    </section>
   </aside>
 
   <aside class="drawer hidden" id="eventDrawer" aria-label="일정 상세">
@@ -192,19 +202,6 @@
     <div class="task-list" id="taskList"></div>
   </aside>
 
-  <aside class="drawer labels-drawer hidden" id="labelsDrawer" aria-label="라벨 관리">
-    <div class="drawer-head"><div><h2>라벨 관리</h2><p>사용할 라벨의 이름과 색상을 관리합니다.</p></div><button class="icon-btn" data-close="labelsDrawer">×</button></div>
-    <section class="new-label-card" id="newLabelCard">
-      <div class="new-label-head"><h3>새 라벨 만들기</h3></div>
-      <label class="field inline-label-name"><span>라벨 이름</span><input id="newLabelName" maxlength="30" placeholder="예: 운동"></label>
-      <div class="label-color-section"><strong>기본 색상</strong><div class="preset-color-grid" id="presetLabelColors"></div></div>
-      <div class="label-color-section"><strong>직접 선택</strong><div class="custom-color-row"><input type="color" id="newLabelColor" value="#3B82F6"><input id="newLabelHex" value="#3B82F6" maxlength="7" aria-label="HEX 색상"></div></div>
-      <div class="new-label-actions"><button class="btn secondary" id="cancelNewLabel" type="button">취소</button><button class="btn primary" id="addNewLabel" type="button">추가</button></div>
-    </section>
-    <div class="label-manager" id="labelManager"></div>
-    <div class="drawer-actions sticky"><span></span><button class="btn primary" id="saveLabelsBtn">저장</button></div>
-  </aside>
-
   <div class="modal hidden" id="recurrenceModal" role="dialog" aria-modal="true">
     <div class="modal-card"><h2 id="recurrenceTitle">반복 일정 변경</h2><p>변경할 일정의 범위를 선택하세요.</p><div class="scope-buttons"><button data-scope="single">이 일정만</button><button data-scope="future">이 일정 및 앞으로</button><button data-scope="all">전체 일정</button></div><button class="btn ghost full-btn" id="cancelRecurrence">취소</button></div>
   </div>
@@ -222,6 +219,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=84"></script>
+  <script src="app.js?v=85"></script>
 </body>
 </html>
