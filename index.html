@@ -20,11 +20,11 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=65">
+  <link rel="stylesheet" href="styles.css?v=66">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
-  <script src="cloud-store.js?v=2"></script>
+  <script src="cloud-store.js?v=3"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -35,7 +35,7 @@
       <div class="top-right">
         <button class="icon-btn" id="themeQuickBtn" aria-label="테마 전환">◐</button>
         <button class="icon-btn" id="settingsBtn" aria-label="설정">⚙</button>
-        <div class="avatar">가</div>
+        <button class="account-chip" id="accountChip" type="button" aria-label="Google 계정"><span class="account-avatar">가</span><span class="account-email">로그인</span></button>
       </div>
     </header>
 
@@ -208,7 +208,17 @@
 
   <div class="modal hidden" id="infoModal"><div class="modal-card integration-modal"><h2>외부 캘린더 연결</h2><section class="integration-card"><div class="integration-title"><span class="external-mark google-mark">G</span><div><strong>Google Calendar</strong><small id="googleConnectionStatus">연결되지 않음</small></div></div><label class="field"><span>OAuth 클라이언트 ID</span><input id="googleClientId" placeholder="123456789-xxxx.apps.googleusercontent.com"></label><p class="setting-help">Google Cloud에서 웹 애플리케이션 OAuth 클라이언트를 만들고 현재 주소를 승인된 JavaScript 원본으로 등록하세요. 클라이언트 ID는 이 기기에만 저장됩니다.</p><div class="settings-buttons"><button class="btn primary" id="googleConnectBtn">Google 연결</button><button class="btn secondary" id="googleSyncBtn" disabled>지금 동기화</button><button class="btn ghost hidden" id="googleDisconnectBtn">연결 해제</button></div><small class="sync-status" id="googleLastSync">동기화 기록 없음</small></section><section class="integration-card"><div class="integration-title"><span class="external-mark naver-mark">N</span><div><strong>네이버 캘린더 일정 가져오기</strong><small>ICS 파일 사용</small></div></div><p class="setting-help">네이버 캘린더에서 내보낸 ICS 파일을 선택하면 일정을 My Calendar로 가져옵니다.</p><div class="settings-buttons"><label class="btn primary import-label">네이버 일정 가져오기<input type="file" id="icsImportInput" accept=".ics,text/calendar"></label><button class="btn secondary" id="icsExportBtn">My Calendar ICS 내보내기</button></div></section><button class="btn primary full-btn" id="closeInfoBtn">확인</button></div></div>
 
+  <section class="login-gate hidden" id="loginGate" aria-labelledby="loginTitle">
+    <div class="login-card">
+      <img src="./assets/brand-calendar-transparent.png" alt="" aria-hidden="true">
+      <h1 id="loginTitle">My Calendar</h1>
+      <p>Google 계정으로 로그인하면 어떤 브라우저나 기기에서도 같은 일정과 설정을 사용할 수 있습니다.</p>
+      <button class="google-login-btn" id="appLoginBtn" type="button"><span>G</span> Google로 로그인</button>
+      <small>Google Calendar 일정과 My Calendar 설정이 안전하게 동기화됩니다.</small>
+    </div>
+  </section>
+
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=76"></script>
+  <script src="app.js?v=77"></script>
 </body>
 </html>

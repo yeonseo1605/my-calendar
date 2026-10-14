@@ -8,37 +8,55 @@
   let session = null;
   let saveTimer = null;
   let applyingRemote = false;
+  let remoteHandler = null;
+  let lastRemoteUpdatedAt = '';
+  let refreshTimer = null;
+
+  async function loadRemote(force = false) {
+    if (!client || !user || !remoteHandler) return { hadRemote: false };
+    const { data: row, error } = await client.from('user_settings')
+      .select('payload,schema_version,updated_at').eq('user_id', user.id).maybeSingle();
+    if (error) throw error;
+    const hadRemote = !!(row?.payload && Object.keys(row.payload).length);
+    if (hadRemote && (force || row.updated_at !== lastRemoteUpdatedAt)) {
+      lastRemoteUpdatedAt = row.updated_at || '';
+      applyingRemote = true;
+      try { await remoteHandler(row.payload); } finally { applyingRemote = false; }
+    }
+    return { hadRemote };
+  }
+
+  function startRefresh() {
+    clearInterval(refreshTimer);
+    if (!user) return;
+    refreshTimer = setInterval(() => loadRemote().catch(error =>
+      console.error('My Calendar cloud refresh failed:', error.message)
+    ), 10000);
+  }
 
   async function init(onRemoteState) {
     if (!configured || !window.supabase?.createClient) return { configured: false, signedIn: false };
     client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
+    remoteHandler = onRemoteState;
     const { data } = await client.auth.getSession();
     session = data.session || null;
     user = session?.user || null;
-    client.auth.onAuthStateChange((_event, nextSession) => {
+    client.auth.onAuthStateChange((event, nextSession) => {
       session = nextSession || null;
       user = session?.user || null;
+      if (user) setTimeout(() => { loadRemote(event === 'SIGNED_IN').catch(console.error); startRefresh(); }, 0);
+      else { clearInterval(refreshTimer); lastRemoteUpdatedAt = ''; }
       window.dispatchEvent(new CustomEvent('my-calendar-auth-changed', { detail: {
         signedIn: !!user,
-        providerToken: session?.provider_token || ''
+        providerToken: session?.provider_token || '',
+        user
       }}));
     });
     if (!user) return { configured: true, signedIn: false };
-
-    const { data: row, error } = await client
-      .from('user_settings')
-      .select('payload,schema_version,updated_at')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    if (error) throw error;
-    const hadRemote = !!(row?.payload && Object.keys(row.payload).length);
-    if (hadRemote) {
-      applyingRemote = true;
-      await onRemoteState(row.payload);
-      applyingRemote = false;
-    }
+    const { hadRemote } = await loadRemote(true);
+    startRefresh();
     return { configured: true, signedIn: true, user, hadRemote, providerToken: session?.provider_token || '' };
   }
 
@@ -52,6 +70,7 @@
         schema_version: 1
       }, { onConflict: 'user_id' });
       if (error) console.error('My Calendar cloud save failed:', error.message);
+      else await loadRemote(true).catch(() => {});
     }, 700);
   }
 
@@ -83,6 +102,7 @@
     queueSave,
     signIn,
     signOut,
+    refresh: () => loadRemote(true),
     currentUser: () => user,
     providerToken: () => session?.provider_token || ''
   };
