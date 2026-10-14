@@ -132,6 +132,9 @@ function bind(){
  $('#globalSearch').oninput=()=>{searchPageActive=false;labelPageActive=false;sidebarLabelFilter='';selectedSearchIds.clear();render()};
  ['calendarNavBtn','searchNavBtn'].forEach(id=>$(`#${id}`).addEventListener('click',()=>{['eventDrawer','settingsDrawer','tasksDrawer'].forEach(drawer=>$(`#${drawer}`).classList.add('hidden'));document.body.classList.remove('settings-open')}));
  $('#menuBtn').onclick=()=>{$('#sidebar').classList.toggle('open');$('#backdrop').classList.toggle('hidden')};
+ const showBulkAfterSelection=()=>{if(selectedSearchIds.size)openDrawer('bulkEditor');else $('#bulkEditor').classList.add('hidden')};
+ $('#searchResultRows').addEventListener('change',e=>{if(e.target.matches('input[type="checkbox"]'))showBulkAfterSelection()});
+ $('#searchSelectAll').addEventListener('change',showBulkAfterSelection);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
