@@ -1,0 +1,5 @@
+.naver_credentials.json
+.env
+.env.*
+!.env.example
+supabase/.temp/
