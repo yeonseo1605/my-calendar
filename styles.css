@@ -274,3 +274,6 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 html[data-theme="light"] #eventReminder{color-scheme:light}
 .create-btn{min-height:56px!important;font-size:18px!important;font-weight:800!important}
 .create-btn span{font-size:25px!important;line-height:1;margin-right:7px!important;vertical-align:-1px}
+.week-header{font-size:14px!important}
+.day-number{font-size:14px!important}
+.result-count{font-size:14px!important;font-weight:700}
