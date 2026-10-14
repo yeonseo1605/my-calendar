@@ -267,3 +267,4 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 .suggestions,.label-options{z-index:120!important}
 .suggestion,.label-option{background:var(--panel-solid,#242832)}
 .suggestion:hover,.label-option:hover,.label-option.selected{background:var(--panel2-solid,var(--panel2))}
+.suggestion strong{display:flex;align-items:center;gap:8px}.suggestion-label-dot{width:11px;height:11px;flex:0 0 11px;border-radius:50%;box-shadow:0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent)}
