@@ -168,7 +168,7 @@
       <div class="field"><label for="eventGuests"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8M16 8h6M19 5v6"/></svg></span><span class="event-field-name">참석자</span></label><input id="eventGuests" placeholder="이름 또는 이메일, 쉼표로 구분"></div>
       <div class="field"><label for="eventVideo"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m16 13 5 3V8l-5 3M3 6h13v12H3z"/></svg></span><span class="event-field-name">화상회의</span></label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
       <div class="field"><label for="eventReminder"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span><span class="event-field-name">알림</span></label><select id="eventReminder"><option>없음</option><option>10분 전</option><option>30분 전</option><option>1시간 전</option><option>1일 전</option></select></div>
-      <div class="field"><label for="eventNotes"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><span class="event-field-name">설명</span></label><textarea id="eventNotes" rows="3" placeholder="메모를 입력하세요"></textarea></div>
+      <input type="hidden" id="eventNotes">
       <div class="drawer-actions"><button type="button" class="btn danger hidden" id="deleteEventBtn">삭제</button><span></span><button type="button" class="btn ghost" data-close="eventDrawer">취소</button><button type="submit" class="btn primary">저장</button></div>
     </form>
   </aside>
