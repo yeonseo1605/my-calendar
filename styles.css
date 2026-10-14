@@ -269,9 +269,9 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 .suggestion:hover,.label-option:hover,.label-option.selected{background:var(--panel2-solid,var(--panel2))}
 .suggestion strong{display:flex;align-items:center;gap:8px}.suggestion-label-dot{width:11px;height:11px;flex:0 0 11px;border-radius:50%;box-shadow:0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent)}
 .time-axis span{font-size:14px!important;font-weight:650}
-#eventReminder{background-color:var(--panel-solid,#242832)!important;color:var(--text)!important;color-scheme:dark}
-#eventReminder option{background-color:var(--panel-solid,#242832);color:var(--text)}
-html[data-theme="light"] #eventReminder{color-scheme:light}
+#eventReminder,#repeatType,#repeatEndType{background-color:var(--panel-solid,#242832)!important;color:var(--text)!important;color-scheme:dark}
+#eventReminder option,#repeatType option,#repeatEndType option{background-color:var(--panel-solid,#242832);color:var(--text)}
+html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,html[data-theme="light"] #repeatEndType{color-scheme:light}
 .create-btn{min-height:56px!important;font-size:18px!important;font-weight:800!important}
 .create-btn span{font-size:25px!important;line-height:1;margin-right:7px!important;vertical-align:-1px}
 .week-header{font-size:14px!important}
