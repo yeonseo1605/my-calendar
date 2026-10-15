@@ -426,7 +426,7 @@ body{font-size:16px}
 /* Keep accordion arrows beside their titles and give every color family the same interaction. */
 .new-label-head{justify-content:flex-start!important;gap:5px}
 .new-label-head .new-label-toggle-arrow{margin-left:2px}
-.theme-builder .theme-family-tabs{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px}
+.theme-builder .theme-family-tabs{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:4px}
 .theme-builder .theme-family-tabs>button{min-width:0!important;padding:0 2px!important;font-size:11px!important}
 .theme-builder .theme-family-tabs>button[data-theme-family="purple"]{font-size:10px!important;line-height:1.1}
 
