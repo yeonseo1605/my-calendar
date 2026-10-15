@@ -446,8 +446,8 @@ body{font-size:16px}
 .theme-builder .theme-setting-manager{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px}
 .theme-builder .theme-setting-manager h4{margin:0;white-space:nowrap}
 .theme-builder .theme-setting-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-width:0}
-.theme-builder .theme-setting-actions .btn{min-width:0;height:40px;padding:0 8px;font-size:13px;white-space:nowrap}
-@media(max-width:470px){.theme-builder .theme-setting-manager{gap:6px}.theme-builder .theme-setting-actions{gap:5px}.theme-builder .theme-setting-actions .btn{padding:0 5px;font-size:12px}}
+.theme-builder .theme-setting-actions .btn{min-width:0;height:42px;padding:0 8px;font-size:15px;font-weight:800;white-space:nowrap}
+@media(max-width:470px){.theme-builder .theme-setting-manager{gap:6px}.theme-builder .theme-setting-actions{gap:5px}.theme-builder .theme-setting-actions .btn{padding:0 5px;font-size:14px}}
 
 /* Compact one-line settings rows. */
 #settingsDrawer .settings-compact-row{padding-top:14px;padding-bottom:14px}
