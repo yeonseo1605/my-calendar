@@ -184,11 +184,11 @@
         <div class="theme-color-block"><h4>기본 색상</h4><div class="theme-family-tabs" id="themeFamilyTabs"></div><div class="theme-color-palette-grid" id="themeColorPaletteGrid" aria-label="기본 색상"></div></div>
         <div class="theme-color-block theme-detail-block"><h4>세부 색상</h4><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출">⌁</button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div>
       </div>
-      <button type="button" class="btn secondary theme-preset-save" id="saveThemePreset">프리셋 저장</button>
-      <div class="theme-preset-menu hidden" id="themePresetMenu"><button type="button" data-preset-action="add">현재 색상 추가</button><button type="button" class="danger" data-preset-action="delete">프리셋 삭제</button><button type="button" data-preset-action="cancel">취소</button></div>
-      <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 프리셋</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">프리셋 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
+      <button type="button" class="btn secondary theme-preset-save" id="saveThemePreset">화면 설정 저장</button>
+      <div class="theme-preset-menu hidden" id="themePresetMenu"><button type="button" data-preset-action="add">현재 설정 추가</button><button type="button" class="danger" data-preset-action="delete">저장 설정 삭제</button><button type="button" data-preset-action="cancel">취소</button></div>
+      <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 화면 설정</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">설정 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
       <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><strong>삭제할 색상 선택</strong><button type="button" class="text-btn" id="finishThemePresetDelete">완료</button></div>
-      <div class="theme-presets" id="themePresets" aria-label="저장한 색상 프리셋"></div>
+      <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
       <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
       <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
       <div class="intensity-scale"><span>0% 밝게</span><span>50%</span><span>100% 어둡게</span></div>
@@ -228,6 +228,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=113"></script>
+  <script src="app.js?v=114"></script>
 </body>
 </html>
