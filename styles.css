@@ -364,7 +364,7 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 /* Fit the complete color editor inside the right settings panel */
 #settingsDrawer .theme-builder{min-width:0;overflow:hidden}
 .theme-builder .theme-color-workbench,.theme-builder .theme-color-block,.theme-builder .theme-detail-block{min-width:0;max-width:100%}
-.theme-builder .theme-family-tabs{display:grid!important;grid-template-columns:repeat(7,minmax(28px,1fr)) 1px minmax(58px,1.55fr) minmax(64px,1.7fr);gap:4px;overflow:visible;padding:0}
+.theme-builder .theme-family-tabs{display:grid!important;grid-template-columns:repeat(5,minmax(48px,1fr)) 1px minmax(58px,1.15fr) minmax(64px,1.25fr);gap:5px;overflow:visible;padding:0}
 .theme-builder .theme-family-tabs>button:not(.theme-neutral){min-width:0;width:auto;padding:0 3px;font-size:11px}
 .theme-builder .theme-neutral-divider{width:1px;height:26px;margin:auto 2px}
 .theme-builder .theme-family-tabs .theme-neutral{min-width:0;width:auto;padding:0 5px;gap:4px;font-size:11px}
@@ -372,7 +372,7 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-builder .theme-color-palette-grid{width:100%;grid-template-columns:repeat(5,minmax(36px,44px));justify-content:space-between;gap:8px}
 .theme-builder .theme-color-palette-grid button{width:clamp(36px,9vw,44px);height:clamp(36px,9vw,44px)}
 .theme-builder .theme-sv-picker,.theme-builder .theme-hue-row,.theme-builder .theme-rgb-row{max-width:100%}
-@media(max-width:470px){.theme-builder .theme-family-tabs{grid-template-columns:repeat(7,minmax(25px,1fr)) 1px minmax(53px,1.5fr) minmax(58px,1.65fr);gap:3px}.theme-builder .theme-family-tabs .theme-neutral{padding:0 3px}.theme-builder .theme-family-tabs .theme-neutral b{width:13px;height:13px}.theme-builder .theme-color-palette-grid button{width:36px;height:36px}}
+@media(max-width:470px){.theme-builder .theme-family-tabs{grid-template-columns:repeat(5,minmax(42px,1fr)) 1px minmax(53px,1.1fr) minmax(58px,1.2fr);gap:3px}.theme-builder .theme-family-tabs .theme-neutral{padding:0 3px}.theme-builder .theme-family-tabs .theme-neutral b{width:13px;height:13px}.theme-builder .theme-color-palette-grid button{width:36px;height:36px}}
 
 /* One actual color is active; the open family is only a quiet navigation state. */
 .theme-builder .theme-family-tabs button.family-open:not(.active){border-color:color-mix(in srgb,var(--accent) 65%,var(--border));background:var(--panel);color:var(--accent);box-shadow:inset 0 -2px 0 var(--accent)}
@@ -394,6 +394,14 @@ body{font-size:16px}
 .task-card,.task-card button,.task-tabs button{font-size:15px}
 .drawer-head p,.search-label-empty{font-size:14px}
 @media(max-width:470px){.theme-builder .theme-family-tabs>button:not(.theme-neutral),.theme-builder .theme-family-tabs .theme-neutral{font-size:12px}}
+
+/* Search proposal 1: fixed up/down controls and sticky result headings. */
+.search-scroll-nav{position:fixed;z-index:35;right:24px;bottom:24px;display:grid;gap:6px;padding:5px;border:1px solid var(--border);border-radius:14px;background:var(--panel-solid,var(--panel));box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.search-scroll-nav button{width:42px;height:42px;display:grid;place-items:center;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);cursor:pointer}
+.search-scroll-nav button:hover{border-color:var(--accent);background:var(--accent2);color:var(--accent)}
+.search-scroll-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:901px){.search-results{overflow:visible}.search-results-head{position:sticky;z-index:18;top:0;background:var(--panel-solid,var(--panel))}.search-table-head{position:sticky;z-index:17;top:58px;background:var(--panel-solid,var(--panel))}}
+@media(max-width:900px){.search-scroll-nav{right:12px;bottom:80px}.search-scroll-nav button{width:40px;height:40px}}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */

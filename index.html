@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=114">
+  <link rel="stylesheet" href="styles.css?v=115">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -93,6 +93,7 @@
         <div class="search-table-head"><span></span><button type="button" data-column-filter="date">날짜 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="time">시간 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="label">라벨 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="title">제목 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="guests">참석자 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="repeat">반복 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="reminder">알림 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button><button type="button" data-column-filter="address">장소 <span class="column-filter-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8L3 4Z"/></svg></span></button></div>
         <div class="column-filter-menu hidden" id="columnFilterMenu"></div>
         <div id="searchResultRows"></div>
+        <div class="search-scroll-nav" aria-label="검색 결과 빠른 이동"><button type="button" id="searchScrollTop" aria-label="검색 결과 맨 위로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 15 7-7 7 7"/></svg></button><button type="button" id="searchScrollBottom" aria-label="검색 결과 맨 아래로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 9 7 7 7-7"/></svg></button></div>
       </section>
       <section class="calendar-card">
         <div class="week-header"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
@@ -228,6 +229,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=117"></script>
+  <script src="app.js?v=118"></script>
 </body>
 </html>

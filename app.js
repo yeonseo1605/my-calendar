@@ -5,8 +5,8 @@ const hues=[
  ['빨강',['#991b1b','#dc2626','#ef4444','#f87171','#fecaca']],['주황',['#9a3412','#ea580c','#f97316','#fb923c','#fed7aa']],['노랑',['#854d0e','#ca8a04','#eab308','#facc15','#fef08a']],['초록',['#166534','#16a34a','#22c55e','#4ade80','#bbf7d0']],['파랑',['#1e40af','#2563eb','#3b82f6','#60a5fa','#bfdbfe']],['남색',['#3730a3','#4f46e5','#6366f1','#818cf8','#c7d2fe']],['보라',['#6b21a8','#9333ea','#a855f7','#c084fc','#e9d5ff']]
 ];
 const themePaletteColors=['#FFFFFF','#E5E7EB','#9CA3AF','#4B5563','#111827','#000000','#FEE2E2','#FCA5A5','#F87171','#EF4444','#B91C1C','#7F1D1D','#FFEDD5','#FDBA74','#FB923C','#F97316','#C2410C','#7C2D12','#FEF3C7','#FDE68A','#FACC15','#EAB308','#A16207','#713F12','#DCFCE7','#86EFAC','#4ADE80','#22C55E','#15803D','#14532D','#D1FAE5','#6EE7B7','#2DD4BF','#14B8A6','#0F766E','#134E4A','#DBEAFE','#93C5FD','#60A5FA','#3B82F6','#1D4ED8','#1E3A8A','#E0E7FF','#A5B4FC','#818CF8','#6366F1','#4338CA','#312E81','#F3E8FF','#D8B4FE','#C084FC','#A855F7','#7E22CE','#581C87','#FCE7F3','#F9A8D4','#F472B6','#EC4899','#BE185D','#831843'];
-const themePaletteFamilies={red:['#7F1D1D','#B91C1C','#EF4444','#F87171','#FECACA'],orange:['#9A3412','#C2410C','#F97316','#FB923C','#FED7AA'],yellow:['#713F12','#A16207','#EAB308','#FACC15','#FEF3C7'],green:['#14532D','#15803D','#22C55E','#4ADE80','#BBF7D0'],blue:['#1E3A8A','#1D4ED8','#3B82F6','#60A5FA','#BFDBFE'],indigo:['#312E81','#4338CA','#6366F1','#818CF8','#C7D2FE'],purple:['#581C87','#7E22CE','#A855F7','#C084FC','#E9D5FF']};
-const themeFamilyNames={red:'빨',orange:'주',yellow:'노',green:'초',blue:'파',indigo:'남',purple:'보'};
+const themePaletteFamilies={red:['#7F1D1D','#B91C1C','#EF4444','#F87171','#FECACA','#9A3412','#C2410C','#F97316','#FB923C','#FED7AA'],yellow:['#713F12','#A16207','#EAB308','#FACC15','#FEF3C7'],green:['#14532D','#15803D','#22C55E','#4ADE80','#BBF7D0'],blue:['#1E3A8A','#1D4ED8','#3B82F6','#60A5FA','#BFDBFE','#312E81','#4338CA','#6366F1','#818CF8','#C7D2FE'],purple:['#581C87','#7E22CE','#A855F7','#C084FC','#E9D5FF']};
+const themeFamilyNames={red:'빨강',yellow:'노랑',green:'초록',blue:'파랑',purple:'보라'};
 let themePaletteFamily='blue';
 const defaultLabels=()=>hues.flatMap(([family,colors])=>colors.map((color,i)=>({id:`${family}-${i+1}`,family,color,name:family==='노랑'&&i===4?'내 일정':`${family} ${i+1}`})));
 const seedEvents=[
@@ -174,6 +174,7 @@ function bind(){
  $$('[data-column-filter]').forEach(button=>button.onclick=e=>{e.stopPropagation();openColumnFilter(button.dataset.columnFilter,button)});
  $('#themeEyedropper').onclick=async()=>{if(!window.EyeDropper)return toast('이 브라우저는 화면 색상 추출을 지원하지 않습니다');try{const result=await new EyeDropper().open();setThemeColor(result.sRGBHex)}catch{}};
  document.addEventListener('click',e=>{if(!e.target.closest('#columnFilterMenu')&&!e.target.closest('[data-column-filter]'))$('#columnFilterMenu').classList.add('hidden')});
+ $('#searchScrollTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});$('#searchScrollBottom').onclick=()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
