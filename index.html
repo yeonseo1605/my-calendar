@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=138">
+  <link rel="stylesheet" href="styles.css?v=139">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -69,7 +69,7 @@
           <button class="icon-btn" id="rangePrevBtn" aria-label="이전 기간">‹</button>
           <button class="range-title" id="viewRangeTitle" type="button">2026년 10월</button>
           <button class="icon-btn" id="rangeNextBtn" aria-label="다음 기간">›</button>
-          <button class="btn secondary" id="rangeTodayBtn" type="button">오늘</button>
+          <span class="today-segmented"><button id="rangeTodayBtn" type="button">오늘</button></span>
         </div>
         <div class="result-count" id="resultCount"></div>
         <div class="date-picker-panel hidden" id="datePickerPanel"></div>
