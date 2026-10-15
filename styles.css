@@ -448,6 +448,7 @@ body{font-size:16px}
 
 /* Keep the screen-setting title and both actions together on one row. */
 .theme-builder .theme-setting-manager{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px}
+.theme-builder .theme-setting-manager{border-top:0!important}
 .theme-builder .theme-setting-manager h4{margin:0;white-space:nowrap}
 .theme-builder .theme-setting-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-width:0}
 .theme-builder .theme-setting-actions .btn{min-width:0;height:42px;padding:0 8px;font-size:15px;font-weight:800;white-space:nowrap}
