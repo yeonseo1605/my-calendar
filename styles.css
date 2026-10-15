@@ -357,6 +357,7 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-family-tabs .theme-neutral b{width:17px;height:17px;border:1px solid var(--border);border-radius:50%;flex:none}
 .theme-color-workbench .theme-color-palette-grid{grid-template-columns:repeat(5,44px);justify-content:space-around}
 .theme-builder>.range-label:first-of-type{padding-top:16px;border-top:1px solid var(--border)}
+.theme-builder #themeBrightness+.intensity-scale{margin-bottom:18px}
 .theme-builder .theme-setting-manager{margin:14px 0 10px;padding:16px 0 0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent}
 .theme-builder .saved-theme-title{padding-top:12px;border-top:1px solid var(--border)}
 @media(max-width:560px){.theme-family-tabs{padding-bottom:3px}.theme-family-tabs>button:not(.theme-neutral){flex-basis:34px}.theme-family-tabs .theme-neutral{min-width:64px}.theme-color-workbench .theme-color-palette-grid{justify-content:space-between}}
