@@ -449,6 +449,17 @@ body{font-size:16px}
 .theme-builder .theme-setting-actions .btn{min-width:0;height:42px;padding:0 8px;font-size:15px;font-weight:800;white-space:nowrap}
 @media(max-width:470px){.theme-builder .theme-setting-manager{gap:6px}.theme-builder .theme-setting-actions{gap:5px}.theme-builder .theme-setting-actions .btn{padding:0 5px;font-size:14px}}
 
+/* Two-line range controls: title/value, then min/slider/max. */
+.compact-range{display:grid;gap:9px;margin:14px 0 18px}
+.compact-range-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.compact-range-head h3,.compact-range-head strong{margin:0;font-size:17px;line-height:1.3}
+.compact-range-head output{color:var(--accent);font-size:16px;font-weight:800}
+.compact-range-control{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.compact-range-control span{color:var(--accent);font-size:13px;font-weight:750;white-space:nowrap}
+.compact-range-control input[type="range"]{width:100%;min-width:0;margin:0;accent-color:var(--accent)}
+.font-size-setting .compact-range{margin:0}
+@media(max-width:470px){.compact-range-control{gap:7px}.compact-range-control span{font-size:12px}}
+
 /* Compact one-line settings rows. */
 #settingsDrawer .settings-compact-row{padding-top:14px;padding-bottom:14px}
 #settingsDrawer .notification-row{align-items:center}

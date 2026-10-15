@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=130">
+  <link rel="stylesheet" href="styles.css?v=131">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -184,12 +184,8 @@
         <div class="theme-color-block"><div class="theme-family-tabs" id="themeFamilyTabs"></div><div class="theme-color-palette-grid" id="themeColorPaletteGrid" aria-label="기본 색상"></div></div>
         <div class="theme-color-block theme-detail-block collapsed" id="themeDetailCard"><div class="new-label-head"><h4>세부 색상</h4><button class="new-label-toggle-arrow" id="themeDetailToggle" type="button" aria-expanded="false" aria-label="세부 색상 펼치기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="theme-detail-body hidden" id="themeDetailBody"><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출" title="스포이드로 색상 선택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.7 4.3a2.4 2.4 0 0 0-3.4 0l-2 2-1.1-1.1-1.4 1.4 1.1 1.1-7.8 7.8a2 2 0 0 0-.5.9l-.8 3.8 3.8-.8a2 2 0 0 0 .9-.5l7.8-7.8 1.1 1.1 1.4-1.4-1.1-1.1 2-2a2.4 2.4 0 0 0 0-3.4ZM7.2 17.5l-1 .2.2-1 7.9-7.9 1 1-8.1 7.7Z"/></svg></button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div></div>
       </div>
-      <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
-      <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
-      <div class="intensity-scale"><span>0% 밝게</span><span>50%</span><span>100% 어둡게</span></div>
-      <label class="range-label"><span>화면색 투명도</span><output id="themeOpacityValue">100%</output></label>
-      <input type="range" id="themeOpacity" min="0" max="100" step="1" value="100">
-      <div class="intensity-scale"><span>0% 투명</span><span>50%</span><span>100% 선명</span></div>
+      <div class="compact-range"><div class="compact-range-head"><strong>선택한 색상의 밝기</strong><output id="themeBrightnessValue">55%</output></div><div class="compact-range-control"><span>0% 밝게</span><input type="range" id="themeBrightness" min="0" max="100" step="1" value="55"><span>100% 어둡게</span></div></div>
+      <div class="compact-range"><div class="compact-range-head"><strong>화면색 투명도</strong><output id="themeOpacityValue">100%</output></div><div class="compact-range-control"><span>0% 투명</span><input type="range" id="themeOpacity" min="0" max="100" step="1" value="100"><span>100% 선명</span></div></div>
       <label class="check-row"><input type="checkbox" id="themeAutoContrast" checked> 배경에 맞춰 글자색 자동 조정</label>
       <label class="check-row"><input type="checkbox" id="themeFollowSystem"> 시스템 설정에 맞춰 밝기 자동 전환</label>
       <div class="theme-setting-manager"><h4>화면 설정 저장</h4><div class="theme-setting-actions"><button type="button" class="btn primary" id="saveThemePreset">현재 설정 추가</button><button type="button" class="btn danger-outline" id="replaceThemePreset">설정 교체·삭제</button></div></div>
@@ -199,7 +195,7 @@
       <h4 class="saved-theme-title">저장된 설정 <span id="savedThemeCount">4개</span></h4>
       <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
     </section>
-    <section class="settings-section font-size-setting"><h3>일정 글씨 크기</h3><label class="range-label"><span>최소 70% · 최대 160%</span><output id="eventFontSizeValue">100%</output></label><input type="range" id="eventFontSize" min="70" max="160" step="5" value="100"></section>
+    <section class="settings-section font-size-setting"><div class="compact-range"><div class="compact-range-head"><h3>일정 글씨 크기</h3><output id="eventFontSizeValue">100%</output></div><div class="compact-range-control"><span>70%</span><input type="range" id="eventFontSize" min="70" max="160" step="5" value="100"><span>160%</span></div></div></section>
     <section class="settings-section settings-compact-row"><div class="notification-row"><div><strong id="notificationStatus">알림 권한 확인 중</strong><p class="setting-help">앱이 열려 있을 때 일정 시간에 맞춰 알려줍니다.</p></div><button class="btn secondary" id="notificationBtn">알림 켜기</button></div></section>
     <section class="settings-section data-management-section"><div class="data-management-row"><h3>데이터 관리</h3><div class="settings-buttons"><button class="btn secondary" id="exportBtn">백업 내보내기</button><label class="btn secondary import-label">백업 가져오기<input type="file" id="importInput" accept="application/json"></label></div></div><p class="setting-help">일정, 라벨, 화면 설정을 JSON 파일로 백업합니다.</p></section>
     <section class="settings-section settings-compact-row"><div class="notification-row"><div><strong>Google Calendar</strong><p class="setting-help">연결 상태와 동기화를 여기에서 관리합니다.</p></div><button class="btn secondary" id="integrationSettingsBtn">연결 관리</button></div></section>
