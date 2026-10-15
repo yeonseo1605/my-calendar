@@ -343,3 +343,8 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-color-palette-grid button:hover,.theme-color-palette-grid button:focus-visible{transform:scale(1.16);filter:brightness(1.12);outline:0}
 .theme-color-palette .text-btn{display:block;margin-left:auto}
 @media(max-width:620px){.theme-color-palette-grid{grid-template-columns:repeat(8,minmax(22px,1fr))}}
+.sidebar-nav button span{color:var(--icon,var(--muted))}
+.sidebar-nav button.active span{color:var(--accent)}
+.sidebar-nav .install-nav span,.filled-search-icon,.event-field-icon{color:var(--icon,var(--muted))}
+.lunar-date{background:var(--lunar-bg)!important;color:var(--lunar-text)!important}
+.day-cell.selected .lunar-date,.day-cell.today .lunar-date{background:var(--lunar-bg)!important;color:var(--lunar-text)!important}
