@@ -334,3 +334,12 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 #eventDrawer .title-label-options .label-option b{display:none}
 #eventDrawer .title-label-options .label-option.selected{border-color:var(--accent);background:var(--accent2)}
 @media(max-width:600px){.lunar-date{font-size:10px;padding-top:5px}#eventDrawer .event-title-input-row,#eventDrawer .title-label-options{grid-column:2}}
+.theme-palette-trigger{width:48px;height:44px;padding:5px;border:1px solid var(--border);border-radius:9px;background:var(--field);cursor:pointer}
+.theme-palette-trigger i{display:block;width:100%;height:100%;border-radius:6px;border:1px solid rgba(255,255,255,.32)}
+.native-detail-color{position:absolute!important;width:1px!important;height:1px!important;opacity:0;pointer-events:none}
+.theme-color-palette{margin:0 0 14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--panel-solid);box-shadow:0 16px 38px rgba(0,0,0,.28)}
+.theme-color-palette-grid{display:grid;grid-template-columns:repeat(10,minmax(24px,1fr));gap:5px;margin-bottom:10px}
+.theme-color-palette-grid button{width:100%;aspect-ratio:1;border:0;padding:0;background:var(--palette-color);clip-path:polygon(25% 6.7%,75% 6.7%,100% 50%,75% 93.3%,25% 93.3%,0 50%);cursor:pointer;transition:transform .14s ease,filter .14s ease}
+.theme-color-palette-grid button:hover,.theme-color-palette-grid button:focus-visible{transform:scale(1.16);filter:brightness(1.12);outline:0}
+.theme-color-palette .text-btn{display:block;margin-left:auto}
+@media(max-width:620px){.theme-color-palette-grid{grid-template-columns:repeat(8,minmax(22px,1fr))}}
