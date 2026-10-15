@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=121">
+  <link rel="stylesheet" href="styles.css?v=122">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -182,7 +182,7 @@
       <input type="hidden" id="themeColor" value="#20242D">
       <div class="theme-color-workbench">
         <div class="theme-color-block"><h4>기본 색상</h4><div class="theme-family-tabs" id="themeFamilyTabs"></div><div class="theme-color-palette-grid" id="themeColorPaletteGrid" aria-label="기본 색상"></div></div>
-        <div class="theme-color-block theme-detail-block"><h4>세부 색상</h4><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출">⌁</button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div>
+        <div class="theme-color-block theme-detail-block"><h4>세부 색상</h4><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출" title="스포이드로 색상 선택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.7 4.3a2.4 2.4 0 0 0-3.4 0l-2 2-1.1-1.1-1.4 1.4 1.1 1.1-7.8 7.8a2 2 0 0 0-.5.9l-.8 3.8 3.8-.8a2 2 0 0 0 .9-.5l7.8-7.8 1.1 1.1 1.4-1.4-1.1-1.1 2-2a2.4 2.4 0 0 0 0-3.4ZM7.2 17.5l-1 .2.2-1 7.9-7.9 1 1-8.1 7.7Z"/></svg></button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div>
       </div>
       <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
       <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
