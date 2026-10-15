@@ -414,6 +414,17 @@ body{font-size:16px}
 #settingsDrawer .drawer-head{margin-bottom:4px}
 #settingsDrawer .settings-section:first-of-type{padding-top:4px}
 #settingsDrawer .display-options .event-sample{font-size:15px;line-height:1.35}
+
+/* Compact one-line settings rows. */
+#settingsDrawer .settings-compact-row{padding-top:14px;padding-bottom:14px}
+#settingsDrawer .notification-row{align-items:center}
+#settingsDrawer .notification-row>div{min-width:0}
+#settingsDrawer .notification-row strong{display:block;font-size:17px;line-height:1.3}
+#settingsDrawer .notification-row .btn{margin-left:auto}
+#settingsDrawer .data-management-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#settingsDrawer .data-management-row h3{margin:0;white-space:nowrap}
+#settingsDrawer .data-management-row .settings-buttons{display:flex!important;flex-direction:row!important;justify-content:flex-end;gap:8px;margin-left:auto;white-space:nowrap}
+#settingsDrawer .data-management-section>.setting-help{margin:8px 0 0}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */

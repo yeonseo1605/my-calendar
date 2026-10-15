@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=119">
+  <link rel="stylesheet" href="styles.css?v=120">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -200,9 +200,9 @@
       <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
     </section>
     <section class="settings-section font-size-setting"><h3>일정 글씨 크기</h3><label class="range-label"><span>최소 70% · 최대 160%</span><output id="eventFontSizeValue">100%</output></label><input type="range" id="eventFontSize" min="70" max="160" step="5" value="100"></section>
-    <section class="settings-section"><h3>일정 알림</h3><div class="notification-row"><div><strong id="notificationStatus">알림 권한 확인 중</strong><p class="setting-help">앱이 열려 있을 때 일정 시간에 맞춰 알려줍니다.</p></div><button class="btn secondary" id="notificationBtn">알림 켜기</button></div></section>
-    <section class="settings-section"><h3>데이터 관리</h3><div class="settings-buttons"><button class="btn secondary" id="exportBtn">백업 내보내기</button><label class="btn secondary import-label">백업 가져오기<input type="file" id="importInput" accept="application/json"></label></div><p class="setting-help">일정, 라벨, 화면 설정을 JSON 파일로 백업합니다.</p></section>
-    <section class="settings-section"><h3>외부 캘린더</h3><div class="notification-row"><div><strong>Google Calendar</strong><p class="setting-help">연결 상태와 동기화를 여기에서 관리합니다.</p></div><button class="btn secondary" id="integrationSettingsBtn">연결 관리</button></div></section>
+    <section class="settings-section settings-compact-row"><div class="notification-row"><div><strong id="notificationStatus">알림 권한 확인 중</strong><p class="setting-help">앱이 열려 있을 때 일정 시간에 맞춰 알려줍니다.</p></div><button class="btn secondary" id="notificationBtn">알림 켜기</button></div></section>
+    <section class="settings-section data-management-section"><div class="data-management-row"><h3>데이터 관리</h3><div class="settings-buttons"><button class="btn secondary" id="exportBtn">백업 내보내기</button><label class="btn secondary import-label">백업 가져오기<input type="file" id="importInput" accept="application/json"></label></div></div><p class="setting-help">일정, 라벨, 화면 설정을 JSON 파일로 백업합니다.</p></section>
+    <section class="settings-section settings-compact-row"><div class="notification-row"><div><strong>Google Calendar</strong><p class="setting-help">연결 상태와 동기화를 여기에서 관리합니다.</p></div><button class="btn secondary" id="integrationSettingsBtn">연결 관리</button></div></section>
   </aside>
 
   <aside class="drawer tasks-drawer hidden" id="tasksDrawer" aria-label="할 일">
