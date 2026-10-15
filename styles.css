@@ -407,7 +407,8 @@ body{font-size:16px}
 /* Drawers are working surfaces and must stay opaque even when page transparency is lowered. */
 #settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned,#bulkEditor,#bulkEditor.user-positioned{background:var(--panel-solid,var(--panel))!important;backdrop-filter:none!important}
 #settingsDrawer .settings-section.theme-builder{background:var(--panel-solid,var(--panel))!important}
-#settingsDrawer .theme-color-block,#settingsDrawer .theme-setting-manager,#settingsDrawer .display-options label{background:color-mix(in srgb,var(--panel-solid,var(--panel)) 92%,var(--text))!important}
+#settingsDrawer .theme-color-block,#settingsDrawer .theme-setting-manager{background:transparent!important}
+#settingsDrawer .display-options label{background:color-mix(in srgb,var(--panel-solid,var(--panel)) 92%,var(--text))!important}
 
 /* Keep the settings title close to the first section and use the shared readable type size. */
 #settingsDrawer .drawer-head{margin-bottom:4px}
