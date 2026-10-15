@@ -304,6 +304,7 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-preset-add-color{display:flex;align-items:center;gap:9px}.theme-preset-add-color i{width:34px;height:34px;border-radius:8px;border:1px solid var(--border)}
 .theme-preset-add label{font-size:12px;color:var(--muted);font-weight:750}.theme-preset-add input{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:9px;background:var(--panel)}
 .theme-preset-add-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.theme-preset-delete-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.theme-preset-add-head{display:flex;align-items:center;gap:12px}.theme-preset-add-head>strong{white-space:nowrap}.theme-preset-add-head .theme-preset-add-color{margin-left:0}.theme-preset-add-head .theme-preset-add-color i{width:28px;height:28px}.theme-preset-name-row{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:10px}.theme-preset-name-row label{margin:0}.theme-preset-name-row input{min-width:0}
 .search-workspace{margin-bottom:14px}
 .search-quick-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .search-quick-filters button{height:42px;min-width:104px;padding:0 22px;border:1px solid transparent;border-radius:11px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;transition:filter .15s ease,transform .15s ease,box-shadow .15s ease}
