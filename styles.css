@@ -402,6 +402,11 @@ body{font-size:16px}
 .search-scroll-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 @media(min-width:901px){.search-results{overflow:visible}.search-results-head{position:sticky;z-index:18;top:0;background:var(--panel-solid,var(--panel))}.search-table-head{position:sticky;z-index:17;top:58px;background:var(--panel-solid,var(--panel))}}
 @media(max-width:900px){.search-scroll-nav{right:12px;bottom:80px}.search-scroll-nav button{width:40px;height:40px}}
+
+/* Drawers are working surfaces and must stay opaque even when page transparency is lowered. */
+#settingsDrawer,#settingsDrawer.user-positioned,#eventDrawer,#eventDrawer.user-positioned,#tasksDrawer,#tasksDrawer.user-positioned,#bulkEditor,#bulkEditor.user-positioned{background:var(--panel-solid,var(--panel))!important;backdrop-filter:none!important}
+#settingsDrawer .settings-section.theme-builder{background:var(--panel-solid,var(--panel))!important}
+#settingsDrawer .theme-color-block,#settingsDrawer .theme-setting-manager,#settingsDrawer .display-options label{background:color-mix(in srgb,var(--panel-solid,var(--panel)) 92%,var(--text))!important}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
