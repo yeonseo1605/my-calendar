@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=110">
+  <link rel="stylesheet" href="styles.css?v=111">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -75,12 +75,11 @@
         <div class="date-picker-panel hidden" id="datePickerPanel"></div>
       </section>
       <section class="search-workspace hidden" id="searchWorkspace">
-        <input class="hidden" id="detailSearchInput"><button class="hidden" id="detailSearchBtn" type="button">검색</button>
-        <div class="search-quick-filters" id="searchFieldFilters"><button class="period-month" data-search-period="month">이번 달</button><button class="period-all active" data-search-period="all">전체</button><button class="filter-label" data-search-field="label">라벨</button></div>
+        <div class="detail-search"><svg class="filled-search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 0 3.98 11.64l4.44 4.44 1.41-1.41-4.44-4.44A6.5 6.5 0 0 0 10.5 4Zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z"/></svg><input id="detailSearchInput" placeholder="제목, 주소, 참석자, 설명 검색"><button class="btn primary" id="detailSearchBtn" type="button">검색</button></div>
+        <div class="search-filter-row" id="searchFieldFilters"><input type="date" id="searchDateFrom"><span>~</span><input type="date" id="searchDateTo"><button data-search-period="today">오늘</button><button data-search-period="week">이번 주</button><button data-search-period="month">이번 달</button><button class="period-all active" data-search-period="all">전체</button><button class="filter-label" data-search-field="label">라벨</button></div>
         <div class="search-label-band hidden" id="searchLabelBand">
           <div class="search-label-pills" id="searchLabelPills"></div>
         </div>
-        <input type="date" class="hidden" id="searchDateFrom"><input type="date" class="hidden" id="searchDateTo">
       </section>
       <section class="label-workspace hidden" id="labelWorkspace">
         <div class="label-workspace-head"><div><h1>라벨별 일정</h1><p>선택한 라벨의 과거·현재·미래 일정을 한 번에 확인하고 수정합니다.</p></div><div class="label-workspace-actions"><button class="btn secondary" id="labelRenameFocusBtn" type="button">이름 변경</button><button class="btn secondary" id="labelColorFocusBtn" type="button">라벨 색상 변경</button></div></div>
@@ -184,10 +183,11 @@
         <div class="theme-color-block"><h4>기본 색상</h4><div class="theme-family-tabs" id="themeFamilyTabs"></div><div class="theme-color-palette-grid" id="themeColorPaletteGrid" aria-label="기본 색상"></div></div>
         <div class="theme-color-block theme-detail-block"><h4>세부 색상</h4><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출">⌁</button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div>
       </div>
-      <button type="button" class="btn secondary theme-preset-save" id="saveThemePreset">화면 설정 저장</button>
-      <div class="theme-preset-menu hidden" id="themePresetMenu"><button type="button" data-preset-action="add">현재 설정 추가</button><button type="button" class="danger" data-preset-action="delete">저장 설정 삭제</button><button type="button" data-preset-action="cancel">취소</button></div>
+      <div class="theme-setting-manager"><h4>화면 설정</h4><p>배경색, 밝기, 투명도 등 화면 전체 설정을 저장하고 관리할 수 있습니다.</p><div class="theme-setting-actions"><button type="button" class="btn primary" id="saveThemePreset">현재 설정 추가</button><button type="button" class="btn danger-outline" id="replaceThemePreset">설정 교체·삭제</button></div></div>
+      <div class="theme-preset-menu hidden" id="themePresetMenu"></div>
       <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 화면 설정</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">설정 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
-      <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><strong>삭제할 색상 선택</strong><button type="button" class="text-btn" id="finishThemePresetDelete">완료</button></div>
+      <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><span>삭제할 설정을 선택하면 현재 설정으로 교체됩니다.</span><button type="button" class="text-btn" id="finishThemePresetDelete">취소</button></div>
+      <h4 class="saved-theme-title">저장된 설정 <span id="savedThemeCount">4개</span></h4>
       <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
       <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
       <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
@@ -228,6 +228,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=114"></script>
+  <script src="app.js?v=115"></script>
 </body>
 </html>

@@ -319,6 +319,31 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .agenda-search-table .search-table-head,.agenda-search-table .search-result-row{min-width:1080px}
 .agenda-search-row{cursor:pointer}
 .agenda-search-row:hover{background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+
+/* Restored search controls and direct screen-setting manager */
+.search-workspace .detail-search{max-width:none;margin-bottom:14px}
+.search-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.search-filter-row input,.search-filter-row button{height:40px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text);font-size:14px;font-weight:750}
+.search-filter-row input{width:180px;padding:0 12px;color-scheme:dark}
+[data-theme="light"] .search-filter-row input{color-scheme:light}
+.search-filter-row button{padding:0 17px;cursor:pointer}
+.search-filter-row button.active{border-color:var(--accent);background:var(--accent2);color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.search-filter-row .filter-label{border-color:#9b78dc;background:#7652b8;color:#fff}
+.search-filter-row .filter-label.active{background:#8b5fd0;color:#fff;box-shadow:0 0 0 2px color-mix(in srgb,#a97ee8 50%,transparent)}
+.theme-setting-manager{margin:14px 0 12px;padding:16px;border:1px solid var(--border);border-radius:13px;background:color-mix(in srgb,var(--panel2) 72%,transparent)}
+.theme-setting-manager h4{margin:0 0 6px;font-size:17px}.theme-setting-manager p{margin:0 0 13px;color:var(--muted);font-size:13px;line-height:1.55}
+.theme-setting-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.theme-setting-actions .btn{height:44px}
+.btn.danger-outline{border:1px solid #ff5d70;background:transparent;color:#ff6679}
+.btn.danger-outline.active{background:color-mix(in srgb,#ff5d70 20%,var(--panel));box-shadow:0 0 0 1px #ff5d70}
+.saved-theme-title{display:flex;gap:6px;margin:14px 0 9px;font-size:14px}.saved-theme-title span{color:var(--muted)}
+.theme-presets{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:16px;padding:2px}
+.theme-presets button{flex:1 0 88px;height:40px;white-space:nowrap}
+.theme-presets.delete-mode button{padding-right:31px}
+.theme-preset-remove{position:absolute;right:8px;width:17px;height:18px;color:#ff566b;font-size:0}
+.theme-preset-remove::before{content:"";position:absolute;left:3px;top:5px;width:9px;height:10px;border:2px solid currentColor;border-top:0;border-radius:0 0 2px 2px}
+.theme-preset-remove::after{content:"";position:absolute;left:1px;top:2px;width:15px;border-top:2px solid currentColor;box-shadow:5px -3px 0 -4px currentColor}
+.theme-preset-delete-head{align-items:center;gap:10px;margin:0 0 8px;color:var(--muted);font-size:12px}.theme-preset-delete-head .text-btn{margin-left:auto;color:var(--accent)}
+@media(max-width:720px){.search-filter-row input{width:calc(50% - 16px)}.theme-setting-actions{grid-template-columns:1fr}.theme-presets{overflow-x:auto}.theme-setting-manager{padding:12px}}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
