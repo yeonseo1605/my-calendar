@@ -373,6 +373,27 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-builder .theme-color-palette-grid button{width:clamp(36px,9vw,44px);height:clamp(36px,9vw,44px)}
 .theme-builder .theme-sv-picker,.theme-builder .theme-hue-row,.theme-builder .theme-rgb-row{max-width:100%}
 @media(max-width:470px){.theme-builder .theme-family-tabs{grid-template-columns:repeat(7,minmax(25px,1fr)) 1px minmax(53px,1.5fr) minmax(58px,1.65fr);gap:3px}.theme-builder .theme-family-tabs .theme-neutral{padding:0 3px}.theme-builder .theme-family-tabs .theme-neutral b{width:13px;height:13px}.theme-builder .theme-color-palette-grid button{width:36px;height:36px}}
+
+/* One actual color is active; the open family is only a quiet navigation state. */
+.theme-builder .theme-family-tabs button.family-open:not(.active){border-color:color-mix(in srgb,var(--accent) 65%,var(--border));background:var(--panel);color:var(--accent);box-shadow:inset 0 -2px 0 var(--accent)}
+.theme-builder .theme-family-tabs button.active{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:none}
+
+/* Readable minimum type scale shared by calendar, search, tasks and editor panels. */
+body{font-size:16px}
+.sidebar-nav button,.sidebar-label,.create-btn{font-size:16px}
+.settings-section h3{font-size:18px}
+.settings-section h4,.theme-color-block h4{font-size:16px}
+.setting-help,.theme-setting-manager p,.file-transfer-block small{font-size:14px}
+.range-label,.field label,.inline-field-label{font-size:14px}
+.settings-section .btn,.settings-buttons .btn,.notification-row strong{font-size:15px}
+.theme-builder .theme-family-tabs>button:not(.theme-neutral),.theme-builder .theme-family-tabs .theme-neutral{font-size:13px;font-weight:800}
+.saved-theme-title,.theme-preset-delete-head{font-size:14px}
+.theme-presets button{font-size:13px}
+.week-header,.day-number,.result-count{font-size:15px!important}
+.timeline-heads b,.all-day-label{font-size:13px}
+.task-card,.task-card button,.task-tabs button{font-size:15px}
+.drawer-head p,.search-label-empty{font-size:14px}
+@media(max-width:470px){.theme-builder .theme-family-tabs>button:not(.theme-neutral),.theme-builder .theme-family-tabs .theme-neutral{font-size:12px}}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
