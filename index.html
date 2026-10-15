@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=111">
+  <link rel="stylesheet" href="styles.css?v=112">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -183,12 +183,6 @@
         <div class="theme-color-block"><h4>기본 색상</h4><div class="theme-family-tabs" id="themeFamilyTabs"></div><div class="theme-color-palette-grid" id="themeColorPaletteGrid" aria-label="기본 색상"></div></div>
         <div class="theme-color-block theme-detail-block"><h4>세부 색상</h4><div class="theme-sv-picker" id="themeSvPicker" aria-label="채도와 밝기 선택"><i id="themeSvCursor"></i></div><div class="theme-hue-row"><button type="button" id="themeEyedropper" aria-label="화면에서 색상 추출">⌁</button><input type="range" id="themeHue" min="0" max="360" step="1" value="45" aria-label="색조"></div><div class="theme-rgb-row"><label><input id="themeRed" inputmode="numeric" maxlength="3"><span>R</span></label><label><input id="themeGreen" inputmode="numeric" maxlength="3"><span>G</span></label><label><input id="themeBlue" inputmode="numeric" maxlength="3"><span>B</span></label><input id="themeHex" value="#20242D" maxlength="7" aria-label="HEX 배경색"></div></div>
       </div>
-      <div class="theme-setting-manager"><h4>화면 설정</h4><p>배경색, 밝기, 투명도 등 화면 전체 설정을 저장하고 관리할 수 있습니다.</p><div class="theme-setting-actions"><button type="button" class="btn primary" id="saveThemePreset">현재 설정 추가</button><button type="button" class="btn danger-outline" id="replaceThemePreset">설정 교체·삭제</button></div></div>
-      <div class="theme-preset-menu hidden" id="themePresetMenu"></div>
-      <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 화면 설정</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">설정 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
-      <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><span>삭제할 설정을 선택하면 현재 설정으로 교체됩니다.</span><button type="button" class="text-btn" id="finishThemePresetDelete">취소</button></div>
-      <h4 class="saved-theme-title">저장된 설정 <span id="savedThemeCount">4개</span></h4>
-      <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
       <label class="range-label"><span>선택한 색상의 밝기</span><output id="themeBrightnessValue">55%</output></label>
       <input type="range" id="themeBrightness" min="0" max="100" step="1" value="55">
       <div class="intensity-scale"><span>0% 밝게</span><span>50%</span><span>100% 어둡게</span></div>
@@ -197,6 +191,12 @@
       <div class="intensity-scale"><span>0% 투명</span><span>50%</span><span>100% 선명</span></div>
       <label class="check-row"><input type="checkbox" id="themeAutoContrast" checked> 배경에 맞춰 글자색 자동 조정</label>
       <label class="check-row"><input type="checkbox" id="themeFollowSystem"> 시스템 설정에 맞춰 밝기 자동 전환</label>
+      <div class="theme-setting-manager"><h4>화면 설정 저장</h4><p>현재 색상·밝기·투명도를 함께 저장합니다.</p><div class="theme-setting-actions"><button type="button" class="btn primary" id="saveThemePreset">현재 설정 추가</button><button type="button" class="btn danger-outline" id="replaceThemePreset">설정 교체·삭제</button></div></div>
+      <div class="theme-preset-menu hidden" id="themePresetMenu"></div>
+      <div class="theme-preset-add hidden" id="themePresetAdd"><strong>새 화면 설정</strong><div class="theme-preset-add-color"><i id="themePresetAddSwatch"></i><span id="themePresetAddHex">#20242D</span></div><label for="themePresetName">설정 이름</label><input id="themePresetName" maxlength="12" placeholder="예: 부드러운 노랑"><div class="theme-preset-add-actions"><button type="button" class="btn ghost" id="cancelThemePresetAdd">취소</button><button type="button" class="btn primary" id="confirmThemePresetAdd">추가</button></div></div>
+      <div class="theme-preset-delete-head hidden" id="themePresetDeleteHead"><span>삭제할 설정을 선택하면 현재 설정으로 교체됩니다.</span><button type="button" class="text-btn" id="finishThemePresetDelete">취소</button></div>
+      <h4 class="saved-theme-title">저장된 설정 <span id="savedThemeCount">4개</span></h4>
+      <div class="theme-presets" id="themePresets" aria-label="저장한 화면 설정"></div>
     </section>
     <section class="settings-section font-size-setting"><h3>일정 글씨 크기</h3><label class="range-label"><span>최소 70% · 최대 160%</span><output id="eventFontSizeValue">100%</output></label><input type="range" id="eventFontSize" min="70" max="160" step="5" value="100"></section>
     <section class="settings-section"><h3>일정 알림</h3><div class="notification-row"><div><strong id="notificationStatus">알림 권한 확인 중</strong><p class="setting-help">앱이 열려 있을 때 일정 시간에 맞춰 알려줍니다.</p></div><button class="btn secondary" id="notificationBtn">알림 켜기</button></div></section>
@@ -228,6 +228,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=115"></script>
+  <script src="app.js?v=116"></script>
 </body>
 </html>

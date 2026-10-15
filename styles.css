@@ -344,6 +344,22 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-preset-remove::after{content:"";position:absolute;left:1px;top:2px;width:15px;border-top:2px solid currentColor;box-shadow:5px -3px 0 -4px currentColor}
 .theme-preset-delete-head{align-items:center;gap:10px;margin:0 0 8px;color:var(--muted);font-size:12px}.theme-preset-delete-head .text-btn{margin-left:auto;color:var(--accent)}
 @media(max-width:720px){.search-filter-row input{width:calc(50% - 16px)}.theme-setting-actions{grid-template-columns:1fr}.theme-presets{overflow-x:auto}.theme-setting-manager{padding:12px}}
+
+/* Unified screen-color workflow */
+#settingsDrawer .settings-section.theme-builder{padding:18px;margin-bottom:10px;border:1px solid var(--border);border-radius:13px;background:var(--panel)}
+.theme-builder>.theme-color-workbench{gap:0;margin:0}
+.theme-builder .theme-color-block{padding:0 0 16px;border:0;border-radius:0;background:transparent}
+.theme-builder .theme-detail-block{padding-top:16px;border-top:1px solid var(--border)}
+.theme-family-tabs{display:flex!important;align-items:center;gap:6px;margin-bottom:14px;overflow-x:auto}
+.theme-family-tabs>button:not(.theme-neutral){flex:1 0 36px;min-width:36px}
+.theme-neutral-divider{width:1px;height:28px;margin:0 4px;background:var(--border);flex:none}
+.theme-family-tabs .theme-neutral{display:flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;min-width:68px;padding:0 8px}
+.theme-family-tabs .theme-neutral b{width:17px;height:17px;border:1px solid var(--border);border-radius:50%;flex:none}
+.theme-color-workbench .theme-color-palette-grid{grid-template-columns:repeat(5,44px);justify-content:space-around}
+.theme-builder>.range-label:first-of-type{padding-top:16px;border-top:1px solid var(--border)}
+.theme-builder .theme-setting-manager{margin:14px 0 10px;padding:16px 0 0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent}
+.theme-builder .saved-theme-title{padding-top:12px;border-top:1px solid var(--border)}
+@media(max-width:560px){.theme-family-tabs{padding-bottom:3px}.theme-family-tabs>button:not(.theme-neutral){flex-basis:34px}.theme-family-tabs .theme-neutral{min-width:64px}.theme-color-workbench .theme-color-palette-grid{justify-content:space-between}}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
