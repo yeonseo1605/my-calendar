@@ -396,7 +396,8 @@ body{font-size:16px}
 @media(max-width:470px){.theme-builder .theme-family-tabs>button:not(.theme-neutral),.theme-builder .theme-family-tabs .theme-neutral{font-size:12px}}
 
 /* Search proposal 1: fixed up/down controls and sticky result headings. */
-.search-scroll-nav{position:fixed;z-index:35;right:24px;bottom:24px;display:grid;gap:6px;padding:5px;border:1px solid var(--border);border-radius:14px;background:var(--panel-solid,var(--panel));box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.search-scroll-nav{position:fixed;z-index:35;right:24px;bottom:24px;display:grid;gap:6px;padding:5px;border:1px solid var(--border);border-radius:14px;background:var(--panel-solid,var(--panel));box-shadow:0 10px 30px rgba(0,0,0,.28);opacity:.38;transition:opacity .22s ease,transform .22s ease}
+.search-scroll-nav:hover,.search-scroll-nav:focus-within,.search-scroll-nav.is-active{opacity:1;transform:translateY(-1px)}
 .search-scroll-nav button{width:42px;height:42px;display:grid;place-items:center;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);cursor:pointer}
 .search-scroll-nav button:hover{border-color:var(--accent);background:var(--accent2);color:var(--accent)}
 .search-scroll-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
