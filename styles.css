@@ -416,6 +416,7 @@ body{font-size:16px}
 /* Keep the settings title close to the first section and use the shared readable type size. */
 #settingsDrawer .drawer-head{margin-bottom:4px}
 #settingsDrawer .settings-section:first-of-type{padding-top:4px}
+#settingsDrawer .settings-section:first-of-type{border-bottom:0}
 #settingsDrawer .display-options .event-sample{font-size:15px;line-height:1.35}
 
 /* Compact one-line settings rows. */
