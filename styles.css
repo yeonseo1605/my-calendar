@@ -360,6 +360,19 @@ html[data-theme="light"] #eventReminder,html[data-theme="light"] #repeatType,htm
 .theme-builder .theme-setting-manager{margin:14px 0 10px;padding:16px 0 0;border:0;border-top:1px solid var(--border);border-radius:0;background:transparent}
 .theme-builder .saved-theme-title{padding-top:12px;border-top:1px solid var(--border)}
 @media(max-width:560px){.theme-family-tabs{padding-bottom:3px}.theme-family-tabs>button:not(.theme-neutral){flex-basis:34px}.theme-family-tabs .theme-neutral{min-width:64px}.theme-color-workbench .theme-color-palette-grid{justify-content:space-between}}
+
+/* Fit the complete color editor inside the right settings panel */
+#settingsDrawer .theme-builder{min-width:0;overflow:hidden}
+.theme-builder .theme-color-workbench,.theme-builder .theme-color-block,.theme-builder .theme-detail-block{min-width:0;max-width:100%}
+.theme-builder .theme-family-tabs{display:grid!important;grid-template-columns:repeat(7,minmax(28px,1fr)) 1px minmax(58px,1.55fr) minmax(64px,1.7fr);gap:4px;overflow:visible;padding:0}
+.theme-builder .theme-family-tabs>button:not(.theme-neutral){min-width:0;width:auto;padding:0 3px;font-size:11px}
+.theme-builder .theme-neutral-divider{width:1px;height:26px;margin:auto 2px}
+.theme-builder .theme-family-tabs .theme-neutral{min-width:0;width:auto;padding:0 5px;gap:4px;font-size:11px}
+.theme-builder .theme-family-tabs .theme-neutral b{width:15px;height:15px}
+.theme-builder .theme-color-palette-grid{width:100%;grid-template-columns:repeat(5,minmax(36px,44px));justify-content:space-between;gap:8px}
+.theme-builder .theme-color-palette-grid button{width:clamp(36px,9vw,44px);height:clamp(36px,9vw,44px)}
+.theme-builder .theme-sv-picker,.theme-builder .theme-hue-row,.theme-builder .theme-rgb-row{max-width:100%}
+@media(max-width:470px){.theme-builder .theme-family-tabs{grid-template-columns:repeat(7,minmax(25px,1fr)) 1px minmax(53px,1.5fr) minmax(58px,1.65fr);gap:3px}.theme-builder .theme-family-tabs .theme-neutral{padding:0 3px}.theme-builder .theme-family-tabs .theme-neutral b{width:13px;height:13px}.theme-builder .theme-color-palette-grid button{width:36px;height:36px}}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
