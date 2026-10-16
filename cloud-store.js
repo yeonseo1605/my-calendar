@@ -64,13 +64,13 @@
     if (!client || !user || applyingRemote) return;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(async () => {
-      const { error } = await client.from('user_settings').upsert({
+      const { data, error } = await client.from('user_settings').upsert({
         user_id: user.id,
         payload,
         schema_version: 1
-      }, { onConflict: 'user_id' });
+      }, { onConflict: 'user_id' }).select('updated_at').single();
       if (error) console.error('My Calendar cloud save failed:', error.message);
-      else await loadRemote(true).catch(() => {});
+      else lastRemoteUpdatedAt = data?.updated_at || lastRemoteUpdatedAt;
     }, 700);
   }
 

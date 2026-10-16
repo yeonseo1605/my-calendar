@@ -86,9 +86,12 @@ function applyTheme(){
   bg=mixRgb(base,target,Math.min(.82,Math.max(0,amount))),
   luminance=(.2126*bg[0]+.7152*bg[1]+.0722*bg[2])/255,
   darkText=luminance>.56,
+  canvasBase=darkText?[244,246,250]:[16,19,26],
+  canvas=mixRgb(canvasBase,bg,alpha),
   surfaceTarget=darkText?[255,255,255]:[0,0,0],
   panel=mixRgb(bg,surfaceTarget,.05),
   panel2=mixRgb(bg,surfaceTarget,.05),
+  panelSolid=mixRgb(canvas,panel,alpha),
   text=state.themeAutoContrast?(darkText?'#172036':'#F3F6FC'):'#F3F6FC',
   muted=darkText?'#596277':'#B5BED0',
   accent=darkText?'#3158B8':'#91A8FF',
@@ -106,11 +109,13 @@ function applyTheme(){
   lunarBg=darkText?'rgba(101,68,141,.13)':'rgba(174,139,218,.22)',
   fontScale=state.eventFontSize/100;
  document.documentElement.dataset.theme=darkText?'light':'dark';
+ document.documentElement.style.setProperty('--canvas',`rgb(${canvas.join(',')})`);
  document.documentElement.style.setProperty('--bg',`rgba(${bg.join(',')},${alpha})`);
  document.documentElement.style.setProperty('--panel',`rgba(${panel.join(',')},${alpha})`);
  document.documentElement.style.setProperty('--panel2',`rgba(${panel2.join(',')},${alpha})`);
- document.documentElement.style.setProperty('--bg-solid',`rgb(${bg.join(',')})`);
- document.documentElement.style.setProperty('--panel-solid',`rgb(${panel.join(',')})`);
+ document.documentElement.style.setProperty('--bg-solid',`rgb(${canvas.join(',')})`);
+ document.documentElement.style.setProperty('--panel-solid',`rgb(${panelSolid.join(',')})`);
+ document.documentElement.style.setProperty('--panel2-solid',`rgb(${panelSolid.join(',')})`);
  document.documentElement.style.setProperty('--text',text);
  document.documentElement.style.setProperty('--muted',muted);
  document.documentElement.style.setProperty('--accent',accent);
@@ -135,7 +140,7 @@ function applyTheme(){
  document.body.classList.toggle('hide-weekends',!state.showWeekends)
 }
 let deferredRenderFrame=0;
-function render(){applyTheme();document.body.dataset.calendarView=currentView;document.body.dataset.currentWeekday=currentDate.getDay();$$('#viewTabs button').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));const monthHeader=$('.week-header');const showMonthHeader=currentView==='month'&&!labelPageActive&&!searchPageActive;if(monthHeader){monthHeader.classList.toggle('hidden',!showMonthHeader);monthHeader.style.display=showMonthHeader?'grid':'none'}$('#calendarNavBtn').classList.toggle('active',!labelPageActive&&!searchPageActive);$('#searchNavBtn').classList.toggle('active',searchPageActive);renderLabels();renderSearchLabelBand();renderCalendar();cancelAnimationFrame(deferredRenderFrame);deferredRenderFrame=requestAnimationFrame(()=>{renderBulkPalette();renderWidget();renderSettings();renderMobileHome();renderTasks();renderGoogleStatus();scheduleLocalNotifications();save()})}
+function render(options={}){const persist=options.persist!==false;applyTheme();document.body.dataset.calendarView=currentView;document.body.dataset.currentWeekday=currentDate.getDay();$$('#viewTabs button').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));const monthHeader=$('.week-header');const showMonthHeader=currentView==='month'&&!labelPageActive&&!searchPageActive;if(monthHeader){monthHeader.classList.toggle('hidden',!showMonthHeader);monthHeader.style.display=showMonthHeader?'grid':'none'}$('#calendarNavBtn').classList.toggle('active',!labelPageActive&&!searchPageActive);$('#searchNavBtn').classList.toggle('active',searchPageActive);renderLabels();renderSearchLabelBand();renderCalendar();cancelAnimationFrame(deferredRenderFrame);deferredRenderFrame=requestAnimationFrame(()=>{renderBulkPalette();renderWidget();renderSettings();renderMobileHome();renderTasks();renderGoogleStatus();scheduleLocalNotifications();if(persist)save()})}
 function updateLabelSelectDot(){const label=state.labels.find(item=>item.id===$('#labelSelect').value)||state.labels[0];if($('#labelSelectDot'))$('#labelSelectDot').style.background=label?.color||'transparent';if($('#labelSelectText'))$('#labelSelectText').textContent=label?.name||'라벨 선택';$$('[data-label-option]').forEach(option=>option.classList.toggle('selected',option.dataset.labelOption===label?.id))}
 function renamedLabels(){return state.labels.filter(l=>!state.hiddenLabels.includes(l.id)&&(l.id==='노랑-5'||l.name.trim()!==l.id.replace('-',' ')))}
 function filterSidebarLabel(id){sidebarLabelFilter='';labelPageActive=false;searchPageActive=true;searchField='label';selectedSearchLabelIds=new Set([id]);selectedSearchIds.clear();render();toast(`${labelOf(id).name} 전체 일정을 표시합니다`)}
@@ -283,7 +288,7 @@ async function initializeCloud(){
    const persistedRemote=structuredClone(state);
    if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persistedRemote[key]=structuredClone(themePreviewSnapshot[key]));
    localStorage.setItem(STORE,JSON.stringify(persistedRemote));
-   render();
+   render({persist:false});
   });
   cloudReady=!!result.configured;renderAccount(result.user||null);
   if(result.providerToken){googleAccessToken=result.providerToken;googleTokenExpiresAt=Date.now()+50*60*1000;state.googleSetupComplete=true;renderGoogleStatus()}
@@ -332,9 +337,4 @@ bindThemePreviewControls();
 if(systemThemeMedia.addEventListener)systemThemeMedia.addEventListener('change',handleSystemThemeChange);else systemThemeMedia.addListener(handleSystemThemeChange);
 $('#labelSelectButton').addEventListener('click',()=>{const open=!$('#labelOptions').classList.contains('hidden');$('#labelSelectButton').setAttribute('aria-expanded',String(open));if(open)$('#suggestions').classList.add('hidden')});
 $('#labelOptions').addEventListener('click',e=>{if(e.target.closest('[data-label-option]'))$('#labelSelectButton').setAttribute('aria-expanded','false')});
-const applyThemeSurface=applyTheme;
-applyTheme=function(){
- applyThemeSurface();
- document.documentElement.style.setProperty('--canvas',document.documentElement.dataset.theme==='light'?'#F4F6FA':'#10131A');
-};
 initDraggablePopups();render();initializeCloud();
