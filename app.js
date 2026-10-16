@@ -84,8 +84,13 @@ function applyTheme(){
   target=brightness<50?[255,255,255]:[0,0,0],
   amount=brightness<50?(50-brightness)/58:(brightness-50)/68,
   selected=mixRgb(base,target,Math.min(.82,Math.max(0,amount))),
-  paleTone=mixRgb(selected,[255,255,255],.9),
-  canvas=mixRgb(paleTone,selected,toneStrength),
+  [selectedHue,selectedSaturation,selectedValue]=rgbToHsv(...selected),
+  paleSaturation=selectedSaturation<.12?selectedSaturation:Math.max(.16,selectedSaturation*.28),
+  canvas=hsvToRgb(
+   selectedHue,
+   paleSaturation+(selectedSaturation-paleSaturation)*toneStrength,
+   .98+(selectedValue-.98)*toneStrength
+  ).map(Math.round),
   luminance=(.2126*canvas[0]+.7152*canvas[1]+.0722*canvas[2])/255,
   darkText=luminance>.56,
   surfaceTarget=darkText?[255,255,255]:[0,0,0],
@@ -93,11 +98,10 @@ function applyTheme(){
   panel2=mixRgb(canvas,surfaceTarget,.1),
   text=state.themeAutoContrast?(darkText?'#172036':'#F3F6FC'):'#F3F6FC',
   muted=darkText?'#596277':'#B5BED0',
-  [backgroundHue,backgroundSaturation]=rgbToHsv(...selected),
   buttonRgb=state.themeAutoContrast
-   ?backgroundSaturation<.12
+   ?selectedSaturation<.12
     ?(darkText?[55,65,82]:[222,228,238])
-    :hsvToRgb(backgroundHue,Math.max(.5,Math.min(.82,backgroundSaturation)),darkText?.68:.94)
+    :hsvToRgb(selectedHue,Math.max(.5,Math.min(.82,selectedSaturation)),darkText?.68:.94)
    :rgbFromHex(darkText?'#3158B8':'#91A8FF'),
   buttonAccent=rgbToHex(...buttonRgb),
   buttonLuminance=(.2126*buttonRgb[0]+.7152*buttonRgb[1]+.0722*buttonRgb[2])/255,
@@ -271,7 +275,7 @@ function bind(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=13').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=14').catch(()=>{});
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
