@@ -231,6 +231,21 @@ window.addEventListener('my-calendar-auth-changed',event=>{const token=event.det
 bind();
 function bindThemePreviewControls(){
  const previewColor=(value,loadSavedBrightness=false)=>{const hex=normalizedHex(value);if(!hex)return false;const brightness=loadSavedBrightness?Number(state.themeBrightnessByColor?.[hex]??state.themeBrightness??55):Number(state.themeBrightness??55);state.themeColor=hex;state.themeBrightness=brightness;state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[hex]:brightness};state.themeFollowSystem=false;$('#themeFollowSystem').checked=false;$('#themeBrightness').value=brightness;$('#themeBrightnessValue').value=`${brightness}%`;applyTheme();renderThemeDetail(hex);renderThemeColorPalette();markThemePreviewDirty();return true};
+ const selectThemeFamily=button=>{
+  themePaletteFamily=button.dataset.themeFamily;
+  const colors=themePaletteFamilies[themePaletteFamily]||[];
+  const current=normalizedHex(state.themeColor);
+  const selected=colors.includes(current)?current:(colors[2]||colors[0]);
+  if(selected)previewColor(selected,true);
+  setThemeDetailOpen(true);
+ };
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('#themeFamilyTabs [data-theme-family]');
+  if(!button)return;
+  event.preventDefault();
+  event.stopPropagation();
+  selectThemeFamily(button);
+ },true);
  $('#themeColorPaletteGrid').onclick=event=>{const button=event.target.closest('[data-theme-base-color]');if(button)previewColor(button.dataset.themeBaseColor,true)};
  $('#themeHex').onchange=event=>{if(!previewColor(event.target.value)){event.target.value=state.themeColor;toast('HEX 색상은 #RRGGBB 형식으로 입력해 주세요')}};
  $('#themeHue').oninput=event=>{const[,s,v]=rgbToHsv(...rgbFromHex(state.themeColor));previewColor(rgbToHex(...hsvToRgb(+event.target.value,s,v)))};
