@@ -493,6 +493,17 @@ body{font-size:16px}
 #settingsDrawer .data-management-section>.setting-help{margin:8px 0 0}
 .agenda-row-marker{width:6px;height:6px;align-self:center;border-radius:50%;background:var(--muted);opacity:.65}
 
+/* Keep the settings drawer compact without crowding related controls. */
+#settingsDrawer .drawer-head{margin-bottom:8px}
+#settingsDrawer .settings-section{padding-top:11px;padding-bottom:11px}
+#settingsDrawer .settings-section.theme-builder{padding-top:14px;padding-bottom:14px;margin-bottom:6px}
+#settingsDrawer .auto-theme-row{padding:5px 0}
+#settingsDrawer .theme-builder .theme-setting-manager{margin:2px 0 6px!important;padding:2px 0 0!important}
+#settingsDrawer .theme-builder .saved-theme-title{margin-top:8px;margin-bottom:7px;padding-top:8px}
+#settingsDrawer .compact-range{gap:7px;margin-top:10px;margin-bottom:12px}
+#settingsDrawer .settings-compact-row{padding-top:11px;padding-bottom:11px}
+#settingsDrawer .data-management-section>.setting-help{margin-top:5px}
+
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
 #eventDrawer .event-title-input-row{grid-column:2;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
 #eventDrawer .event-title-input-row>input{width:100%;min-width:0;font-size:16px!important;font-weight:700;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none!important;padding:10px 8px}
