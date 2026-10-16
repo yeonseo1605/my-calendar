@@ -28,7 +28,13 @@ const seedEvents=[
  {id:'e7',title:'건강검진',date:'2026-10-30',start:'09:30',end:'11:00',labelId:'초록-3',address:'서울특별시 서초구',guests:'',reminder:'1일 전',notes:'',repeat:'none',seriesId:''}
 ];
 const defaults={themeColor:'#20242D',themeBrightness:55,themeOpacity:100,themeBrightnessByColor:{'#F8FAFC':18,'#090B10':82,'#D6B85A':48,'#5B4A86':64},themePresets:['#F8FAFC','#090B10','#D6B85A','#5B4A86'],themePresetNames:{'#F8FAFC':'화이트','#090B10':'블랙','#D6B85A':'노랑','#5B4A86':'보라'},recentLabelColors:['#3B82F6','#22C55E','#F97316','#EC4899','#A855F7','#FACC15'],themeAutoContrast:true,themeFollowSystem:false,eventStyle:'fill',eventFontSize:100,showWeekends:true,compactMode:false,current:'2026-10-01',googleClientId:GOOGLE_CLIENT_ID,googleLastSync:'',googleDeletedIds:[],googleSetupComplete:false,labels:defaultLabels(),events:seedEvents,hiddenLabels:[],tasks:[{id:'t1',title:'병원 예약 확인',due:'2026-10-14',labelId:'빨강-3',done:false},{id:'t2',title:'여행 준비물 정리',due:'2026-10-18',labelId:'초록-2',done:false},{id:'t3',title:'부모님께 전화',due:'2026-10-12',labelId:'보라-2',done:true}]};
-let state=load(), currentDate=new Date(`${state.current}T00:00:00`), sidebarLabelFilter=new URLSearchParams(location.search).get('label')||'', currentView=sidebarLabelFilter?'list':'month', labelPageActive=!!sidebarLabelFilter, searchPageActive=false, searchField='all', mobileActiveView='home', pendingAction=null, selectedSearchIds=new Set(), selectedSearchLabelIds=new Set();
+let state=load();
+if(!state.systemThemeDefaultOffV1){
+ state.themeFollowSystem=false;
+ state.systemThemeDefaultOffV1=true;
+ localStorage.setItem(STORE,JSON.stringify(state));
+}
+let currentDate=new Date(`${state.current}T00:00:00`), sidebarLabelFilter=new URLSearchParams(location.search).get('label')||'', currentView=sidebarLabelFilter?'list':'month', labelPageActive=!!sidebarLabelFilter, searchPageActive=false, searchField='all', mobileActiveView='home', pendingAction=null, selectedSearchIds=new Set(), selectedSearchLabelIds=new Set();
 let themePreviewSnapshot=null,themePreviewDirty=false;
 let labelManagementOpen=false;
 const themePreviewKeys=['themeColor','themeBrightness','themeOpacity','themeBrightnessByColor','themeAutoContrast','themeFollowSystem'];
@@ -206,6 +212,10 @@ async function initializeCloud(){
  try{
   const result=await window.MyCalendarCloud.init(async remote=>{
    state={...defaults,...remote};
+   if(!state.systemThemeDefaultOffV1){
+    state.themeFollowSystem=false;
+    state.systemThemeDefaultOffV1=true;
+   }
    currentDate=parseDate(state.current||defaults.current);
    localStorage.setItem(STORE,JSON.stringify(state));
    render();
