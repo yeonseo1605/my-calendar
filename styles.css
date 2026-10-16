@@ -514,7 +514,7 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 #settingsDrawer,#settingsDrawer.user-positioned{background:var(--panel)!important;-webkit-backdrop-filter:blur(6px) saturate(.92)!important;backdrop-filter:blur(6px) saturate(.92)!important}
 #settingsDrawer .settings-section.theme-builder{background:transparent!important}
 .search-results-head,.search-table-head{background:var(--panel)!important}
-.settings-preview-actions{position:static;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;margin:8px 0 4px;padding:10px 0;background:transparent;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.settings-preview-actions{position:static;display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 0 4px;padding:10px 0;background:transparent;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .settings-preview-actions span{font-size:14px;font-weight:800;color:var(--muted)}
 .settings-preview-actions.is-dirty span{color:var(--accent)}
 .settings-preview-actions .btn{height:38px;padding:0 14px;border:1px solid var(--border);background:var(--panel-solid);color:var(--text)}
