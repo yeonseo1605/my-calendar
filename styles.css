@@ -555,6 +555,24 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .search-filter-row .period-all,.search-filter-row .period-all.active{background:var(--panel-solid)!important;border-color:var(--accent)!important;color:var(--accent)!important}
 #settingsDrawer .btn.secondary,#settingsDrawer .import-label{background:var(--panel-solid)!important;border:1px solid var(--border)!important;color:var(--accent)!important}
 
+/* Settings utility buttons follow the selected surface with only 5% contrast. */
+#settingsDrawer .btn.secondary,
+#settingsDrawer .import-label,
+#settingsDrawer #cancelThemePreview,
+#settingsDrawer #cancelThemePresetAdd{
+  background:color-mix(in srgb,var(--text) 5%,var(--panel))!important;
+  border:1px solid var(--border)!important;
+  color:var(--text)!important;
+  box-shadow:none!important
+}
+#settingsDrawer .btn.secondary:hover,
+#settingsDrawer .import-label:hover,
+#settingsDrawer #cancelThemePreview:hover,
+#settingsDrawer #cancelThemePresetAdd:hover{
+  background:color-mix(in srgb,var(--text) 8%,var(--panel))!important;
+  border-color:color-mix(in srgb,var(--text) 18%,var(--panel))!important
+}
+
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
 #eventDrawer .event-title-input-row{grid-column:2;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
 #eventDrawer .event-title-input-row>input{width:100%;min-width:0;font-size:16px!important;font-weight:700;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none!important;padding:10px 8px}
