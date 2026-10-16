@@ -554,28 +554,6 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .theme-builder .saved-theme-head .theme-setting-actions .btn{padding:0 7px;font-size:12px}
 }
 
-/* 빠른 필터와 설정의 보조 버튼도 현재 배경 계열을 사용한다. */
-.search-filter-row .period-all,.search-filter-row .period-all.active{background:var(--panel-solid)!important;border-color:var(--accent)!important;color:var(--accent)!important}
-#settingsDrawer .btn.secondary,#settingsDrawer .import-label{background:var(--panel-solid)!important;border:1px solid var(--border)!important;color:var(--accent)!important}
-
-/* Settings utility buttons follow the selected surface with only 5% contrast. */
-#settingsDrawer .btn.secondary,
-#settingsDrawer .import-label,
-#settingsDrawer #cancelThemePreview,
-#settingsDrawer #cancelThemePresetAdd{
-  background:color-mix(in srgb,var(--text) 5%,var(--panel))!important;
-  border:1px solid var(--border)!important;
-  color:var(--text)!important;
-  box-shadow:none!important
-}
-#settingsDrawer .btn.secondary:hover,
-#settingsDrawer .import-label:hover,
-#settingsDrawer #cancelThemePreview:hover,
-#settingsDrawer #cancelThemePresetAdd:hover{
-  background:color-mix(in srgb,var(--text) 8%,var(--panel))!important;
-  border-color:color-mix(in srgb,var(--text) 18%,var(--panel))!important
-}
-
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
 #eventDrawer .event-title-input-row{grid-column:2;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
 #eventDrawer .event-title-input-row>input{width:100%;min-width:0;font-size:16px!important;font-weight:700;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none!important;padding:10px 8px}
@@ -605,51 +583,48 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .day-cell.selected .lunar-date,.day-cell.today .lunar-date{background:var(--lunar-bg)!important;color:var(--lunar-text)!important}
 .theme-color-workbench{display:grid;gap:12px;margin-bottom:10px}.theme-color-block{padding:14px;border:1px solid var(--border);border-radius:13px;background:var(--panel2)}.theme-color-block h4{margin:0 0 12px;font-size:15px}.theme-family-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}.theme-family-tabs button{height:36px;padding:0 5px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:12px;font-weight:750;cursor:pointer}.theme-family-tabs button.active{border-color:var(--accent);background:var(--accent);color:#fff}.theme-color-workbench .theme-color-palette-grid{display:grid;grid-template-columns:repeat(5,44px);justify-content:space-between;gap:12px 16px;margin:0}.theme-color-workbench .theme-color-palette-grid button{width:44px;height:44px;aspect-ratio:1;border:2px solid color-mix(in srgb,var(--text) 12%,transparent);border-radius:50%;clip-path:none;background:var(--palette-color);box-shadow:none}.theme-color-workbench .theme-color-palette-grid button.active{border-color:var(--panel);outline:3px solid var(--accent);outline-offset:2px}.theme-detail-block{padding-bottom:16px}.theme-sv-picker{--picker-hue:45;position:relative;width:100%;height:190px;border:1px solid var(--border);border-radius:10px;background:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,transparent),hsl(var(--picker-hue) 100% 50%);cursor:crosshair;touch-action:none}.theme-sv-picker i{position:absolute;width:18px;height:18px;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #111;transform:translate(-50%,-50%);pointer-events:none}.theme-hue-row{display:grid;grid-template-columns:42px 1fr;align-items:center;gap:10px;margin-top:10px}.theme-hue-row button{width:42px;height:38px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--text);font-size:24px;cursor:pointer}.theme-hue-row input[type="range"]{height:18px;margin:0;border-radius:10px;background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);appearance:none;accent-color:transparent}.theme-hue-row input[type="range"]::-webkit-slider-thumb{width:18px;height:18px;border:2px solid #fff;border-radius:50%;background:transparent;box-shadow:0 0 0 1px #333;appearance:none}.theme-rgb-row{display:grid;grid-template-columns:repeat(3,1fr) 1.35fr;gap:8px;margin-top:10px}.theme-rgb-row label{display:grid;gap:5px;text-align:center;color:var(--muted);font-size:11px}.theme-rgb-row input{min-width:0;height:40px;padding:0 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel);text-align:center;font-weight:700}.theme-rgb-row>#themeHex{text-align:center;text-transform:uppercase}.theme-preset-save{width:100%;margin-bottom:10px}@media(max-width:560px){.theme-family-tabs{grid-template-columns:repeat(3,1fr)}.theme-color-workbench .theme-color-palette-grid{grid-template-columns:repeat(5,36px)}.theme-color-workbench .theme-color-palette-grid button{width:36px;height:36px}.theme-sv-picker{height:160px}.theme-rgb-row{grid-template-columns:repeat(3,1fr)}.theme-rgb-row>#themeHex{grid-column:1/-1}}
 .display-setting-row{display:flex;align-items:center;gap:12px}.display-setting-row h3{flex:none;margin:0!important}.display-option-icons{display:flex;gap:7px}.display-option-icons label{display:block;cursor:pointer}.display-option-icons input{position:absolute;opacity:0;pointer-events:none}.display-option-icons span{width:44px;height:40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text)}.display-option-icons label:has(input:checked) span{border-color:var(--accent);background:var(--accent2);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}.display-option-icons svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.display-option-icons .style-accent{stroke:var(--accent);stroke-width:3}.display-option-icons label:last-child svg{color:#ef4e5e}.event-style-preview{min-width:0;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:750}.display-setting-row:has(input[value="fill"]:checked) .event-style-preview{padding:7px 10px;border-radius:6px;background:#dbe6ff;color:#243c74}.display-setting-row:has(input[value="marker"]:checked) .event-style-preview{padding:6px 0 6px 10px;border-left:4px solid var(--accent)}.display-setting-row:has(input[value="text"]:checked) .event-style-preview{color:#ef4e5e}.system-theme-switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 0;font-size:13px;font-weight:750;cursor:pointer}.system-theme-switch input{position:absolute;opacity:0;pointer-events:none}.system-theme-switch i{position:relative;width:44px;height:24px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);transition:.18s}.system-theme-switch i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:.18s}.system-theme-switch input:checked+i{background:var(--accent);border-color:var(--accent)}.system-theme-switch input:checked+i::after{left:23px;background:#fff}.theme-rgb-row label{height:40px;display:grid;grid-template-columns:32px 1fr;align-items:center;gap:0;border:1px solid var(--border);border-radius:8px;background:var(--panel);overflow:hidden}.theme-rgb-row label input{height:38px;border:0;border-radius:0;background:transparent}.rgb-prefix{height:26px;margin-left:5px;display:grid;place-items:center;border-radius:7px;font-size:12px;font-weight:800}.rgb-prefix.red{color:#ff8d9d;background:rgba(239,78,94,.22)}.rgb-prefix.green{color:#63dda0;background:rgba(34,197,94,.2)}.rgb-prefix.blue{color:#8fb4ff;background:rgba(59,130,246,.22)}@media(max-width:560px){.display-setting-row{gap:8px}.display-option-icons{gap:5px}.display-option-icons span{width:38px}.event-style-preview{font-size:13px}.theme-rgb-row{grid-template-columns:repeat(3,minmax(0,1fr)) 1.3fr}.theme-rgb-row>#themeHex{grid-column:auto}.rgb-prefix{margin-left:3px}}
-/* Unified button hierarchy: primary, selected, secondary, destructive. */
-.btn.primary,.create-btn,.task-form>.btn.primary,.column-filter-actions button:first-child{
-  border:1px solid var(--accent)!important;background:var(--accent)!important;color:#fff!important;box-shadow:none!important
+/* Unified glass button system. Functional color pickers keep their literal colors. */
+:is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"],.column-filter-actions button:first-child){
+  border:1px solid color-mix(in srgb,var(--button-accent) 64%,#fff 24%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 86%,#fff),color-mix(in srgb,var(--button-accent) 72%,transparent))!important;
+  color:var(--button-ink)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 48%,transparent),0 7px 18px color-mix(in srgb,var(--button-accent) 24%,transparent)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(1.25);
+  backdrop-filter:blur(12px) saturate(1.25)
 }
-[data-theme="dark"] .btn.primary,[data-theme="dark"] .create-btn,[data-theme="dark"] .task-form>.btn.primary,[data-theme="dark"] .column-filter-actions button:first-child{color:#172036!important}
-.btn.primary:hover,.create-btn:hover,.task-form>.btn.primary:hover,.column-filter-actions button:first-child:hover{filter:brightness(1.06)}
-.btn.secondary,.btn.ghost,.import-label,
-#settingsDrawer .btn.secondary,#settingsDrawer .import-label,
-.input-action .btn.secondary,.settings-buttons .btn.secondary{
-  border:1px solid var(--border)!important;background:color-mix(in srgb,var(--text) 5%,var(--panel))!important;color:var(--text)!important;box-shadow:none!important
+:is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"],.column-filter-actions button:first-child):hover{
+  filter:brightness(1.05);transform:translateY(-1px)
 }
-.btn.secondary:hover,.btn.ghost:hover,.import-label:hover,.input-action .btn.secondary:hover{background:color-mix(in srgb,var(--text) 9%,var(--panel))!important}
-.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,
-.search-filter-row button.active,.today-segmented button,.bulk-editor-panel .bulk-color-palette button.active{
-  border-color:var(--accent)!important;background:var(--accent2)!important;color:var(--accent)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent)!important
+:is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,.weekday-pills button.active,.picker-grid button.selected,.search-label-pill.active,.label-option.selected,#rangeTodayBtn.active){
+  border:1px solid color-mix(in srgb,var(--button-accent) 72%,#fff 18%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 23%,var(--glass-bg)),color-mix(in srgb,var(--button-accent) 12%,transparent))!important;
+  color:var(--button-accent)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 42%,transparent),0 4px 13px color-mix(in srgb,var(--button-accent) 16%,transparent)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(1.25);
+  backdrop-filter:blur(12px) saturate(1.25)
 }
-.btn.danger,.btn.danger-outline{border:1px solid #ef5265!important;background:transparent!important;color:#ef5265!important;box-shadow:none!important}
-.btn.danger:hover,.btn.danger-outline:hover{background:color-mix(in srgb,#ef5265 12%,var(--panel))!important}
-button:disabled,.btn:disabled{opacity:.45!important;cursor:not-allowed!important;filter:none!important}
-
-/* Final button system — this block intentionally wins over legacy component colors. */
-:is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"]){
-  border:1px solid var(--accent)!important;
-  background:var(--accent)!important;
-  color:#fff!important;
-  box-shadow:none!important
-}
-[data-theme="dark"] :is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"]){color:#172036!important}
-:is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,#rangeTodayBtn.active){
-  border:1px solid var(--accent)!important;
-  background:var(--accent2)!important;
-  color:var(--accent)!important;
-  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent)!important
-}
-:is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel){
-  border:1px solid var(--border)!important;
-  background:color-mix(in srgb,var(--text) 5%,var(--panel))!important;
+:is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.search-filter-row button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel,.scope-buttons button){
+  border:1px solid var(--glass-border)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,#fff 9%,var(--glass-bg)),var(--glass-bg))!important;
   color:var(--text)!important;
-  box-shadow:none!important
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 34%,transparent),0 5px 15px color-mix(in srgb,#000 11%,transparent)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(1.2);
+  backdrop-filter:blur(12px) saturate(1.2)
+}
+:is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.search-filter-row button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel,.scope-buttons button):hover{
+  border-color:color-mix(in srgb,var(--button-accent) 45%,var(--glass-border))!important;
+  background:var(--glass-hover)!important
 }
 :is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset){
-  border:1px solid #ef5265!important;
-  background:transparent!important;
+  border:1px solid color-mix(in srgb,#ef5265 72%,#fff 16%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,#ef5265 14%,var(--glass-bg)),color-mix(in srgb,#ef5265 8%,transparent))!important;
   color:#ef5265!important;
-  box-shadow:none!important
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 35%,transparent),0 5px 15px color-mix(in srgb,#ef5265 13%,transparent)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(1.2);
+  backdrop-filter:blur(12px) saturate(1.2)
 }
-:is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset):hover{background:color-mix(in srgb,#ef5265 12%,var(--panel))!important}
-:is(button,.btn):disabled{opacity:.45!important;cursor:not-allowed!important;filter:none!important;box-shadow:none!important}
+:is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset):hover{background:color-mix(in srgb,#ef5265 18%,var(--glass-bg))!important}
+.auto-theme-row>.check-row,.auto-theme-row>.system-theme-switch{margin:0;padding:0;color:var(--text);font-size:13px;font-weight:750;line-height:1.3;letter-spacing:0}
+.auto-theme-row .check-row input{accent-color:var(--button-accent)}
+.system-theme-switch input:checked+i{background:var(--button-accent);border-color:var(--button-accent)}
+:is(button,.btn):disabled{opacity:.42!important;cursor:not-allowed!important;filter:grayscale(.15)!important;transform:none!important;box-shadow:none!important}
