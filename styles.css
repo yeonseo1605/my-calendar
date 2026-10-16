@@ -624,3 +624,32 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .btn.danger,.btn.danger-outline{border:1px solid #ef5265!important;background:transparent!important;color:#ef5265!important;box-shadow:none!important}
 .btn.danger:hover,.btn.danger-outline:hover{background:color-mix(in srgb,#ef5265 12%,var(--panel))!important}
 button:disabled,.btn:disabled{opacity:.45!important;cursor:not-allowed!important;filter:none!important}
+
+/* Final button system — this block intentionally wins over legacy component colors. */
+:is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"]){
+  border:1px solid var(--accent)!important;
+  background:var(--accent)!important;
+  color:#fff!important;
+  box-shadow:none!important
+}
+[data-theme="dark"] :is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"]){color:#172036!important}
+:is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,#rangeTodayBtn.active){
+  border:1px solid var(--accent)!important;
+  background:var(--accent2)!important;
+  color:var(--accent)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent)!important
+}
+:is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel){
+  border:1px solid var(--border)!important;
+  background:color-mix(in srgb,var(--text) 5%,var(--panel))!important;
+  color:var(--text)!important;
+  box-shadow:none!important
+}
+:is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset){
+  border:1px solid #ef5265!important;
+  background:transparent!important;
+  color:#ef5265!important;
+  box-shadow:none!important
+}
+:is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset):hover{background:color-mix(in srgb,#ef5265 12%,var(--panel))!important}
+:is(button,.btn):disabled{opacity:.45!important;cursor:not-allowed!important;filter:none!important;box-shadow:none!important}
