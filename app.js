@@ -241,4 +241,6 @@ bindThemePreviewControls();
 if(systemThemeMedia.addEventListener)systemThemeMedia.addEventListener('change',handleSystemThemeChange);else systemThemeMedia.addListener(handleSystemThemeChange);
 $('#labelSelectButton').addEventListener('click',()=>{const open=!$('#labelOptions').classList.contains('hidden');$('#labelSelectButton').setAttribute('aria-expanded',String(open));if(open)$('#suggestions').classList.add('hidden')});
 $('#labelOptions').addEventListener('click',e=>{if(e.target.closest('[data-label-option]'))$('#labelSelectButton').setAttribute('aria-expanded','false')});
+const applyThemeSurface=applyTheme;
+applyTheme=function(){applyThemeSurface();document.documentElement.style.setProperty('--canvas',document.documentElement.dataset.theme==='light'?'#F4F6FA':'#10131A')};
 initDraggablePopups();render();initializeCloud();
