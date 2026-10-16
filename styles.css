@@ -506,6 +506,17 @@ body{font-size:16px}
 #settingsDrawer .settings-section.theme-builder{padding-bottom:8px;margin-bottom:0}
 #settingsDrawer .font-size-setting{padding-top:6px}
 
+/* Theme changes are previewed first; all major surfaces share the selected opacity. */
+#settingsDrawer,#settingsDrawer.user-positioned{background:var(--panel)!important;-webkit-backdrop-filter:blur(14px) saturate(.9)!important;backdrop-filter:blur(14px) saturate(.9)!important}
+#settingsDrawer .settings-section.theme-builder{background:transparent!important}
+.search-results-head,.search-table-head{background:var(--panel)!important}
+.settings-preview-actions{position:sticky;z-index:25;top:-20px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;margin:0 0 4px;padding:8px 0;background:var(--panel);border-bottom:1px solid var(--border)}
+.settings-preview-actions span{font-size:14px;font-weight:800;color:var(--muted)}
+.settings-preview-actions.is-dirty span{color:var(--accent)}
+.settings-preview-actions .btn{height:38px;padding:0 14px}
+.settings-preview-actions .btn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:470px){.settings-preview-actions{top:-16px}.settings-preview-actions span{font-size:13px}.settings-preview-actions .btn{padding:0 10px}}
+
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
 #eventDrawer .event-title-input-row{grid-column:2;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
 #eventDrawer .event-title-input-row>input{width:100%;min-width:0;font-size:16px!important;font-weight:700;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none!important;padding:10px 8px}
