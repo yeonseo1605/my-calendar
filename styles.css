@@ -458,6 +458,13 @@ body{font-size:16px}
 /* Theme-aware text and icons in collapsible editors and bulk selection. */
 .new-label-toggle-arrow,.new-label-toggle-arrow:hover{color:var(--text)!important}
 .bulk-count{color:var(--text)!important}
+
+/* Balanced one-line automatic theme controls. */
+.auto-theme-row{display:flex;align-items:center;gap:16px;padding:10px 0}
+.auto-theme-row .check-row,.auto-theme-row .system-theme-switch{margin:0;padding:0;color:var(--text)}
+.auto-theme-row .system-theme-switch{justify-content:flex-start}
+.auto-theme-divider{width:1px;height:28px;flex:none;background:var(--border)}
+@media(max-width:470px){.auto-theme-row{gap:9px}.auto-theme-row .check-row,.auto-theme-row .system-theme-switch{font-size:12px}.auto-theme-row .system-theme-switch{gap:7px}.auto-theme-divider{height:24px}}
 .theme-builder .theme-setting-manager h4{margin:0;white-space:nowrap}
 .theme-builder .theme-setting-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-width:0}
 .theme-builder .theme-setting-actions .btn{min-width:0;height:42px;padding:0 8px;font-size:15px;font-weight:800;white-space:nowrap}
