@@ -522,6 +522,35 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .settings-preview-actions .btn:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:470px){.settings-preview-actions{top:-16px}.settings-preview-actions span{font-size:13px}.settings-preview-actions .btn{padding:0 10px}}
 
+/* Group each set of theme actions with the heading it controls. */
+.theme-builder .theme-setting-manager .settings-preview-actions{
+  min-width:0;margin:0;padding:0;border:0;background:transparent
+}
+.theme-builder .theme-setting-manager .settings-preview-actions .btn{
+  min-width:58px;height:40px;padding:0 12px;font-size:14px;font-weight:800
+}
+.theme-builder .saved-theme-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;
+  margin:8px 0 7px;padding-top:8px;border-top:1px solid var(--border)
+}
+.theme-builder .saved-theme-head .saved-theme-title{
+  margin:0!important;padding:0!important;border:0!important;white-space:nowrap
+}
+.theme-builder .saved-theme-head .theme-setting-actions{
+  display:flex;justify-content:flex-end;gap:7px;min-width:0
+}
+.theme-builder .saved-theme-head .theme-setting-actions .btn{
+  width:auto;min-width:0;height:38px;padding:0 10px;font-size:13px;font-weight:800;white-space:nowrap
+}
+@media(max-width:470px){
+  .theme-builder .theme-setting-manager{grid-template-columns:auto minmax(0,1fr)}
+  .theme-builder .theme-setting-manager .settings-preview-actions{gap:5px}
+  .theme-builder .theme-setting-manager .settings-preview-actions .btn{min-width:50px;padding:0 8px}
+  .theme-builder .saved-theme-head{gap:6px}
+  .theme-builder .saved-theme-head .theme-setting-actions{gap:5px}
+  .theme-builder .saved-theme-head .theme-setting-actions .btn{padding:0 7px;font-size:12px}
+}
+
 /* 빠른 필터와 설정의 보조 버튼도 현재 배경 계열을 사용한다. */
 .search-filter-row .period-all,.search-filter-row .period-all.active{background:var(--panel-solid)!important;border-color:var(--accent)!important;color:var(--accent)!important}
 #settingsDrawer .btn.secondary,#settingsDrawer .import-label{background:var(--panel-solid)!important;border:1px solid var(--border)!important;color:var(--accent)!important}
