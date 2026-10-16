@@ -511,7 +511,10 @@ body{font-size:16px;background:var(--canvas,#f4f6fa)}
 #settingsDrawer .font-size-setting{padding-top:6px}
 
 /* Theme changes are previewed first; all major surfaces share the selected opacity. */
-#settingsDrawer,#settingsDrawer.user-positioned{background:var(--panel)!important;-webkit-backdrop-filter:blur(6px) saturate(.92)!important;backdrop-filter:blur(6px) saturate(.92)!important}
+#settingsDrawer,#settingsDrawer.user-positioned,
+#eventDrawer,#eventDrawer.user-positioned,
+#tasksDrawer,#tasksDrawer.user-positioned,
+#bulkEditor,#bulkEditor.user-positioned{background:var(--panel)!important;-webkit-backdrop-filter:blur(6px) saturate(.92)!important;backdrop-filter:blur(6px) saturate(.92)!important;color:var(--text)!important}
 #settingsDrawer .settings-section.theme-builder{background:transparent!important}
 .search-results-head,.search-table-head{background:var(--panel)!important}
 .settings-preview-actions{position:static;display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 0 4px;padding:10px 0;background:transparent;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
