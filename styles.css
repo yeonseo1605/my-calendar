@@ -585,43 +585,51 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .display-setting-row{display:flex;align-items:center;gap:12px}.display-setting-row h3{flex:none;margin:0!important}.display-option-icons{display:flex;gap:7px}.display-option-icons label{display:block;cursor:pointer}.display-option-icons input{position:absolute;opacity:0;pointer-events:none}.display-option-icons span{width:44px;height:40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text)}.display-option-icons label:has(input:checked) span{border-color:var(--accent);background:var(--accent2);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}.display-option-icons svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.display-option-icons .style-accent{stroke:var(--accent);stroke-width:3}.display-option-icons label:last-child svg{color:#ef4e5e}.event-style-preview{min-width:0;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:750}.display-setting-row:has(input[value="fill"]:checked) .event-style-preview{padding:7px 10px;border-radius:6px;background:#dbe6ff;color:#243c74}.display-setting-row:has(input[value="marker"]:checked) .event-style-preview{padding:6px 0 6px 10px;border-left:4px solid var(--accent)}.display-setting-row:has(input[value="text"]:checked) .event-style-preview{color:#ef4e5e}.system-theme-switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 0;font-size:13px;font-weight:750;cursor:pointer}.system-theme-switch input{position:absolute;opacity:0;pointer-events:none}.system-theme-switch i{position:relative;width:44px;height:24px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);transition:.18s}.system-theme-switch i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:.18s}.system-theme-switch input:checked+i{background:var(--accent);border-color:var(--accent)}.system-theme-switch input:checked+i::after{left:23px;background:#fff}.theme-rgb-row label{height:40px;display:grid;grid-template-columns:32px 1fr;align-items:center;gap:0;border:1px solid var(--border);border-radius:8px;background:var(--panel);overflow:hidden}.theme-rgb-row label input{height:38px;border:0;border-radius:0;background:transparent}.rgb-prefix{height:26px;margin-left:5px;display:grid;place-items:center;border-radius:7px;font-size:12px;font-weight:800}.rgb-prefix.red{color:#ff8d9d;background:rgba(239,78,94,.22)}.rgb-prefix.green{color:#63dda0;background:rgba(34,197,94,.2)}.rgb-prefix.blue{color:#8fb4ff;background:rgba(59,130,246,.22)}@media(max-width:560px){.display-setting-row{gap:8px}.display-option-icons{gap:5px}.display-option-icons span{width:38px}.event-style-preview{font-size:13px}.theme-rgb-row{grid-template-columns:repeat(3,minmax(0,1fr)) 1.3fr}.theme-rgb-row>#themeHex{grid-column:auto}.rgb-prefix{margin-left:3px}}
 /* Unified glass button system. Functional color pickers keep their literal colors. */
 :is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"],.column-filter-actions button:first-child){
-  border:1px solid color-mix(in srgb,var(--button-accent) 64%,#fff 24%)!important;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 86%,#fff),color-mix(in srgb,var(--button-accent) 72%,transparent))!important;
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid color-mix(in srgb,var(--button-accent) 52%,#fff 28%)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,#fff 30%,transparent),transparent 48%),linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 72%,transparent),color-mix(in srgb,var(--button-accent) 46%,transparent))!important;
   color:var(--button-ink)!important;
-  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 48%,transparent),0 7px 18px color-mix(in srgb,var(--button-accent) 24%,transparent)!important;
-  -webkit-backdrop-filter:blur(12px) saturate(1.25);
-  backdrop-filter:blur(12px) saturate(1.25)
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 62%,transparent),inset 0 -1px 0 color-mix(in srgb,#fff 12%,transparent),0 8px 22px color-mix(in srgb,var(--button-accent) 22%,var(--glass-shadow))!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  backdrop-filter:blur(18px) saturate(1.4);
+  transition:border-color .16s,background .16s,box-shadow .16s,filter .16s,transform .16s
 }
 :is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"],.column-filter-actions button:first-child):hover{
   filter:brightness(1.05);transform:translateY(-1px)
 }
 :is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,.weekday-pills button.active,.picker-grid button.selected,.search-label-pill.active,.label-option.selected,#rangeTodayBtn.active){
-  border:1px solid color-mix(in srgb,var(--button-accent) 72%,#fff 18%)!important;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 23%,var(--glass-bg)),color-mix(in srgb,var(--button-accent) 12%,transparent))!important;
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid color-mix(in srgb,var(--button-accent) 58%,#fff 22%)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,#fff 25%,transparent),transparent 50%),linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 28%,var(--glass-bg)),color-mix(in srgb,var(--button-accent) 12%,transparent))!important;
   color:var(--button-accent)!important;
-  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 42%,transparent),0 4px 13px color-mix(in srgb,var(--button-accent) 16%,transparent)!important;
-  -webkit-backdrop-filter:blur(12px) saturate(1.25);
-  backdrop-filter:blur(12px) saturate(1.25)
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 58%,transparent),inset 0 -1px 0 color-mix(in srgb,#fff 10%,transparent),0 6px 18px color-mix(in srgb,var(--button-accent) 17%,var(--glass-shadow))!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.35);
+  backdrop-filter:blur(18px) saturate(1.35);
+  transition:border-color .16s,background .16s,box-shadow .16s,filter .16s,transform .16s
 }
 :is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.search-filter-row button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel,.scope-buttons button){
+  position:relative;overflow:hidden;isolation:isolate;
   border:1px solid var(--glass-border)!important;
-  background:linear-gradient(145deg,color-mix(in srgb,#fff 9%,var(--glass-bg)),var(--glass-bg))!important;
+  background:linear-gradient(180deg,var(--glass-highlight),transparent 48%),var(--glass-bg)!important;
   color:var(--text)!important;
-  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 34%,transparent),0 5px 15px color-mix(in srgb,#000 11%,transparent)!important;
-  -webkit-backdrop-filter:blur(12px) saturate(1.2);
-  backdrop-filter:blur(12px) saturate(1.2)
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 52%,transparent),inset 0 -1px 0 color-mix(in srgb,#fff 8%,transparent),0 7px 20px var(--glass-shadow)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.35);
+  backdrop-filter:blur(18px) saturate(1.35);
+  transition:border-color .16s,background .16s,box-shadow .16s,filter .16s,transform .16s
 }
 :is(.btn.secondary,.btn.ghost,.import-label,#rangeTodayBtn,.segmented button:not(.active),.search-date-filters button:not(.active),.search-filter-chips button:not(.active),.search-filter-row button:not(.active),.input-action .btn.secondary,.settings-buttons .btn.secondary,#cancelThemePreview,#cancelThemePresetAdd,#cancelNewLabel,.scope-buttons button):hover{
   border-color:color-mix(in srgb,var(--button-accent) 45%,var(--glass-border))!important;
   background:var(--glass-hover)!important
 }
 :is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset){
+  position:relative;overflow:hidden;isolation:isolate;
   border:1px solid color-mix(in srgb,#ef5265 72%,#fff 16%)!important;
-  background:linear-gradient(145deg,color-mix(in srgb,#ef5265 14%,var(--glass-bg)),color-mix(in srgb,#ef5265 8%,transparent))!important;
+  background:linear-gradient(180deg,color-mix(in srgb,#fff 22%,transparent),transparent 50%),linear-gradient(145deg,color-mix(in srgb,#ef5265 18%,var(--glass-bg)),color-mix(in srgb,#ef5265 8%,transparent))!important;
   color:#ef5265!important;
-  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 35%,transparent),0 5px 15px color-mix(in srgb,#ef5265 13%,transparent)!important;
-  -webkit-backdrop-filter:blur(12px) saturate(1.2);
-  backdrop-filter:blur(12px) saturate(1.2)
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 48%,transparent),inset 0 -1px 0 color-mix(in srgb,#fff 8%,transparent),0 7px 20px color-mix(in srgb,#ef5265 12%,var(--glass-shadow))!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.35);
+  backdrop-filter:blur(18px) saturate(1.35);
+  transition:border-color .16s,background .16s,box-shadow .16s,filter .16s,transform .16s
 }
 :is(.btn.danger,.btn.danger-outline,#bulkDeleteBtn,#deleteEventBtn,#replaceThemePreset):hover{background:color-mix(in srgb,#ef5265 18%,var(--glass-bg))!important}
 .auto-theme-row>.check-row,.auto-theme-row>.system-theme-switch{margin:0;padding:0;color:var(--text);font-size:13px;font-weight:750;line-height:1.3;letter-spacing:0}

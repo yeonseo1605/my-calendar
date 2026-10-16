@@ -123,9 +123,11 @@ function applyTheme(){
  document.documentElement.style.setProperty('--button-accent',buttonAccent);
  document.documentElement.style.setProperty('--button-accent-soft',`color-mix(in srgb,${buttonAccent} 18%,rgb(${panel.join(',')}))`);
  document.documentElement.style.setProperty('--button-ink',buttonInk);
- document.documentElement.style.setProperty('--glass-bg',`color-mix(in srgb,rgb(${panel.join(',')}) 70%,transparent)`);
- document.documentElement.style.setProperty('--glass-hover',`color-mix(in srgb,rgb(${panel.join(',')}) 82%,transparent)`);
- document.documentElement.style.setProperty('--glass-border',`color-mix(in srgb,${text} 18%,transparent)`);
+ document.documentElement.style.setProperty('--glass-bg',darkText?'rgba(255,255,255,.48)':'rgba(255,255,255,.09)');
+ document.documentElement.style.setProperty('--glass-hover',darkText?'rgba(255,255,255,.68)':'rgba(255,255,255,.16)');
+ document.documentElement.style.setProperty('--glass-border',darkText?'rgba(23,32,54,.16)':'rgba(255,255,255,.24)');
+ document.documentElement.style.setProperty('--glass-highlight',darkText?'rgba(255,255,255,.76)':'rgba(255,255,255,.30)');
+ document.documentElement.style.setProperty('--glass-shadow',darkText?'rgba(23,32,54,.16)':'rgba(0,0,0,.34)');
  document.documentElement.style.setProperty('--icon',icon);
  document.documentElement.style.setProperty('--border',border);
  document.documentElement.style.setProperty('--lunar-text',lunarText);
