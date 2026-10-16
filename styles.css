@@ -503,6 +503,8 @@ body{font-size:16px}
 #settingsDrawer .compact-range{gap:7px;margin-top:10px;margin-bottom:12px}
 #settingsDrawer .settings-compact-row{padding-top:11px;padding-bottom:11px}
 #settingsDrawer .data-management-section>.setting-help{margin-top:5px}
+#settingsDrawer .settings-section.theme-builder{padding-bottom:8px;margin-bottom:0}
+#settingsDrawer .font-size-setting{padding-top:6px}
 
 /* 일정 제목 앞 라벨 시안 1: 색상점을 누르면 가로 라벨 목록 표시 */
 #eventDrawer .event-title-input-row{grid-column:2;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
