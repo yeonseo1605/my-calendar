@@ -597,7 +597,7 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 :is(.btn.primary,.create-btn,#detailSearchBtn,#bulkApplyBtn,#saveThemePreview,#saveThemePreset,#confirmThemePresetAdd,#googleConnectBtn,#closeInfoBtn,.task-form>button[type="submit"],#eventForm button[type="submit"],.column-filter-actions button:first-child):hover{
   filter:brightness(1.05);transform:translateY(-1px)
 }
-:is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,.weekday-pills button.active,.picker-grid button.selected,.search-label-pill.active,.label-option.selected,#rangeTodayBtn.active){
+:is(.segmented button.active,.search-filter-chips button.active,.search-date-filters button.active,.search-filter-row button.active,.search-filter-row .period-all.active,.display-option-icons label:has(input:checked) span,.bulk-color-palette button.active,.task-filter button.active,.weekday-pills button.active,.picker-grid button.selected,.search-label-pill.active,.label-option.selected,#rangeTodayBtn.active,.sidebar-nav button.active,.mobile-bottom button.active){
   position:relative;overflow:hidden;isolation:isolate;
   border:1px solid color-mix(in srgb,var(--button-accent) 58%,#fff 22%)!important;
   background:linear-gradient(180deg,color-mix(in srgb,#fff 25%,transparent),transparent 50%),linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 28%,var(--glass-bg)),color-mix(in srgb,var(--button-accent) 12%,transparent))!important;

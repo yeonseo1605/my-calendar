@@ -79,30 +79,30 @@ function applyTheme(){
  const hex=normalizedHex(state.themeColor)||defaults.themeColor,
   manual=Number(state.themeBrightnessByColor?.[hex]??state.themeBrightness??55),
   brightness=state.themeFollowSystem?(matchMedia('(prefers-color-scheme: dark)').matches?82:18):manual,
-  alpha=Math.max(0,Math.min(100,Number(state.themeOpacity??100)))/100,
+  toneStrength=Math.max(0,Math.min(100,Number(state.themeOpacity??100)))/100,
   base=rgbFromHex(hex),
   target=brightness<50?[255,255,255]:[0,0,0],
   amount=brightness<50?(50-brightness)/58:(brightness-50)/68,
-  bg=mixRgb(base,target,Math.min(.82,Math.max(0,amount))),
-  luminance=(.2126*bg[0]+.7152*bg[1]+.0722*bg[2])/255,
+  selected=mixRgb(base,target,Math.min(.82,Math.max(0,amount))),
+  paleTone=mixRgb(selected,[255,255,255],.9),
+  canvas=mixRgb(paleTone,selected,toneStrength),
+  luminance=(.2126*canvas[0]+.7152*canvas[1]+.0722*canvas[2])/255,
   darkText=luminance>.56,
-  canvasBase=darkText?[244,246,250]:[16,19,26],
-  canvas=mixRgb(canvasBase,bg,alpha),
   surfaceTarget=darkText?[255,255,255]:[0,0,0],
-  panel=mixRgb(bg,surfaceTarget,.05),
-  panel2=mixRgb(bg,surfaceTarget,.05),
-  panelSolid=mixRgb(canvas,panel,alpha),
+  panel=mixRgb(canvas,surfaceTarget,.05),
+  panel2=mixRgb(canvas,surfaceTarget,.1),
   text=state.themeAutoContrast?(darkText?'#172036':'#F3F6FC'):'#F3F6FC',
   muted=darkText?'#596277':'#B5BED0',
-  accent=darkText?'#3158B8':'#91A8FF',
-  [backgroundHue,backgroundSaturation]=rgbToHsv(...bg),
-  buttonHue=backgroundSaturation<.12?220:(backgroundHue+180)%360,
+  [backgroundHue,backgroundSaturation]=rgbToHsv(...selected),
   buttonRgb=state.themeAutoContrast
-   ?hsvToRgb(buttonHue,Math.max(.58,Math.min(.82,backgroundSaturation)),darkText?.68:.96)
+   ?backgroundSaturation<.12
+    ?(darkText?[55,65,82]:[222,228,238])
+    :hsvToRgb(backgroundHue,Math.max(.5,Math.min(.82,backgroundSaturation)),darkText?.68:.94)
    :rgbFromHex(darkText?'#3158B8':'#91A8FF'),
   buttonAccent=rgbToHex(...buttonRgb),
   buttonLuminance=(.2126*buttonRgb[0]+.7152*buttonRgb[1]+.0722*buttonRgb[2])/255,
   buttonInk=buttonLuminance>.61?'#172036':'#FFFFFF',
+  accent=buttonAccent,
   icon=darkText?'#334866':'#C0CDED',
   border=darkText?'rgba(23,32,54,.18)':'rgba(255,255,255,.14)',
   lunarText=darkText?'#65448D':'#DCCAF5',
@@ -110,22 +110,22 @@ function applyTheme(){
   fontScale=state.eventFontSize/100;
  document.documentElement.dataset.theme=darkText?'light':'dark';
  document.documentElement.style.setProperty('--canvas',`rgb(${canvas.join(',')})`);
- document.documentElement.style.setProperty('--bg',`rgba(${bg.join(',')},${alpha})`);
- document.documentElement.style.setProperty('--panel',`rgba(${panel.join(',')},${alpha})`);
- document.documentElement.style.setProperty('--panel2',`rgba(${panel2.join(',')},${alpha})`);
+ document.documentElement.style.setProperty('--bg',`rgb(${canvas.join(',')})`);
+ document.documentElement.style.setProperty('--panel',`rgb(${panel.join(',')})`);
+ document.documentElement.style.setProperty('--panel2',`rgb(${panel2.join(',')})`);
  document.documentElement.style.setProperty('--bg-solid',`rgb(${canvas.join(',')})`);
- document.documentElement.style.setProperty('--panel-solid',`rgb(${panelSolid.join(',')})`);
- document.documentElement.style.setProperty('--panel2-solid',`rgb(${panelSolid.join(',')})`);
+ document.documentElement.style.setProperty('--panel-solid',`rgb(${panel.join(',')})`);
+ document.documentElement.style.setProperty('--panel2-solid',`rgb(${panel2.join(',')})`);
  document.documentElement.style.setProperty('--text',text);
  document.documentElement.style.setProperty('--muted',muted);
  document.documentElement.style.setProperty('--accent',accent);
- document.documentElement.style.setProperty('--accent2',`color-mix(in srgb,${accent} 16%,rgb(${panel.join(',')}))`);
+ document.documentElement.style.setProperty('--accent2',`color-mix(in srgb,${accent} 18%,rgb(${panel.join(',')}))`);
  document.documentElement.style.setProperty('--button-accent',buttonAccent);
  document.documentElement.style.setProperty('--button-accent-soft',`color-mix(in srgb,${buttonAccent} 18%,rgb(${panel.join(',')}))`);
  document.documentElement.style.setProperty('--button-ink',buttonInk);
- document.documentElement.style.setProperty('--glass-bg',darkText?'rgba(255,255,255,.48)':'rgba(255,255,255,.09)');
- document.documentElement.style.setProperty('--glass-hover',darkText?'rgba(255,255,255,.68)':'rgba(255,255,255,.16)');
- document.documentElement.style.setProperty('--glass-border',darkText?'rgba(23,32,54,.16)':'rgba(255,255,255,.24)');
+ document.documentElement.style.setProperty('--glass-bg',`color-mix(in srgb,${buttonAccent} ${darkText?10:14}%,${darkText?'rgba(255,255,255,.48)':'rgba(255,255,255,.09)'})`);
+ document.documentElement.style.setProperty('--glass-hover',`color-mix(in srgb,${buttonAccent} ${darkText?18:22}%,${darkText?'rgba(255,255,255,.68)':'rgba(255,255,255,.16)'})`);
+ document.documentElement.style.setProperty('--glass-border',`color-mix(in srgb,${buttonAccent} 28%,${darkText?'rgba(23,32,54,.16)':'rgba(255,255,255,.24)'})`);
  document.documentElement.style.setProperty('--glass-highlight',darkText?'rgba(255,255,255,.76)':'rgba(255,255,255,.30)');
  document.documentElement.style.setProperty('--glass-shadow',darkText?'rgba(23,32,54,.16)':'rgba(0,0,0,.34)');
  document.documentElement.style.setProperty('--icon',icon);
@@ -271,7 +271,7 @@ function bind(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=12').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=13').catch(()=>{});
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
@@ -327,7 +327,7 @@ function bindThemePreviewControls(){
  const previewRgb=()=>previewColor(rgbToHex(...[$('#themeRed'),$('#themeGreen'),$('#themeBlue')].map(input=>Math.max(0,Math.min(255,Number(input.value))))));
  ['#themeRed','#themeGreen','#themeBlue'].forEach(id=>$(id).onchange=previewRgb);
  $('#themeBrightness').oninput=event=>{state.themeBrightness=+event.target.value;state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[state.themeColor]:state.themeBrightness};state.themeFollowSystem=false;$('#themeFollowSystem').checked=false;$('#themeBrightnessValue').value=`${state.themeBrightness}%`;applyTheme();renderThemeDetail(effectiveThemeHex(state.themeColor,state.themeBrightness));markThemePreviewDirty()};
- $('#themeOpacity').oninput=event=>{state.themeOpacity=+event.target.value;$('#themeOpacityValue').value=`${state.themeOpacity}%`;$('#themeSvPicker').style.opacity=Math.max(.18,state.themeOpacity/100);applyTheme();markThemePreviewDirty()};
+ $('#themeOpacity').oninput=event=>{state.themeOpacity=+event.target.value;$('#themeOpacityValue').value=`${state.themeOpacity}%`;applyTheme();markThemePreviewDirty()};
  $('#themeAutoContrast').onchange=event=>{state.themeAutoContrast=event.target.checked;applyTheme();markThemePreviewDirty()};
  $('#themeFollowSystem').onchange=event=>{state.themeFollowSystem=event.target.checked;applyTheme();markThemePreviewDirty()};
  $('#themePresets').onclick=event=>{const button=event.target.closest('[data-theme-preset]');if(!button)return;if(themePresetDeleteMode)return;const color=button.dataset.themePreset;state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[color]:Number(button.dataset.presetBrightness)};state.themeOpacity=Number(button.dataset.presetOpacity);previewColor(color)};
