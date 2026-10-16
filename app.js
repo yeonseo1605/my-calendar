@@ -275,7 +275,7 @@ function bind(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=14').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=15').catch(()=>{});
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
@@ -322,7 +322,17 @@ function bindThemePreviewControls(){
   event.stopPropagation();
   selectThemeFamily(button);
  },true);
- $('#themeColorPaletteGrid').onclick=event=>{const button=event.target.closest('[data-theme-base-color]');if(button)previewColor(button.dataset.themeBaseColor,true)};
+ $('#themeColorPaletteGrid').onclick=event=>{
+  const button=event.target.closest('[data-theme-base-color]');
+  if(!button)return;
+  const color=normalizedHex(button.dataset.themeBaseColor);
+  state.themeBrightness=50;
+  state.themeOpacity=100;
+  state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[color]:50};
+  $('#themeOpacity').value=100;
+  $('#themeOpacityValue').value='100%';
+  previewColor(color);
+ };
  $('#themeHex').onchange=event=>{if(!previewColor(event.target.value)){event.target.value=state.themeColor;toast('HEX 색상은 #RRGGBB 형식으로 입력해 주세요')}};
  $('#themeHue').oninput=event=>{const[,s,v]=rgbToHsv(...rgbFromHex(state.themeColor));previewColor(rgbToHex(...hsvToRgb(+event.target.value,s,v)))};
  const previewSv=event=>{const rect=$('#themeSvPicker').getBoundingClientRect(),s=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width)),v=1-Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));previewColor(rgbToHex(...hsvToRgb(+$('#themeHue').value,s,v)))};
