@@ -89,11 +89,11 @@ function applyTheme(){
   amount=brightness<50?(50-brightness)/58:(brightness-50)/68,
   selected=mixRgb(base,target,Math.min(.82,Math.max(0,amount))),
   [selectedHue,selectedSaturation,selectedValue]=rgbToHsv(...selected),
-  paleSaturation=selectedSaturation<.12?selectedSaturation:Math.max(.16,selectedSaturation*.28),
+  neutralValue=.98,
   canvas=hsvToRgb(
    selectedHue,
-   paleSaturation+(selectedSaturation-paleSaturation)*toneStrength,
-   .98+(selectedValue-.98)*toneStrength
+   selectedSaturation*toneStrength,
+   neutralValue+(selectedValue-neutralValue)*toneStrength
   ).map(Math.round),
   luminance=(.2126*canvas[0]+.7152*canvas[1]+.0722*canvas[2])/255,
   darkText=luminance>.56,
@@ -277,7 +277,7 @@ function bind(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=16').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=17').catch(()=>{});
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
