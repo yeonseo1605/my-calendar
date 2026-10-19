@@ -636,3 +636,17 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .auto-theme-row .check-row input{accent-color:var(--button-accent)}
 .system-theme-switch input:checked+i{background:var(--button-accent);border-color:var(--button-accent)}
 :is(button,.btn):disabled{opacity:.42!important;cursor:not-allowed!important;filter:grayscale(.15)!important;transform:none!important;box-shadow:none!important}
+
+/* Four-mode theme palette: dark, medium, pastel and pale. */
+.theme-builder .theme-color-block{display:grid;gap:12px;padding:12px;background:color-mix(in srgb,var(--panel) 96%,transparent)}
+.theme-tone-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.theme-tone-tabs button{min-width:0;height:38px;border:1px solid var(--glass-border);border-radius:10px;background:linear-gradient(180deg,var(--glass-highlight),transparent 48%),var(--glass-bg);color:var(--text);font-size:13px;font-weight:800;cursor:pointer;box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 45%,transparent),0 5px 14px var(--glass-shadow)}
+.theme-tone-tabs button small{display:block;margin-top:-3px;color:inherit;font-size:9px;opacity:.7}
+.theme-tone-tabs button.active{border-color:var(--button-accent);background:linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 86%,#fff 14%),color-mix(in srgb,var(--button-accent) 70%,#000 10%));color:var(--button-text);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 18px color-mix(in srgb,var(--button-accent) 24%,transparent)}
+.theme-builder .theme-family-tabs{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:5px;margin:0!important;overflow:visible}
+.theme-builder .theme-family-tabs button{height:34px!important;min-width:0!important;padding:0 2px!important;border:1px solid var(--border)!important;border-radius:9px!important;background:var(--panel)!important;color:var(--text)!important;font-size:11px!important;font-weight:800!important;box-shadow:none!important}
+.theme-builder .theme-family-tabs button.family-open{border-color:var(--button-accent)!important;background:color-mix(in srgb,var(--button-accent) 12%,var(--panel))!important;color:var(--button-accent)!important}
+.theme-builder .theme-color-palette-grid{display:grid;grid-template-columns:repeat(5,minmax(38px,1fr));gap:10px 12px;margin:0;padding:2px 0}
+.theme-builder .theme-color-palette-grid button{justify-self:center;width:42px;height:42px;border:2px solid color-mix(in srgb,var(--text) 12%,transparent);border-radius:50%;background:var(--palette-color);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 3px 9px rgba(0,0,0,.12)}
+.theme-builder .theme-color-palette-grid button.active{border-color:var(--panel);outline:3px solid var(--button-accent);outline-offset:2px}
+@media(max-width:520px){.theme-tone-tabs{gap:4px}.theme-tone-tabs button{font-size:12px}.theme-builder .theme-family-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}.theme-builder .theme-color-palette-grid button{width:38px;height:38px}}
