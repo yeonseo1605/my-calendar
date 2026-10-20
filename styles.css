@@ -637,6 +637,26 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .system-theme-switch input:checked+i{background:var(--button-accent);border-color:var(--button-accent)}
 :is(button,.btn):disabled{opacity:.42!important;cursor:not-allowed!important;filter:grayscale(.15)!important;transform:none!important;box-shadow:none!important}
 
+/* Theme editor: saved themes first, one compact collapsible detail editor. */
+#settingsDrawer .theme-builder{display:flex;flex-direction:column;gap:0}
+#settingsDrawer .theme-builder>h3{order:0;margin-bottom:6px}
+#settingsDrawer .theme-preset-menu,#settingsDrawer .theme-preset-add,#settingsDrawer #themePresetDeleteHead{order:2}
+#settingsDrawer .saved-theme-head{order:1;padding-top:0!important;border-top:0!important;margin:0 0 7px!important}
+#settingsDrawer .theme-presets{order:1;margin-bottom:8px}
+#settingsDrawer .theme-color-workbench{display:none!important}
+#settingsDrawer .theme-detail-block{order:3;margin:2px 0 6px;padding:0!important;border:1px solid var(--border);border-radius:13px;background:color-mix(in srgb,var(--panel2) 72%,transparent);overflow:hidden}
+#settingsDrawer .theme-detail-toggle{width:100%;height:46px;display:flex;align-items:center;justify-content:flex-start;gap:9px;padding:0 14px;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+#settingsDrawer .theme-detail-toggle i{width:9px;height:9px;margin-top:-4px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .18s}
+#settingsDrawer .theme-detail-toggle.expanded i{margin-top:4px;transform:rotate(225deg)}
+#settingsDrawer .theme-detail-body{padding:0 14px 14px}
+#settingsDrawer .theme-detail-body.hidden{display:none!important}
+#settingsDrawer .theme-detail-block.collapsed{background:transparent}
+#settingsDrawer .theme-sv-picker{height:182px}
+#settingsDrawer .theme-detail-body .compact-range{margin-top:14px}
+#settingsDrawer .theme-detail-body .auto-theme-row{margin-top:13px}
+#settingsDrawer .theme-setting-manager{order:4;margin:2px 0 0!important;padding:7px 0 0!important;border-top:1px solid var(--border)!important}
+@media(max-width:560px){#settingsDrawer .theme-detail-body{padding:0 10px 12px}#settingsDrawer .theme-sv-picker{height:154px}}
+
 /* Four-mode theme palette: dark, medium, pastel and pale. */
 .theme-builder .theme-color-block{display:grid;gap:12px;padding:12px;background:color-mix(in srgb,var(--panel) 96%,transparent)}
 .theme-tone-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
