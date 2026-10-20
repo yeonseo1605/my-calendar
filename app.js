@@ -325,6 +325,17 @@ function bindThemePreviewControls(){
   $('#themeOpacity').oninput=event=>{state.themeOpacity=+event.target.value;$('#themeOpacityValue').value=`${state.themeOpacity}%`;applyTheme();markThemePreviewDirty()};
   $('#themeAutoContrast').onchange=event=>{state.themeAutoContrast=event.target.checked;applyTheme();markThemePreviewDirty()};
   $('#themeFollowSystem').onchange=event=>{state.themeFollowSystem=event.target.checked;applyTheme();markThemePreviewDirty()};
+  $('#themeHue').oninput=event=>{
+   const hue=Number(event.target.value);
+   const color=rgbToHex(...hsvToRgb(hue,.5,1));
+   state.themeColor=color;
+   state.themeFollowSystem=false;
+   $('#themeColor').value=color;
+   $('#themeFollowSystem').checked=false;
+   applyTheme();
+   syncThemeDetailPicker();
+   markThemePreviewDirty();
+  };
   $('#themePresets').onclick=event=>{const button=event.target.closest('[data-theme-preset]');if(!button||themePresetDeleteMode)return;const color=button.dataset.themePreset;state.themeBrightness=Number(button.dataset.presetBrightness??50);state.themeOpacity=Number(button.dataset.presetOpacity??0);state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[color]:state.themeBrightness};state.themeColor=color;state.themeFollowSystem=false;applyTheme();renderSettings();markThemePreviewDirty()};
   $('#saveThemePreview').onclick=saveThemePreview;
   $('#cancelThemePreview').onclick=()=>cancelThemePreview(true,true);
