@@ -329,7 +329,21 @@ function bindThemePreviewControls(){
   const setTargetColor=(value,reset=false)=>{const hex=normalizedHex(value);if(!hex)return false;const target=themeTargetValues();state[target.colorKey]=hex;if(reset){state[target.brightnessKey]=50;state[target.opacityKey]=0}if(themeEditTarget==='background'){state.themeTone=themePaletteTone;state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[hex]:Number(state.themeBrightness??50)};state.themeFollowSystem=false;$('#themeFollowSystem').checked=false}else{state.themeAutoContrast=false;$('#themeAutoContrast').checked=false}applyTheme();syncThemeDetailPicker();renderThemeColorPalette();markThemePreviewDirty();return true};
   const setFromHsv=(h,s,v)=>setTargetColor(rgbToHex(...hsvToRgb(h,s,v)));
   const pickSv=event=>{const rect=$('#themeSvPicker').getBoundingClientRect(),s=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width)),v=1-Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));setFromHsv(Number($('#themeHue').value),s,v)};
-  $$('.theme-edit-tabs [data-theme-edit-target]').forEach(button=>button.onclick=()=>{themeEditTarget=button.dataset.themeEditTarget;if(themeEditTarget==='controls'){state.themeAutoContrast=false;$('#themeAutoContrast').checked=false;markThemePreviewDirty()}setThemeDetailOpen(true);syncThemeDetailPicker();applyTheme()});
+  $$('.theme-edit-tabs [data-theme-edit-target]').forEach(button=>button.onclick=()=>{
+    themeEditTarget=button.dataset.themeEditTarget;
+    if(themeEditTarget==='controls'&&state.themeAutoContrast){
+      const currentColor=normalizedHex(getComputedStyle(document.documentElement).getPropertyValue('--button-accent'));
+      if(currentColor)state.themeControlColor=currentColor;
+      state.themeControlBrightness=50;
+      state.themeControlOpacity=0;
+      state.themeAutoContrast=false;
+      $('#themeAutoContrast').checked=false;
+      markThemePreviewDirty();
+    }
+    setThemeDetailOpen(true);
+    syncThemeDetailPicker();
+    applyTheme()
+  });
   $('#themeFamilyTabs').onclick=event=>{const button=event.target.closest('[data-theme-family]');if(!button)return;themePaletteFamily=button.dataset.themeFamily;renderThemeColorPalette()};
   $('#themeColorPaletteGrid').onclick=event=>{const button=event.target.closest('[data-theme-base-color]');if(button){themeEditTarget='background';setTargetColor(button.dataset.themeBaseColor,true);setThemeDetailOpen(true)}};
   $('#themeBrightness').oninput=event=>{const target=themeTargetValues(),value=+event.target.value;state[target.brightnessKey]=value;if(themeEditTarget==='background'){state.themeBrightnessByColor={...(state.themeBrightnessByColor||{}),[state.themeColor]:value};state.themeFollowSystem=false;$('#themeFollowSystem').checked=false}else{state.themeAutoContrast=false;$('#themeAutoContrast').checked=false}$('#themeBrightnessValue').value=`${value}%`;applyTheme();markThemePreviewDirty()};
