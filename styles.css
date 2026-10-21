@@ -704,3 +704,5 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   text-shadow:none
 }
 .compact-range-head h3,.compact-range-head strong{color:var(--text)!important}
+.bulk-label-management #bulkManagedLabels:not(:empty){margin-bottom:10px}
+.bulk-label-management #bulkManagedLabels .bulk-managed-row:first-child{margin-top:0}

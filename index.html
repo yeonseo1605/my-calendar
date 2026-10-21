@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=170">
+  <link rel="stylesheet" href="styles.css?v=171">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -120,7 +120,6 @@
     <section class="bulk-panel-section bulk-selection-only"><h3>라벨 및 색상</h3><div class="bulk-color-palette" id="bulkColorPalette" aria-label="라벨 색상 선택"></div><select id="bulkLabel" class="hidden"><option value="">라벨 유지</option></select></section>
     <div class="bulk-action-row bulk-selection-only"><button class="btn primary" id="bulkApplyBtn" type="button">변경 적용</button><button class="btn danger-outline" id="bulkDeleteBtn" type="button">선택 일정 삭제</button></div>
     <section class="bulk-panel-section bulk-label-management">
-      <div class="bulk-label-heading"><h3>라벨 자체 관리</h3></div>
       <div id="bulkManagedLabels"></div>
       <section class="new-label-card collapsed" id="newLabelCard">
         <div class="new-label-head"><h3 id="newLabelCardTitle">새 라벨 만들기</h3><button class="new-label-toggle-arrow" id="newLabelToggle" type="button" aria-expanded="false" aria-label="새 라벨 만들기 펼치기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
@@ -229,6 +228,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=168"></script>
+  <script src="app.js?v=169"></script>
 </body>
 </html>
