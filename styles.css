@@ -708,3 +708,14 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .compact-range-head h3,.compact-range-head strong{color:var(--text)!important}
 .bulk-label-management #bulkManagedLabels:not(:empty){margin-bottom:10px}
 .bulk-label-management #bulkManagedLabels .bulk-managed-row:first-child{margin-top:0}
+
+/* Google actions: connection status, send, sync and disconnect are distinct actions. */
+.google-action-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px!important;align-items:stretch}
+.google-action-row .btn{min-width:0!important;padding:9px 7px!important;white-space:nowrap;font-size:12px!important;border-radius:10px!important}
+.google-connect-action{background:var(--glass-bg)!important;border:1px solid var(--glass-border)!important;color:var(--text)!important}
+.google-connect-action.is-connected{border-color:#34a853!important;color:#34a853!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,#34a853 28%,transparent)!important}
+.google-send-action{background:linear-gradient(180deg,var(--glass-highlight),transparent 48%),var(--button-accent)!important;border:1px solid color-mix(in srgb,var(--button-accent) 72%,#fff)!important;color:var(--button-text)!important}
+.google-sync-action{background:linear-gradient(180deg,var(--glass-highlight),transparent 48%),var(--glass-bg)!important;border:1px solid var(--button-accent)!important;color:var(--text)!important}
+.google-disconnect-action{background:transparent!important;border:1px solid #ef5b68!important;color:#ef5b68!important}
+.google-action-row .btn:disabled{opacity:.42!important;filter:saturate(.35);cursor:not-allowed}
+@media(max-width:520px){.google-action-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
