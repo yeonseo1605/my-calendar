@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=174">
+  <link rel="stylesheet" href="styles.css?v=175">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js" onerror="this.remove()"></script>
@@ -230,7 +230,7 @@
     <div class="modal-card"><h2 id="recurrenceTitle">반복 일정 변경</h2><p>변경할 일정의 범위를 선택하세요.</p><div class="scope-buttons"><button data-scope="single">이 일정만</button><button data-scope="future">이 일정 및 앞으로</button><button data-scope="all">전체 일정</button></div><button class="btn ghost full-btn" id="cancelRecurrence">취소</button></div>
   </div>
 
-  <div class="modal hidden" id="infoModal"><div class="modal-card integration-modal"><h2>외부 캘린더 연결</h2><section class="integration-card"><div class="integration-title"><span class="external-mark google-mark">G</span><div><strong>Google Calendar</strong><small id="googleConnectionStatus">연결되지 않음</small></div></div><label class="field"><span>OAuth 클라이언트 ID</span><input id="googleClientId" placeholder="123456789-xxxx.apps.googleusercontent.com"></label><p class="setting-help">Google Cloud에서 웹 애플리케이션 OAuth 클라이언트를 만들고 현재 주소를 승인된 JavaScript 원본으로 등록하세요. 클라이언트 ID는 이 기기에만 저장됩니다.</p><div class="settings-buttons google-action-row"><button class="btn google-connect-action" id="googleConnectBtn">Google 연결</button><button class="btn google-send-action" id="googleUploadBtn" disabled>Google로 보내기</button><button class="btn google-sync-action" id="googleSyncBtn" disabled>가져오기·동기화</button><button class="btn google-disconnect-action hidden" id="googleDisconnectBtn">연결 해제</button></div><small class="sync-status" id="googleLastSync">동기화 기록 없음</small></section><section class="integration-card"><div class="integration-title"><span class="external-mark naver-mark">N</span><div><strong>네이버 캘린더 일정 가져오기</strong><small>ICS 파일 사용</small></div></div><p class="setting-help">네이버 캘린더에서 내보낸 ICS 파일을 선택하면 일정을 My Calendar로 가져옵니다.</p><div class="settings-buttons"><label class="btn primary import-label">네이버 일정 가져오기<input type="file" id="icsImportInput" accept=".ics,text/calendar"></label><button class="btn secondary" id="icsExportBtn">My Calendar ICS 내보내기</button></div></section><button class="btn primary full-btn" id="closeInfoBtn">확인</button></div></div>
+  <div class="modal hidden" id="infoModal"><div class="modal-card integration-modal"><h2>외부 캘린더 연결</h2><section class="integration-card"><div class="integration-title"><span class="external-mark google-mark">G</span><div><strong>Google Calendar</strong><small id="googleConnectionStatus">연결되지 않음</small></div></div><label class="field"><span>OAuth 클라이언트 ID</span><input id="googleClientId" placeholder="123456789-xxxx.apps.googleusercontent.com"></label><p class="setting-help">Google Cloud에서 웹 애플리케이션 OAuth 클라이언트를 만들고 현재 주소를 승인된 JavaScript 원본으로 등록하세요. 연결되지 않은 상태에서는 선택한 작업을 누르면 로그인 후 자동으로 계속됩니다.</p><div class="settings-buttons google-action-row"><button class="btn google-send-action" id="googleUploadBtn">Google로 보내기</button><button class="btn google-sync-action" id="googleSyncBtn">가져오기·동기화</button><button class="btn google-disconnect-action hidden" id="googleDisconnectBtn">연결 해제</button></div><small class="sync-status" id="googleLastSync">동기화 기록 없음</small></section><section class="integration-card"><div class="integration-title"><span class="external-mark naver-mark">N</span><div><strong>네이버 캘린더 일정 가져오기</strong><small>ICS 파일 사용</small></div></div><p class="setting-help">네이버 캘린더에서 내보낸 ICS 파일을 선택하면 일정을 My Calendar로 가져옵니다.</p><div class="settings-buttons"><label class="btn primary import-label">네이버 일정 가져오기<input type="file" id="icsImportInput" accept=".ics,text/calendar"></label><button class="btn secondary" id="icsExportBtn">My Calendar ICS 내보내기</button></div></section><button class="btn primary full-btn" id="closeInfoBtn">확인</button></div></div>
 
   <section class="login-gate hidden" id="loginGate" aria-labelledby="loginTitle">
     <div class="login-card">
@@ -243,6 +243,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=180"></script>
+  <script src="app.js?v=181"></script>
 </body>
 </html>
