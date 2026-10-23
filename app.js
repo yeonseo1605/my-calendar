@@ -344,7 +344,7 @@ const openIntegrationSettings=()=>{$('#infoModal').classList.remove('hidden');re
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();$('#recurrenceModal').classList.add('hidden')}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=21').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=22',{updateViaCache:'none'}).then(registration=>registration.update()).catch(()=>{});
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
