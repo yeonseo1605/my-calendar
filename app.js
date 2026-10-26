@@ -64,7 +64,7 @@ let googleAccessToken='',googleTokenClient=null,googleTokenClientId='',googleTok
 let cloudReady=false,autoSyncRunning=false;
 const systemThemeMedia=window.matchMedia('(prefers-color-scheme: dark)');
 function handleSystemThemeChange(){if(!state.themeFollowSystem)return;applyTheme();if(!$('#settingsDrawer')?.classList.contains('hidden'))renderSettings()}
-function load(){try{const stored=JSON.parse(localStorage.getItem(STORE)||'{}'),merged={...defaults,...stored};if(!merged.googleClientId)merged.googleClientId=GOOGLE_CLIENT_ID;if(!stored.themeColor){const oldColors={charcoal:'#20242D',navy:'#202938',warm:'#2D2927',black:'#111318'};merged.themeColor=oldColors[stored.darkColor]||defaults.themeColor;merged.themeBrightness=Number.isFinite(+stored.darkIntensity)?+stored.darkIntensity:defaults.themeBrightness;merged.themeBrightnessByColor={...defaults.themeBrightnessByColor,[merged.themeColor]:merged.themeBrightness}}if(!stored.presetPaletteV2){merged.themePresets=[...defaults.themePresets];merged.themeBrightnessByColor={...(merged.themeBrightnessByColor||{}),...defaults.themeBrightnessByColor};merged.presetPaletteV2=true}if(!Number.isFinite(+merged.eventFontSize))merged.eventFontSize=stored.fontSize==='small'?85:stored.fontSize==='large'?120:100;const personalLabel=(merged.labels||[]).find(label=>label.id==='노랑-5');if(personalLabel)personalLabel.name='내 일정';(merged.events||[]).forEach(event=>{if(event.source==='google'&&event.labelId==='빨강-1')event.labelId='노랑-5'});if(!stored.sampleEventsRemoved){const sampleIds=new Set(['e1','e2','e3','e4','e5','e6','e7']);merged.events=(merged.events||[]).filter(event=>!sampleIds.has(event.id));merged.sampleEventsRemoved=true}localStorage.setItem(STORE,JSON.stringify(merged));return merged}catch{const clean=structuredClone(defaults);clean.events=[];clean.sampleEventsRemoved=true;localStorage.setItem(STORE,JSON.stringify(clean));return clean}}
+function load(){try{const stored=JSON.parse(localStorage.getItem(STORE)||'{}'),merged={...defaults,...stored};if(!merged.googleClientId)merged.googleClientId=GOOGLE_CLIENT_ID;if(!stored.themeColor){const oldColors={charcoal:'#20242D',navy:'#202938',warm:'#2D2927',black:'#111318'};merged.themeColor=oldColors[stored.darkColor]||defaults.themeColor;merged.themeBrightness=Number.isFinite(+stored.darkIntensity)?+stored.darkIntensity:defaults.themeBrightness;merged.themeBrightnessByColor={...defaults.themeBrightnessByColor,[merged.themeColor]:merged.themeBrightness}}if(!stored.presetPaletteV2){merged.themePresets=[...defaults.themePresets];merged.themeBrightnessByColor={...(merged.themeBrightnessByColor||{}),...defaults.themeBrightnessByColor};merged.presetPaletteV2=true}if(!Number.isFinite(+merged.eventFontSize))merged.eventFontSize=stored.fontSize==='small'?85:stored.fontSize==='large'?120:100;const personalLabel=(merged.labels||[]).find(label=>label.id==='노랑-5');if(personalLabel)personalLabel.name='내 일정';if(!stored.sampleEventsRemoved){const sampleIds=new Set(['e1','e2','e3','e4','e5','e6','e7']);merged.events=(merged.events||[]).filter(event=>!sampleIds.has(event.id));merged.sampleEventsRemoved=true}localStorage.setItem(STORE,JSON.stringify(merged));return merged}catch{const clean=structuredClone(defaults);clean.events=[];clean.sampleEventsRemoved=true;localStorage.setItem(STORE,JSON.stringify(clean));return clean}}
 function save(){state.current=dateStr(currentDate);const persisted=structuredClone(state);if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persisted[key]=structuredClone(themePreviewSnapshot[key]));localStorage.setItem(STORE,JSON.stringify(persisted));window.MyCalendarCloud?.queueSave(persisted)}
 function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function parseDate(s){return new Date(`${s}T00:00:00`)}
@@ -295,10 +295,12 @@ function connectGoogle(){
 async function disconnectGoogle(){stopGoogleAuthWatchdog();clearGoogleAction();resetGoogleActionButtons();if(window.MyCalendarCloud?.currentUser())await window.MyCalendarCloud.signOut().catch(error=>toast(error.message));if(googleAccessToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(googleAccessToken,()=>{});googleAccessToken='';googleTokenExpiresAt=0;googleTokenClient=null;googleTokenClientId='';state.googleSetupComplete=false;save();renderGoogleStatus();toast('Google 연결을 해제했습니다')}
 async function googleApi(path,options={}){if(!googleAccessToken||Date.now()>=googleTokenExpiresAt)throw new Error('Google 로그인이 만료되었습니다. 작업 버튼을 다시 눌러 주세요.');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),25000);try{const response=await fetch(`https://www.googleapis.com/calendar/v3${path}`,{...options,signal:controller.signal,headers:{Authorization:`Bearer ${googleAccessToken}`,'Content-Type':'application/json',...(options.headers||{})}});if(!response.ok){const detail=await response.json().catch(()=>({})),error=new Error(detail.error?.message||`Google API 오류 (${response.status})`);error.status=response.status;throw error}return response.status===204?null:response.json()}catch(error){if(error?.name==='AbortError')throw new Error('Google Calendar 응답 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.');throw error}finally{clearTimeout(timer)}}
 function isGoogleMissingError(error){return[404,410].includes(error?.status)||/404|410|not found|resource has been deleted|gone/i.test(error?.message||'')}
-let googleEventColors=null,googleDefaultColorHex='',googleCalendars=[];
+let googleEventColors=null,googleCalendarColors=null,googleDefaultColorHex='',googleCalendars=[];
 function colorDistance(a,b){const parse=value=>[1,3,5].map(index=>parseInt(String(value||'#000000').slice(index,index+2),16)||0),x=parse(a),y=parse(b);return x.reduce((sum,value,index)=>sum+(value-y[index])**2,0)}
-async function loadGoogleColors(){const colors=await googleApi('/colors');googleEventColors=colors.event||{};googleCalendars=[];let pageToken='';try{do{const query=new URLSearchParams({maxResults:'250'});if(pageToken)query.set('pageToken',pageToken);const data=await googleApi(`/users/me/calendarList?${query}`);googleCalendars.push(...(data.items||[]).filter(calendar=>calendar.accessRole!=='freeBusyReader'));pageToken=data.nextPageToken||''}while(pageToken);const primary=googleCalendars.find(calendar=>calendar.primary)||googleCalendars.find(calendar=>calendar.id==='primary');googleDefaultColorHex=(primary?.backgroundColor||'').toUpperCase()}catch(error){googleCalendars=[];googleDefaultColorHex='';if(error?.status!==403&&!isGoogleMissingError(error))throw error}return googleEventColors}
-function googleCalendarHex(calendarId){const calendar=googleCalendars.find(item=>item.id===calendarId||(calendarId==='primary'&&item.primary));return /^#[0-9a-f]{6}$/i.test(calendar?.backgroundColor||'')?calendar.backgroundColor.toUpperCase():''}
+async function loadGoogleColors(){const colors=await googleApi('/colors');googleEventColors=colors.event||{};googleCalendarColors=colors.calendar||{};googleCalendars=[];let pageToken='';try{do{const query=new URLSearchParams({maxResults:'250',showHidden:'true',colorRgbFormat:'true'});if(pageToken)query.set('pageToken',pageToken);const data=await googleApi(`/users/me/calendarList?${query}`);googleCalendars.push(...(data.items||[]).filter(calendar=>calendar.accessRole!=='freeBusyReader'));pageToken=data.nextPageToken||''}while(pageToken);const primary=googleCalendars.find(calendar=>calendar.primary)||googleCalendars.find(calendar=>calendar.id==='primary');googleDefaultColorHex=googleCalendarEntryHex(primary)}catch(error){googleCalendars=[];googleDefaultColorHex='';if(error?.status!==403&&!isGoogleMissingError(error))throw error}return googleEventColors}
+function googleCalendarPaletteHex(id){return id&&googleCalendarColors?.[id]?.background?googleCalendarColors[id].background.toUpperCase():''}
+function googleCalendarEntryHex(calendar){const direct=calendar?.backgroundColor||'';return /^#[0-9a-f]{6}$/i.test(direct)?direct.toUpperCase():googleCalendarPaletteHex(calendar?.colorId)}
+function googleCalendarHex(calendarId){const calendar=googleCalendars.find(item=>item.id===calendarId||(calendarId==='primary'&&item.primary));return googleCalendarEntryHex(calendar)}
 function nearestGoogleColorId(hex){return Object.entries(googleEventColors||{}).sort((a,b)=>colorDistance(hex,a[1].background)-colorDistance(hex,b[1].background))[0]?.[0]||''}
 function nearestLabelId(hex){return state.labels.slice().sort((a,b)=>colorDistance(hex,a.color)-colorDistance(hex,b.color))[0]?.id||'노랑-5'}
 function googleColorHex(id){return id&&googleEventColors?.[id]?.background?googleEventColors[id].background.toUpperCase():''}
@@ -321,12 +323,12 @@ function googleLabelResolution(g,existing={},parent=null,calendarHex=''){
  // Google에서 직접 지정한 일정/반복 원본 색을 최우선으로 사용한다.
  // Google 동기화에서는 Google의 표시색이 기준이다. 기존 로컬 라벨은 Google이
  // 색상/숨은 라벨/캘린더 기본색을 모두 제공하지 못한 경우에만 보존한다.
- const visibleGoogleHex=explicitRemoteHex||matchedRemoteLabel?.color||fallbackHex||existingLabel?.color;
+ const visibleGoogleHex=explicitRemoteHex||fallbackHex||matchedRemoteLabel?.color||existingLabel?.color;
  return{
   remoteLabel,
   remoteColorId,
   explicitRemoteHex,
-  labelId:explicitRemoteHex?nearestLabelId(explicitRemoteHex):(matchedRemoteLabel?.id||(fallbackHex?nearestLabelId(fallbackHex):(existingLabel?.id||'노랑-5'))),
+  labelId:(explicitRemoteHex||fallbackHex)?nearestLabelId(explicitRemoteHex||fallbackHex):(matchedRemoteLabel?.id||(existingLabel?.id||'노랑-5')),
   storedGoogleHex:visibleGoogleHex||''
  };
 }
@@ -356,9 +358,9 @@ function applyRecurringGoogleColors(recurrenceParents){
    // Google 색보다 먼저 선택되지 않도록 한다.
     const fallbackHex=googleCalendarHex(calendarId)||(/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'');
    const groupColorId=parentColorId||instanceColorId;
-   const groupColorHex=parentColorHex||instanceColorHex||savedParentLabel?.color||fallbackHex||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
+   const groupColorHex=parentColorHex||instanceColorHex||fallbackHex||savedParentLabel?.color||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
   if(!groupColorHex)return;
-   const groupLabelId=groupColorId?nearestLabelId(groupColorHex):(savedParentLabel?.id||nearestLabelId(groupColorHex));
+   const groupLabelId=(groupColorId||fallbackHex)?nearestLabelId(groupColorHex):(savedParentLabel?.id||nearestLabelId(groupColorHex));
   events.forEach(event=>{event.labelId=groupLabelId;event.googleColorId=groupColorId||event.googleColorId||'';event.googleColorHex=groupColorHex});
  });
 }
@@ -369,7 +371,7 @@ async function syncGoogle(){
   for(const id of [...state.googleDeletedIds]){await googleApi(`/calendars/primary/events/${encodeURIComponent(id)}`,{method:'DELETE'}).catch(error=>{if(!isGoogleMissingError(error))throw error});state.googleDeletedIds=state.googleDeletedIds.filter(x=>x!==id)}
    const min=new Date();min.setFullYear(min.getFullYear()-1);const max=new Date();max.setFullYear(max.getFullYear()+2),recurrenceParents=new Map(),calendars=googleCalendars.length?googleCalendars:[{id:'primary',primary:true,backgroundColor:googleDefaultColorHex}];
    for(const calendar of calendars){
-    const calendarId=calendar.primary?'primary':(calendar.id||'primary'),encodedCalendarId=encodeURIComponent(calendarId),calendarHex=(calendar.backgroundColor||googleCalendarHex(calendarId)||'').toUpperCase(),parentKey=id=>`${calendarId}\u0000${id}`;let parentPageToken='';
+    const calendarId=calendar.primary?'primary':(calendar.id||'primary'),encodedCalendarId=encodeURIComponent(calendarId),calendarHex=googleCalendarEntryHex(calendar)||googleCalendarHex(calendarId),parentKey=id=>`${calendarId}\u0000${id}`;let parentPageToken='';
     do{
      const parentQuery=new URLSearchParams({singleEvents:'false',showDeleted:'false',maxResults:'2500'});if(parentPageToken)parentQuery.set('pageToken',parentPageToken);
      const parentData=await googleApi(`/calendars/${encodedCalendarId}/events?${parentQuery}`);
