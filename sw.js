@@ -1,5 +1,5 @@
-const CACHE='my-calendar-v267';
-const FILES=['./','./index.html','./styles.css?v=175','./app.js?v=196','./cloud-store.js?v=5','./manifest.webmanifest','./assets/favicon-64.png','./assets/apple-touch-icon-180.png','./assets/icon-192.png','./assets/icon-512.png','./assets/my-calendar-share-1200x630.png','./assets/brand-calendar-transparent.png'];
+const CACHE='my-calendar-v268';
+const FILES=['./','./index.html','./styles.css?v=175','./app.js?v=197','./cloud-store.js?v=5','./manifest.webmanifest','./assets/favicon-64.png','./assets/apple-touch-icon-180.png','./assets/icon-192.png','./assets/icon-512.png','./assets/my-calendar-share-1200x630.png','./assets/brand-calendar-transparent.png'];
 self.addEventListener('install',event=>event.waitUntil(Promise.all([
   caches.open(CACHE).then(cache=>cache.addAll(FILES)),
   self.skipWaiting()
