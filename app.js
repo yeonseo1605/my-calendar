@@ -318,14 +318,14 @@ function googleLabelResolution(g,existing={},parent=null){
  const existingLabel=state.labels.find(label=>label.id===existing.labelId);
  const fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'';
  // Google에서 직접 지정한 일정/반복 원본 색을 최우선으로 사용한다.
- // 색이 없는 일정은 My Calendar의 숨겨진 라벨 또는 기존 라벨을 보존하고,
- // 둘 다 없을 때만 Google 기본 캘린더 색을 사용한다.
- const visibleGoogleHex=explicitRemoteHex||matchedRemoteLabel?.color||existingLabel?.color||fallbackHex;
+ // Google 동기화에서는 Google의 표시색이 기준이다. 기존 로컬 라벨은 Google이
+ // 색상/숨은 라벨/캘린더 기본색을 모두 제공하지 못한 경우에만 보존한다.
+ const visibleGoogleHex=explicitRemoteHex||matchedRemoteLabel?.color||fallbackHex||existingLabel?.color;
  return{
   remoteLabel,
   remoteColorId,
   explicitRemoteHex,
-  labelId:explicitRemoteHex?nearestLabelId(explicitRemoteHex):(matchedRemoteLabel?.id||existingLabel?.id||(fallbackHex?nearestLabelId(fallbackHex):'노랑-5')),
+  labelId:explicitRemoteHex?nearestLabelId(explicitRemoteHex):(matchedRemoteLabel?.id||(fallbackHex?nearestLabelId(fallbackHex):(existingLabel?.id||'노랑-5'))),
   storedGoogleHex:visibleGoogleHex||''
  };
 }
@@ -342,10 +342,22 @@ function applyRecurringGoogleColors(recurrenceParents){
   const parentColorHex=googleColorHex(parentColorId);
   const parentLabelId=parent?.extendedProperties?.private?.moaLabelId||'';
   const savedParentLabel=state.labels.find(label=>label.id===parentLabelId);
-  const groupColorHex=parentColorHex||savedParentLabel?.color||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
+  const instanceColorCounts=new Map();
+  events.forEach(event=>{
+   const colorId=event.googleColorId||'';
+   if(colorId&&googleColorHex(colorId))instanceColorCounts.set(colorId,(instanceColorCounts.get(colorId)||0)+1);
+  });
+  const instanceColorId=[...instanceColorCounts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0]||'';
+  const instanceColorHex=googleColorHex(instanceColorId);
+   // 반복 일정은 Google 반복 원본 색을 전체 발생분에 적용한다. 원본에 개별색이
+   // 없으면 Google 캘린더 기본색을 사용하며, 과거 로컬 기본 라벨(노랑)이
+   // Google 색보다 먼저 선택되지 않도록 한다.
+   const fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'';
+   const groupColorId=parentColorId||instanceColorId;
+   const groupColorHex=parentColorHex||instanceColorHex||savedParentLabel?.color||fallbackHex||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
   if(!groupColorHex)return;
-  const groupLabelId=parentColorHex?nearestLabelId(parentColorHex):(savedParentLabel?.id||nearestLabelId(groupColorHex));
-  events.forEach(event=>{event.labelId=groupLabelId;event.googleColorId=parentColorId||event.googleColorId||'';event.googleColorHex=groupColorHex});
+   const groupLabelId=groupColorId?nearestLabelId(groupColorHex):(savedParentLabel?.id||nearestLabelId(groupColorHex));
+  events.forEach(event=>{event.labelId=groupLabelId;event.googleColorId=groupColorId||event.googleColorId||'';event.googleColorHex=groupColorHex});
  });
 }
 async function syncGoogle(){
