@@ -295,9 +295,10 @@ function connectGoogle(){
 async function disconnectGoogle(){stopGoogleAuthWatchdog();clearGoogleAction();resetGoogleActionButtons();if(window.MyCalendarCloud?.currentUser())await window.MyCalendarCloud.signOut().catch(error=>toast(error.message));if(googleAccessToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(googleAccessToken,()=>{});googleAccessToken='';googleTokenExpiresAt=0;googleTokenClient=null;googleTokenClientId='';state.googleSetupComplete=false;save();renderGoogleStatus();toast('Google 연결을 해제했습니다')}
 async function googleApi(path,options={}){if(!googleAccessToken||Date.now()>=googleTokenExpiresAt)throw new Error('Google 로그인이 만료되었습니다. 작업 버튼을 다시 눌러 주세요.');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),25000);try{const response=await fetch(`https://www.googleapis.com/calendar/v3${path}`,{...options,signal:controller.signal,headers:{Authorization:`Bearer ${googleAccessToken}`,'Content-Type':'application/json',...(options.headers||{})}});if(!response.ok){const detail=await response.json().catch(()=>({})),error=new Error(detail.error?.message||`Google API 오류 (${response.status})`);error.status=response.status;throw error}return response.status===204?null:response.json()}catch(error){if(error?.name==='AbortError')throw new Error('Google Calendar 응답 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.');throw error}finally{clearTimeout(timer)}}
 function isGoogleMissingError(error){return[404,410].includes(error?.status)||/404|410|not found|resource has been deleted|gone/i.test(error?.message||'')}
-let googleEventColors=null,googleDefaultColorHex='';
+let googleEventColors=null,googleDefaultColorHex='',googleCalendars=[];
 function colorDistance(a,b){const parse=value=>[1,3,5].map(index=>parseInt(String(value||'#000000').slice(index,index+2),16)||0),x=parse(a),y=parse(b);return x.reduce((sum,value,index)=>sum+(value-y[index])**2,0)}
-async function loadGoogleColors(){const colors=await googleApi('/colors');googleEventColors=colors.event||{};try{const calendar=await googleApi('/users/me/calendarList/primary');googleDefaultColorHex=(calendar.backgroundColor||'').toUpperCase()}catch(error){googleDefaultColorHex='';if(error?.status!==403&&!isGoogleMissingError(error))throw error}return googleEventColors}
+async function loadGoogleColors(){const colors=await googleApi('/colors');googleEventColors=colors.event||{};googleCalendars=[];let pageToken='';try{do{const query=new URLSearchParams({maxResults:'250'});if(pageToken)query.set('pageToken',pageToken);const data=await googleApi(`/users/me/calendarList?${query}`);googleCalendars.push(...(data.items||[]).filter(calendar=>calendar.accessRole!=='freeBusyReader'));pageToken=data.nextPageToken||''}while(pageToken);const primary=googleCalendars.find(calendar=>calendar.primary)||googleCalendars.find(calendar=>calendar.id==='primary');googleDefaultColorHex=(primary?.backgroundColor||'').toUpperCase()}catch(error){googleCalendars=[];googleDefaultColorHex='';if(error?.status!==403&&!isGoogleMissingError(error))throw error}return googleEventColors}
+function googleCalendarHex(calendarId){const calendar=googleCalendars.find(item=>item.id===calendarId||(calendarId==='primary'&&item.primary));return /^#[0-9a-f]{6}$/i.test(calendar?.backgroundColor||'')?calendar.backgroundColor.toUpperCase():''}
 function nearestGoogleColorId(hex){return Object.entries(googleEventColors||{}).sort((a,b)=>colorDistance(hex,a[1].background)-colorDistance(hex,b[1].background))[0]?.[0]||''}
 function nearestLabelId(hex){return state.labels.slice().sort((a,b)=>colorDistance(hex,a.color)-colorDistance(hex,b.color))[0]?.id||'노랑-5'}
 function googleColorHex(id){return id&&googleEventColors?.[id]?.background?googleEventColors[id].background.toUpperCase():''}
@@ -310,13 +311,13 @@ function recurrenceUntil(recurrence,effectiveDate){const untilDate=parseDate(eff
 async function processGoogleRecurringOps(){state.googleRecurringOps=state.googleRecurringOps||[];for(const op of [...state.googleRecurringOps]){try{if(op.scope==='single'){if(op.type==='delete')await googleApi(`/calendars/primary/events/${encodeURIComponent(op.instanceId)}`,{method:'DELETE'});else await googleApi(`/calendars/primary/events/${encodeURIComponent(op.instanceId)}`,{method:'PATCH',body:JSON.stringify(googleEventPayload(op.data))})}else if(op.scope==='all'){if(op.type==='delete')await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'DELETE'});else await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'PATCH',body:JSON.stringify(googleEventPayload(op.data,{includeRecurrence:true}))})}else{const master=await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`);await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'PATCH',body:JSON.stringify({recurrence:recurrenceUntil(master.recurrence,op.effectiveDate)})});if(op.type!=='delete'){const created=await googleApi('/calendars/primary/events',{method:'POST',body:JSON.stringify(googleEventPayload(op.data,{includeRecurrence:true}))});state.events.filter(e=>e.date>=op.effectiveDate&&e.seriesId===`google-series-${op.masterId}`).forEach(e=>{e.googleRecurringEventId=created.id})}}}catch(error){if(!isGoogleMissingError(error))throw error}state.googleRecurringOps=state.googleRecurringOps.filter(item=>item.id!==op.id);save()}}
 function parseGoogleRecurrence(g,parent){const recurrence=[parent?.recurrence,g.recurrence].flat().filter(Boolean),line=recurrence.find(value=>/^\s*(?:RRULE:)?FREQ=/i.test(String(value)));if(!line)return{repeat:'none',repeatDays:[],repeatEndType:'never',repeatEndValue:'',seriesId:''};const rule=String(line).trim().replace(/^RRULE:/i,''),values=Object.fromEntries(rule.split(';').map(part=>{const index=part.indexOf('=');return[(index<0?part:part.slice(0,index)).toUpperCase(),index<0?'':part.slice(index+1).toUpperCase()]})),repeat={DAILY:'daily',WEEKLY:'weekly',MONTHLY:'monthly',YEARLY:'yearly'}[values.FREQ]||'none',repeatDays=(values.BYDAY||'').split(',').map(day=>googleWeekdayNumber[day.replace(/^[-+]?\d+/,'')]).filter(day=>day!==undefined);let repeatEndType='never',repeatEndValue='';if(values.COUNT){repeatEndType='count';repeatEndValue=values.COUNT}else if(values.UNTIL){repeatEndType='date';const raw=values.UNTIL.replace(/[^0-9]/g,'');repeatEndValue=raw.length>=8?`${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}`:''}const masterId=g.recurringEventId||parent?.id||g.id;return{repeat,repeatDays,repeatEndType,repeatEndValue,seriesId:repeat==='none'?'':`google-series-${masterId}`}}
 function repairGoogleRecurrence(){const groups=new Map();state.events.filter(event=>event.googleRecurringEventId).forEach(event=>{if(!groups.has(event.googleRecurringEventId))groups.set(event.googleRecurringEventId,[]);groups.get(event.googleRecurringEventId).push(event)});groups.forEach((items,masterId)=>{if(items.some(item=>item.repeat&&item.repeat!=='none'))return;const sorted=items.slice().sort((a,b)=>a.date.localeCompare(b.date)),dates=[...new Set(sorted.map(item=>item.date))].map(parseDate);if(dates.length<2)return;const gaps=dates.slice(1).map((date,index)=>Math.round((date-dates[index])/86400000)),sameMonthDay=dates.every(date=>date.getMonth()===dates[0].getMonth()&&date.getDate()===dates[0].getDate()),sameDay=dates.every(date=>date.getDate()===dates[0].getDate());let repeat='none';if(gaps.every(gap=>gap===1))repeat='daily';else if(sameMonthDay&&gaps.every(gap=>gap>=360&&gap<=370))repeat='yearly';else if(sameDay&&gaps.every(gap=>gap>=27&&gap<=32))repeat='monthly';else if(gaps.every(gap=>gap>0&&gap<=7))repeat='weekly';if(repeat==='none')return;const repeatDays=repeat==='weekly'?[...new Set(dates.map(date=>date.getDay()))]:[];items.forEach(item=>Object.assign(item,{repeat,repeatDays,repeatEndType:'never',repeatEndValue:'',seriesId:`google-series-${masterId}`}))})}
-function googleLabelResolution(g,existing={},parent=null){
+function googleLabelResolution(g,existing={},parent=null,calendarHex=''){
  const remoteLabel=g.extendedProperties?.private?.moaLabelId||parent?.extendedProperties?.private?.moaLabelId||'';
  const remoteColorId=g.colorId||parent?.colorId||'';
  const explicitRemoteHex=googleColorHex(remoteColorId);
  const matchedRemoteLabel=state.labels.find(label=>label.id===remoteLabel);
  const existingLabel=state.labels.find(label=>label.id===existing.labelId);
- const fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'';
+ const fallbackHex=/^#[0-9a-f]{6}$/i.test(calendarHex)?calendarHex:(/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'');
  // Google에서 직접 지정한 일정/반복 원본 색을 최우선으로 사용한다.
  // Google 동기화에서는 Google의 표시색이 기준이다. 기존 로컬 라벨은 Google이
  // 색상/숨은 라벨/캘린더 기본색을 모두 제공하지 못한 경우에만 보존한다.
@@ -329,15 +330,16 @@ function googleLabelResolution(g,existing={},parent=null){
   storedGoogleHex:visibleGoogleHex||''
  };
 }
-function localFromGoogle(g,existing={},parent=null){const startRaw=g.start?.dateTime||g.start?.date||'',endRaw=g.end?.dateTime||g.end?.date||'',recurrence=parseGoogleRecurrence(g,parent),resolution=googleLabelResolution(g,existing,parent),{remoteLabel,remoteColorId,explicitRemoteHex,labelId,storedGoogleHex}=resolution;if(/살사|바차타|뮤즈|회식|쥬크|키좀바|라르고/i.test(g.summary||parent?.summary||''))console.info('GOOGLE_COLOR_DEBUG',{summary:g.summary||parent?.summary,eventId:g.id,recurringEventId:g.recurringEventId||'',eventColorId:g.colorId||'',parentColorId:parent?.colorId||'',remoteColorId,explicitRemoteHex,remoteLabel,existingLabelId:existing.labelId||'',resolvedLabelId:labelId});return{...existing,id:existing.id||g.extendedProperties?.private?.moaId||`google-${g.id}`,title:g.summary||parent?.summary||'(제목 없음)',date:startRaw.slice(0,10),start:g.start?.dateTime?startRaw.slice(11,16):'',end:g.end?.dateTime?endRaw.slice(11,16):'',labelId,googleColorId:remoteColorId,googleColorHex:storedGoogleHex,address:g.location||parent?.location||'',guests:(g.attendees||parent?.attendees||[]).map(x=>x.email).join(', '),reminder:existing.reminder||'없음',notes:g.description||parent?.description||'',...recurrence,source:'google',googleEventId:g.id,googleRecurringEventId:g.recurringEventId||'',googleHtmlLink:g.htmlLink||parent?.htmlLink||'',googleUpdated:g.updated||'',updatedAt:g.updated||new Date().toISOString()}}
+function localFromGoogle(g,existing={},parent=null,calendarId='primary',calendarHex=''){const startRaw=g.start?.dateTime||g.start?.date||'',endRaw=g.end?.dateTime||g.end?.date||'',recurrence=parseGoogleRecurrence(g,parent),resolution=googleLabelResolution(g,existing,parent,calendarHex),{remoteLabel,remoteColorId,explicitRemoteHex,labelId,storedGoogleHex}=resolution;return{...existing,id:existing.id||g.extendedProperties?.private?.moaId||`google-${encodeURIComponent(calendarId)}-${g.id}`,title:g.summary||parent?.summary||'(제목 없음)',date:startRaw.slice(0,10),start:g.start?.dateTime?startRaw.slice(11,16):'',end:g.end?.dateTime?endRaw.slice(11,16):'',labelId,googleColorId:remoteColorId,googleColorHex:storedGoogleHex,googleCalendarId:calendarId,address:g.location||parent?.location||'',guests:(g.attendees||parent?.attendees||[]).map(x=>x.email).join(', '),reminder:existing.reminder||'없음',notes:g.description||parent?.description||'',...recurrence,source:'google',googleEventId:g.id,googleRecurringEventId:g.recurringEventId||'',googleHtmlLink:g.htmlLink||parent?.htmlLink||'',googleUpdated:g.updated||'',updatedAt:g.updated||new Date().toISOString()}}
 function applyRecurringGoogleColors(recurrenceParents){
  const groups=new Map();
  state.events.filter(event=>event.googleRecurringEventId).forEach(event=>{
-  if(!groups.has(event.googleRecurringEventId))groups.set(event.googleRecurringEventId,[]);
-  groups.get(event.googleRecurringEventId).push(event);
+  const key=`${event.googleCalendarId||'primary'}\u0000${event.googleRecurringEventId}`;
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(event);
  });
- groups.forEach((events,masterId)=>{
-  const parent=recurrenceParents.get(masterId);
+ groups.forEach((events,key)=>{
+   const calendarId=events[0]?.googleCalendarId||'primary',masterId=events[0]?.googleRecurringEventId||key.split('\u0000').pop(),parent=recurrenceParents.get(`${calendarId}\u0000${masterId}`)||recurrenceParents.get(masterId);
   const parentColorId=parent?.colorId||'';
   const parentColorHex=googleColorHex(parentColorId);
   const parentLabelId=parent?.extendedProperties?.private?.moaLabelId||'';
@@ -352,7 +354,7 @@ function applyRecurringGoogleColors(recurrenceParents){
    // 반복 일정은 Google 반복 원본 색을 전체 발생분에 적용한다. 원본에 개별색이
    // 없으면 Google 캘린더 기본색을 사용하며, 과거 로컬 기본 라벨(노랑)이
    // Google 색보다 먼저 선택되지 않도록 한다.
-   const fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'';
+    const fallbackHex=googleCalendarHex(calendarId)||(/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'');
    const groupColorId=parentColorId||instanceColorId;
    const groupColorHex=parentColorHex||instanceColorHex||savedParentLabel?.color||fallbackHex||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
   if(!groupColorHex)return;
@@ -365,30 +367,34 @@ async function syncGoogle(){
  try{
   await loadGoogleColors();await processGoogleRecurringOps();
   for(const id of [...state.googleDeletedIds]){await googleApi(`/calendars/primary/events/${encodeURIComponent(id)}`,{method:'DELETE'}).catch(error=>{if(!isGoogleMissingError(error))throw error});state.googleDeletedIds=state.googleDeletedIds.filter(x=>x!==id)}
-  const min=new Date();min.setFullYear(min.getFullYear()-1);const max=new Date();max.setFullYear(max.getFullYear()+2);const recurrenceParents=new Map();let parentPageToken='';
-  do{
-   const parentQuery=new URLSearchParams({singleEvents:'false',showDeleted:'false',maxResults:'2500'});if(parentPageToken)parentQuery.set('pageToken',parentPageToken);
-   const parentData=await googleApi(`/calendars/primary/events?${parentQuery}`);
-   for(const parent of parentData.items||[]){if(parent.status!=='cancelled'&&parent.recurrence?.length)recurrenceParents.set(parent.id,parent)}
-   parentPageToken=parentData.nextPageToken||'';
-  }while(parentPageToken);
-  let pageToken='';
-  do{
-   const query=new URLSearchParams({singleEvents:'true',showDeleted:'true',maxResults:'2500',timeMin:min.toISOString(),timeMax:max.toISOString()});if(pageToken)query.set('pageToken',pageToken);
-   const data=await googleApi(`/calendars/primary/events?${query}`);
-   for(const remote of data.items||[]){
-    const local=state.events.find(e=>e.googleEventId===remote.id||e.id===remote.extendedProperties?.private?.moaId);
-    if(remote.status==='cancelled'){if(local)state.events=state.events.filter(e=>e.id!==local.id);continue}
-    let parent=null;
-    if(remote.recurringEventId){
-     if(!recurrenceParents.has(remote.recurringEventId)){try{recurrenceParents.set(remote.recurringEventId,await googleApi(`/calendars/primary/events/${encodeURIComponent(remote.recurringEventId)}`))}catch(error){if(!isGoogleMissingError(error))throw error;recurrenceParents.set(remote.recurringEventId,null)}}
-     parent=recurrenceParents.get(remote.recurringEventId);
-    }
-    const mapped=localFromGoogle(remote,local||{},parent);if(local)Object.assign(local,mapped);else state.events.push(mapped);
+   const min=new Date();min.setFullYear(min.getFullYear()-1);const max=new Date();max.setFullYear(max.getFullYear()+2),recurrenceParents=new Map(),calendars=googleCalendars.length?googleCalendars:[{id:'primary',primary:true,backgroundColor:googleDefaultColorHex}];
+   for(const calendar of calendars){
+    const calendarId=calendar.primary?'primary':(calendar.id||'primary'),encodedCalendarId=encodeURIComponent(calendarId),calendarHex=(calendar.backgroundColor||googleCalendarHex(calendarId)||'').toUpperCase(),parentKey=id=>`${calendarId}\u0000${id}`;let parentPageToken='';
+    do{
+     const parentQuery=new URLSearchParams({singleEvents:'false',showDeleted:'false',maxResults:'2500'});if(parentPageToken)parentQuery.set('pageToken',parentPageToken);
+     const parentData=await googleApi(`/calendars/${encodedCalendarId}/events?${parentQuery}`);
+     for(const parent of parentData.items||[]){if(parent.status!=='cancelled'&&parent.recurrence?.length)recurrenceParents.set(parentKey(parent.id),parent)}
+     parentPageToken=parentData.nextPageToken||'';
+    }while(parentPageToken);
+    let pageToken='';
+    do{
+     const query=new URLSearchParams({singleEvents:'true',showDeleted:'true',maxResults:'2500',timeMin:min.toISOString(),timeMax:max.toISOString()});if(pageToken)query.set('pageToken',pageToken);
+     const data=await googleApi(`/calendars/${encodedCalendarId}/events?${query}`);
+     for(const remote of data.items||[]){
+      const local=state.events.find(e=>(e.googleCalendarId||'primary')===calendarId&&(e.googleEventId===remote.id||e.id===remote.extendedProperties?.private?.moaId));
+      if(remote.status==='cancelled'){if(local)state.events=state.events.filter(e=>e.id!==local.id);continue}
+      let parent=null;
+      if(remote.recurringEventId){
+       const key=parentKey(remote.recurringEventId);
+       if(!recurrenceParents.has(key)){try{recurrenceParents.set(key,await googleApi(`/calendars/${encodedCalendarId}/events/${encodeURIComponent(remote.recurringEventId)}`))}catch(error){if(!isGoogleMissingError(error))throw error;recurrenceParents.set(key,null)}}
+       parent=recurrenceParents.get(key);
+      }
+      const mapped=localFromGoogle(remote,local||{},parent,calendarId,calendarHex);if(local)Object.assign(local,mapped);else state.events.push(mapped);
+     }
+     pageToken=data.nextPageToken||'';
+    }while(pageToken);
    }
-   pageToken=data.nextPageToken||'';
-  }while(pageToken);
-  applyRecurringGoogleColors(recurrenceParents);repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast(`Google Calendar 반복 일정과 색상을 동기화했습니다 · 반복 원본 ${recurrenceParents.size}개`);
+   applyRecurringGoogleColors(recurrenceParents);repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast(`Google Calendar 반복 일정과 색상을 동기화했습니다 · 캘린더 ${calendars.length}개 · 반복 원본 ${recurrenceParents.size}개`);
  }catch(error){toast(error.message)}finally{button.textContent='가져오기·동기화';renderGoogleStatus()}
 }
 function bind(){
