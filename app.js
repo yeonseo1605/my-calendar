@@ -316,7 +316,14 @@ async function syncGoogle(){
  try{
   await loadGoogleColors();await processGoogleRecurringOps();
   for(const id of [...state.googleDeletedIds]){await googleApi(`/calendars/primary/events/${encodeURIComponent(id)}`,{method:'DELETE'}).catch(error=>{if(!isGoogleMissingError(error))throw error});state.googleDeletedIds=state.googleDeletedIds.filter(x=>x!==id)}
-  const min=new Date();min.setFullYear(min.getFullYear()-1);const max=new Date();max.setFullYear(max.getFullYear()+2);const recurrenceParents=new Map();let pageToken='';
+  const min=new Date();min.setFullYear(min.getFullYear()-1);const max=new Date();max.setFullYear(max.getFullYear()+2);const recurrenceParents=new Map();let parentPageToken='';
+  do{
+   const parentQuery=new URLSearchParams({singleEvents:'false',showDeleted:'false',maxResults:'2500'});if(parentPageToken)parentQuery.set('pageToken',parentPageToken);
+   const parentData=await googleApi(`/calendars/primary/events?${parentQuery}`);
+   for(const parent of parentData.items||[]){if(parent.status!=='cancelled'&&parent.recurrence?.length)recurrenceParents.set(parent.id,parent)}
+   parentPageToken=parentData.nextPageToken||'';
+  }while(parentPageToken);
+  let pageToken='';
   do{
    const query=new URLSearchParams({singleEvents:'true',showDeleted:'true',maxResults:'2500',timeMin:min.toISOString(),timeMax:max.toISOString()});if(pageToken)query.set('pageToken',pageToken);
    const data=await googleApi(`/calendars/primary/events?${query}`);
@@ -332,7 +339,7 @@ async function syncGoogle(){
    }
    pageToken=data.nextPageToken||'';
   }while(pageToken);
-  repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast('Google Calendar 반복 일정과 색상을 동기화했습니다');
+  repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast(`Google Calendar 반복 일정과 색상을 동기화했습니다 · 반복 원본 ${recurrenceParents.size}개`);
  }catch(error){toast(error.message)}finally{button.textContent='가져오기·동기화';renderGoogleStatus()}
 }
 function bind(){
