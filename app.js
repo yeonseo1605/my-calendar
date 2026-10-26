@@ -310,7 +310,44 @@ function recurrenceUntil(recurrence,effectiveDate){const untilDate=parseDate(eff
 async function processGoogleRecurringOps(){state.googleRecurringOps=state.googleRecurringOps||[];for(const op of [...state.googleRecurringOps]){try{if(op.scope==='single'){if(op.type==='delete')await googleApi(`/calendars/primary/events/${encodeURIComponent(op.instanceId)}`,{method:'DELETE'});else await googleApi(`/calendars/primary/events/${encodeURIComponent(op.instanceId)}`,{method:'PATCH',body:JSON.stringify(googleEventPayload(op.data))})}else if(op.scope==='all'){if(op.type==='delete')await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'DELETE'});else await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'PATCH',body:JSON.stringify(googleEventPayload(op.data,{includeRecurrence:true}))})}else{const master=await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`);await googleApi(`/calendars/primary/events/${encodeURIComponent(op.masterId)}`,{method:'PATCH',body:JSON.stringify({recurrence:recurrenceUntil(master.recurrence,op.effectiveDate)})});if(op.type!=='delete'){const created=await googleApi('/calendars/primary/events',{method:'POST',body:JSON.stringify(googleEventPayload(op.data,{includeRecurrence:true}))});state.events.filter(e=>e.date>=op.effectiveDate&&e.seriesId===`google-series-${op.masterId}`).forEach(e=>{e.googleRecurringEventId=created.id})}}}catch(error){if(!isGoogleMissingError(error))throw error}state.googleRecurringOps=state.googleRecurringOps.filter(item=>item.id!==op.id);save()}}
 function parseGoogleRecurrence(g,parent){const recurrence=[parent?.recurrence,g.recurrence].flat().filter(Boolean),line=recurrence.find(value=>/^\s*(?:RRULE:)?FREQ=/i.test(String(value)));if(!line)return{repeat:'none',repeatDays:[],repeatEndType:'never',repeatEndValue:'',seriesId:''};const rule=String(line).trim().replace(/^RRULE:/i,''),values=Object.fromEntries(rule.split(';').map(part=>{const index=part.indexOf('=');return[(index<0?part:part.slice(0,index)).toUpperCase(),index<0?'':part.slice(index+1).toUpperCase()]})),repeat={DAILY:'daily',WEEKLY:'weekly',MONTHLY:'monthly',YEARLY:'yearly'}[values.FREQ]||'none',repeatDays=(values.BYDAY||'').split(',').map(day=>googleWeekdayNumber[day.replace(/^[-+]?\d+/,'')]).filter(day=>day!==undefined);let repeatEndType='never',repeatEndValue='';if(values.COUNT){repeatEndType='count';repeatEndValue=values.COUNT}else if(values.UNTIL){repeatEndType='date';const raw=values.UNTIL.replace(/[^0-9]/g,'');repeatEndValue=raw.length>=8?`${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}`:''}const masterId=g.recurringEventId||parent?.id||g.id;return{repeat,repeatDays,repeatEndType,repeatEndValue,seriesId:repeat==='none'?'':`google-series-${masterId}`}}
 function repairGoogleRecurrence(){const groups=new Map();state.events.filter(event=>event.googleRecurringEventId).forEach(event=>{if(!groups.has(event.googleRecurringEventId))groups.set(event.googleRecurringEventId,[]);groups.get(event.googleRecurringEventId).push(event)});groups.forEach((items,masterId)=>{if(items.some(item=>item.repeat&&item.repeat!=='none'))return;const sorted=items.slice().sort((a,b)=>a.date.localeCompare(b.date)),dates=[...new Set(sorted.map(item=>item.date))].map(parseDate);if(dates.length<2)return;const gaps=dates.slice(1).map((date,index)=>Math.round((date-dates[index])/86400000)),sameMonthDay=dates.every(date=>date.getMonth()===dates[0].getMonth()&&date.getDate()===dates[0].getDate()),sameDay=dates.every(date=>date.getDate()===dates[0].getDate());let repeat='none';if(gaps.every(gap=>gap===1))repeat='daily';else if(sameMonthDay&&gaps.every(gap=>gap>=360&&gap<=370))repeat='yearly';else if(sameDay&&gaps.every(gap=>gap>=27&&gap<=32))repeat='monthly';else if(gaps.every(gap=>gap>0&&gap<=7))repeat='weekly';if(repeat==='none')return;const repeatDays=repeat==='weekly'?[...new Set(dates.map(date=>date.getDay()))]:[];items.forEach(item=>Object.assign(item,{repeat,repeatDays,repeatEndType:'never',repeatEndValue:'',seriesId:`google-series-${masterId}`}))})}
-function localFromGoogle(g,existing={},parent=null){const startRaw=g.start?.dateTime||g.start?.date||'',endRaw=g.end?.dateTime||g.end?.date||'',remoteLabel=g.extendedProperties?.private?.moaLabelId||parent?.extendedProperties?.private?.moaLabelId,recurrence=parseGoogleRecurrence(g,parent),remoteColorId=g.colorId||parent?.colorId||'',explicitRemoteHex=googleColorHex(remoteColorId),matchedRemoteLabel=state.labels.find(label=>label.id===remoteLabel),hasExistingLabel=state.labels.some(label=>label.id===existing.labelId),fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'',visibleGoogleHex=explicitRemoteHex||fallbackHex,labelId=visibleGoogleHex?nearestLabelId(visibleGoogleHex):(matchedRemoteLabel?remoteLabel:(hasExistingLabel?existing.labelId:'노랑-5')),storedGoogleHex=visibleGoogleHex||(matchedRemoteLabel?.color||'');if(/살사|바차타|뮤즈|회식|쥬크|키좀바|라르고/i.test(g.summary||parent?.summary||''))console.info('GOOGLE_COLOR_DEBUG',{summary:g.summary||parent?.summary,eventId:g.id,recurringEventId:g.recurringEventId||'',eventColorId:g.colorId||'',parentColorId:parent?.colorId||'',remoteColorId,explicitRemoteHex,fallbackHex,remoteLabel,existingLabelId:existing.labelId||'',resolvedLabelId:labelId});return{...existing,id:existing.id||g.extendedProperties?.private?.moaId||`google-${g.id}`,title:g.summary||parent?.summary||'(제목 없음)',date:startRaw.slice(0,10),start:g.start?.dateTime?startRaw.slice(11,16):'',end:g.end?.dateTime?endRaw.slice(11,16):'',labelId,googleColorId:remoteColorId,googleColorHex:storedGoogleHex,address:g.location||parent?.location||'',guests:(g.attendees||parent?.attendees||[]).map(x=>x.email).join(', '),reminder:existing.reminder||'없음',notes:g.description||parent?.description||'',...recurrence,source:'google',googleEventId:g.id,googleRecurringEventId:g.recurringEventId||'',googleHtmlLink:g.htmlLink||parent?.htmlLink||'',googleUpdated:g.updated||'',updatedAt:g.updated||new Date().toISOString()}}
+function googleLabelResolution(g,existing={},parent=null){
+ const remoteLabel=g.extendedProperties?.private?.moaLabelId||parent?.extendedProperties?.private?.moaLabelId||'';
+ const remoteColorId=g.colorId||parent?.colorId||'';
+ const explicitRemoteHex=googleColorHex(remoteColorId);
+ const matchedRemoteLabel=state.labels.find(label=>label.id===remoteLabel);
+ const existingLabel=state.labels.find(label=>label.id===existing.labelId);
+ const fallbackHex=/^#[0-9a-f]{6}$/i.test(googleDefaultColorHex)?googleDefaultColorHex:'';
+ // Google에서 직접 지정한 일정/반복 원본 색을 최우선으로 사용한다.
+ // 색이 없는 일정은 My Calendar의 숨겨진 라벨 또는 기존 라벨을 보존하고,
+ // 둘 다 없을 때만 Google 기본 캘린더 색을 사용한다.
+ const visibleGoogleHex=explicitRemoteHex||matchedRemoteLabel?.color||existingLabel?.color||fallbackHex;
+ return{
+  remoteLabel,
+  remoteColorId,
+  explicitRemoteHex,
+  labelId:explicitRemoteHex?nearestLabelId(explicitRemoteHex):(matchedRemoteLabel?.id||existingLabel?.id||(fallbackHex?nearestLabelId(fallbackHex):'노랑-5')),
+  storedGoogleHex:visibleGoogleHex||''
+ };
+}
+function localFromGoogle(g,existing={},parent=null){const startRaw=g.start?.dateTime||g.start?.date||'',endRaw=g.end?.dateTime||g.end?.date||'',recurrence=parseGoogleRecurrence(g,parent),resolution=googleLabelResolution(g,existing,parent),{remoteLabel,remoteColorId,explicitRemoteHex,labelId,storedGoogleHex}=resolution;if(/살사|바차타|뮤즈|회식|쥬크|키좀바|라르고/i.test(g.summary||parent?.summary||''))console.info('GOOGLE_COLOR_DEBUG',{summary:g.summary||parent?.summary,eventId:g.id,recurringEventId:g.recurringEventId||'',eventColorId:g.colorId||'',parentColorId:parent?.colorId||'',remoteColorId,explicitRemoteHex,remoteLabel,existingLabelId:existing.labelId||'',resolvedLabelId:labelId});return{...existing,id:existing.id||g.extendedProperties?.private?.moaId||`google-${g.id}`,title:g.summary||parent?.summary||'(제목 없음)',date:startRaw.slice(0,10),start:g.start?.dateTime?startRaw.slice(11,16):'',end:g.end?.dateTime?endRaw.slice(11,16):'',labelId,googleColorId:remoteColorId,googleColorHex:storedGoogleHex,address:g.location||parent?.location||'',guests:(g.attendees||parent?.attendees||[]).map(x=>x.email).join(', '),reminder:existing.reminder||'없음',notes:g.description||parent?.description||'',...recurrence,source:'google',googleEventId:g.id,googleRecurringEventId:g.recurringEventId||'',googleHtmlLink:g.htmlLink||parent?.htmlLink||'',googleUpdated:g.updated||'',updatedAt:g.updated||new Date().toISOString()}}
+function applyRecurringGoogleColors(recurrenceParents){
+ const groups=new Map();
+ state.events.filter(event=>event.googleRecurringEventId).forEach(event=>{
+  if(!groups.has(event.googleRecurringEventId))groups.set(event.googleRecurringEventId,[]);
+  groups.get(event.googleRecurringEventId).push(event);
+ });
+ groups.forEach((events,masterId)=>{
+  const parent=recurrenceParents.get(masterId);
+  const parentColorId=parent?.colorId||'';
+  const parentColorHex=googleColorHex(parentColorId);
+  const parentLabelId=parent?.extendedProperties?.private?.moaLabelId||'';
+  const savedParentLabel=state.labels.find(label=>label.id===parentLabelId);
+  const groupColorHex=parentColorHex||savedParentLabel?.color||events.find(event=>/^#[0-9a-f]{6}$/i.test(event.googleColorHex||''))?.googleColorHex||'';
+  if(!groupColorHex)return;
+  const groupLabelId=parentColorHex?nearestLabelId(parentColorHex):(savedParentLabel?.id||nearestLabelId(groupColorHex));
+  events.forEach(event=>{event.labelId=groupLabelId;event.googleColorId=parentColorId||event.googleColorId||'';event.googleColorHex=groupColorHex});
+ });
+}
 async function syncGoogle(){
  const button=$('#googleSyncBtn');button.disabled=true;button.textContent='동기화 중…';
  try{
@@ -339,7 +376,7 @@ async function syncGoogle(){
    }
    pageToken=data.nextPageToken||'';
   }while(pageToken);
-  repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast(`Google Calendar 반복 일정과 색상을 동기화했습니다 · 반복 원본 ${recurrenceParents.size}개`);
+  applyRecurringGoogleColors(recurrenceParents);repairGoogleRecurrence();state.googleLastSync=new Date().toISOString();save();render();toast(`Google Calendar 반복 일정과 색상을 동기화했습니다 · 반복 원본 ${recurrenceParents.size}개`);
  }catch(error){toast(error.message)}finally{button.textContent='가져오기·동기화';renderGoogleStatus()}
 }
 function bind(){
