@@ -81,7 +81,7 @@
       provider: 'google',
       options: {
         redirectTo,
-        scopes: 'openid email profile https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+        scopes: 'openid email profile https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.calendarlist.readonly https://www.googleapis.com/auth/calendar.calendars.readonly',
         queryParams: { access_type: 'offline', prompt: 'consent' }
       }
     });
