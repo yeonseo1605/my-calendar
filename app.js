@@ -377,6 +377,12 @@ function googleRemoteAppearance(source,calendarId){
  const eventLabelId=String(source?.eventLabelId||'').trim(),hasEventLabel=!!eventLabelId,eventLabel=googleEventLabelInfo(calendarId,eventLabelId),colorId=String(source?.colorId||'').trim();
  return{hasEventLabel,eventLabelId,eventLabelName:eventLabel?.name||'',eventLabelHex:eventLabel?.backgroundColor||'',colorId,colorHex:googleColorHex(colorId)};
 }
+function googleEffectiveRecurringEvent(event,parent){
+ if(!parent)return event;
+ const parentPrivate=parent.extendedProperties?.private||{},eventPrivate=event.extendedProperties?.private||{},mergedPrivate={...parentPrivate};
+ for(const [key,value] of Object.entries(eventPrivate)){if(value!==''&&value!=null)mergedPrivate[key]=value}
+ return{...event,colorId:String(event.colorId||parent.colorId||''),eventLabelId:String(event.eventLabelId||parent.eventLabelId||''),extendedProperties:{...(parent.extendedProperties||{}),...(event.extendedProperties||{}),private:mergedPrivate}};
+}
 function googleLabelResolution(g,existing={},parent=null,calendarId='primary',calendarHex=''){
  const remoteLabel=g.extendedProperties?.private?.moaLabelId||parent?.extendedProperties?.private?.moaLabelId||'',direct=googleRemoteAppearance(g,calendarId),inherited=googleRemoteAppearance(parent,calendarId);
  const preservedEventLabelHex=eventLabelId=>existing.googleEventLabelId===eventLabelId&&/^#[0-9a-f]{6}$/i.test(existing.googleColorHex||'')?existing.googleColorHex.toUpperCase():'';
@@ -432,7 +438,7 @@ async function syncGoogle(){
        if(!recurrenceParents.has(key)){try{recurrenceParents.set(key,await googleApi(`/calendars/${encodedCalendarId}/events/${encodeURIComponent(remote.recurringEventId)}`))}catch(error){if(!isGoogleMissingError(error))throw error;recurrenceParents.set(key,null)}}
        parent=recurrenceParents.get(key);
       }
-      const mapped=localFromGoogle(remote,local||{},parent,calendarId,calendarHex);if(local)Object.assign(local,mapped);else state.events.push(mapped);
+const effectiveRemote=googleEffectiveRecurringEvent(remote,parent);const mapped=localFromGoogle(effectiveRemote,local||{},parent,calendarId,calendarHex);if(local)Object.assign(local,mapped);else state.events.push(mapped);
      }
      pageToken=data.nextPageToken||'';
     }while(pageToken);
