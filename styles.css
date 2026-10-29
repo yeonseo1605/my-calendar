@@ -720,7 +720,7 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 
 /* Google 공휴일은 사용자 라벨이 아닌 읽기 전용 시스템 일정으로 표시합니다. */
 :root{--holiday-color:#E06473}
-.day-cell.has-holiday:not(.today):not(.selected)>.day-number{color:var(--holiday-color)!important}
+#monthGrid .day-cell.has-holiday .day-number{color:var(--holiday-color)!important}
 .event-chip.holiday-event{
   padding-left:4px!important;
   border:0!important;
@@ -754,9 +754,9 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .picker-grid{gap:7px!important}
 .picker-grid b{padding:7px 3px!important;font-size:12px!important}
 .picker-grid button{height:42px!important;border-radius:11px!important;font-size:15px!important}
-.picker-grid .sunday{color:var(--holiday-color)}
+.picker-grid .sunday,#datePickerPanel .picker-grid button.holiday-date{color:var(--holiday-color)!important}
 .picker-grid .saturday{color:#7896E8}
-.picker-grid button.selected{color:#fff!important}
+.picker-grid button.selected:not(.holiday-date){color:#fff!important}
 @media(max-width:520px){
   .date-picker-panel{width:calc(100vw - 20px)!important;padding:14px!important}
   .picker-grid{gap:4px!important}

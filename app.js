@@ -34,6 +34,8 @@ defaults.themeTone='medium';
 Object.assign(defaults,{themeControlColor:'#3158B8',themeControlBrightness:50,themeControlOpacity:0});
 const hadStoredState=!!localStorage.getItem(STORE);
 let state=load();
+function syncedStateFingerprint(payload){const copy=structuredClone(payload||{});delete copy.current;delete copy.dataUpdatedAt;delete copy.googleLastSync;delete copy.googleSetupComplete;return JSON.stringify(copy)}
+let lastSavedSyncFingerprint='';
 if(!state.themeBleedSemanticsV1){
  if(hadStoredState){
   state.themeOpacity=100-Math.max(0,Math.min(100,Number(state.themeOpacity??100)));
@@ -48,7 +50,8 @@ if(!state.systemThemeDefaultOffV1){
  state.systemThemeDefaultOffV1=true;
  localStorage.setItem(STORE,JSON.stringify(state));
 }
-let currentDate=new Date(`${state.current}T00:00:00`), sidebarLabelFilter=new URLSearchParams(location.search).get('label')||'', currentView=sidebarLabelFilter?'list':'month', labelPageActive=!!sidebarLabelFilter, searchPageActive=false, searchField='all', mobileActiveView='home', pendingAction=null, selectedSearchIds=new Set(), selectedSearchLabelIds=new Set();
+lastSavedSyncFingerprint=syncedStateFingerprint(state);
+let currentDate=new Date(), sidebarLabelFilter=new URLSearchParams(location.search).get('label')||'', currentView=sidebarLabelFilter?'list':'month', labelPageActive=!!sidebarLabelFilter, searchPageActive=false, searchField='all', mobileActiveView='home', pendingAction=null, selectedSearchIds=new Set(), selectedSearchLabelIds=new Set();
 let bulkSelectionSignature='',bulkDirtyFields=new Set(),bulkLabelDirty=false;
 let themePreviewSnapshot=null,themePreviewDirty=false;
 let labelManagementOpen=false;
@@ -61,11 +64,11 @@ function saveThemePreview(){if(!themePreviewDirty)return;const committed=Object.
 function cancelThemePreview(showMessage=true,restart=false){if(!themePreviewSnapshot)return;themePreviewKeys.forEach(key=>state[key]=structuredClone(themePreviewSnapshot[key]));themePreviewSnapshot=null;themePreviewDirty=false;applyTheme();renderSettings();save();if(restart)captureThemePreview();updateThemePreviewActions();if(showMessage)toast('저장하지 않은 화면 색상 변경을 취소했습니다')}
 let searchColumnFilters={},searchTableSort={key:'date',dir:'asc'},lastSearchBaseEvents=[],themePresetDeleteMode=false;
 let googleAccessToken='',googleTokenClient=null,googleTokenClientId='',googleTokenExpiresAt=0,pendingGoogleAction=null,googleAuthWatchdog=0,googleIdentityPromise=null;
-let cloudReady=false,autoSyncRunning=false;
+let cloudReady=false,autoSyncRunning=false,cloudKeptNewerLocalState=false;
 const systemThemeMedia=window.matchMedia('(prefers-color-scheme: dark)');
 function handleSystemThemeChange(){if(!state.themeFollowSystem)return;applyTheme();if(!$('#settingsDrawer')?.classList.contains('hidden'))renderSettings()}
 function load(){try{const stored=JSON.parse(localStorage.getItem(STORE)||'{}'),merged={...defaults,...stored};if(!merged.googleClientId)merged.googleClientId=GOOGLE_CLIENT_ID;if(!stored.themeColor){const oldColors={charcoal:'#20242D',navy:'#202938',warm:'#2D2927',black:'#111318'};merged.themeColor=oldColors[stored.darkColor]||defaults.themeColor;merged.themeBrightness=Number.isFinite(+stored.darkIntensity)?+stored.darkIntensity:defaults.themeBrightness;merged.themeBrightnessByColor={...defaults.themeBrightnessByColor,[merged.themeColor]:merged.themeBrightness}}if(!stored.presetPaletteV2){merged.themePresets=[...defaults.themePresets];merged.themeBrightnessByColor={...(merged.themeBrightnessByColor||{}),...defaults.themeBrightnessByColor};merged.presetPaletteV2=true}if(!Number.isFinite(+merged.eventFontSize))merged.eventFontSize=stored.fontSize==='small'?85:stored.fontSize==='large'?120:100;const personalLabel=(merged.labels||[]).find(label=>label.id==='노랑-5');if(personalLabel)personalLabel.name='내 일정';if(!stored.sampleEventsRemoved){const sampleIds=new Set(['e1','e2','e3','e4','e5','e6','e7']);merged.events=(merged.events||[]).filter(event=>!sampleIds.has(event.id));merged.sampleEventsRemoved=true}localStorage.setItem(STORE,JSON.stringify(merged));return merged}catch{const clean=structuredClone(defaults);clean.events=[];clean.sampleEventsRemoved=true;localStorage.setItem(STORE,JSON.stringify(clean));return clean}}
-function save(){state.current=dateStr(currentDate);const persisted=structuredClone(state);if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persisted[key]=structuredClone(themePreviewSnapshot[key]));localStorage.setItem(STORE,JSON.stringify(persisted));window.MyCalendarCloud?.queueSave(persisted)}
+function save(){state.current=dateStr(currentDate);const persisted=structuredClone(state);if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persisted[key]=structuredClone(themePreviewSnapshot[key]));const fingerprint=syncedStateFingerprint(persisted),syncChanged=fingerprint!==lastSavedSyncFingerprint;if(syncChanged){const changedAt=new Date().toISOString();state.dataUpdatedAt=changedAt;persisted.dataUpdatedAt=changedAt;lastSavedSyncFingerprint=fingerprint}localStorage.setItem(STORE,JSON.stringify(persisted));if(syncChanged)window.MyCalendarCloud?.queueSave(persisted)}
 function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function parseDate(s){return new Date(`${s}T00:00:00`)}
 function setEndOneHourAfterStart(){const value=$('#startTime').value;if(!/^\d{2}:\d{2}$/.test(value))return;const [hour,minute]=value.split(':').map(Number),total=(hour*60+minute+60)%1440;$('#endTime').value=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
@@ -194,7 +197,7 @@ function visibleEvents(){const q=(searchPageActive?$('#detailSearchInput').value
 function renderCalendar(){const y=currentDate.getFullYear(),m=currentDate.getMonth(),query=(searchPageActive?$('#detailSearchInput').value:$('#globalSearch').value).trim(),events=visibleEvents(),searching=searchPageActive||!!query,labelViewing=labelPageActive&&!!sidebarLabelFilter,resultsMode=searching||labelViewing;$('#searchWorkspace').classList.toggle('hidden',!searchPageActive);$('#labelWorkspace').classList.toggle('hidden',!labelPageActive);$('#searchResults').classList.toggle('hidden',!resultsMode);$('.calendar-card').classList.toggle('hidden',resultsMode||labelPageActive||searchPageActive);$('#viewRange').classList.toggle('hidden',resultsMode||labelPageActive||searchPageActive);if(labelPageActive&&!sidebarLabelFilter){$('#searchResults').classList.add('hidden');return}if(resultsMode){$('#resultCount').textContent=labelViewing?`${labelOf(sidebarLabelFilter).name} 일정 ${events.length}개`:`검색 결과 ${events.length}개`;renderSearchResults(events);return}renderViewRange();let rangeEvents=events;if(currentView==='month'||currentView==='list')rangeEvents=events.filter(e=>{const d=parseDate(e.date);return d.getFullYear()===y&&d.getMonth()===m});else if(currentView==='day')rangeEvents=events.filter(e=>e.date===dateStr(currentDate));else if(currentView==='week'){const start=new Date(currentDate);start.setDate(currentDate.getDate()-currentDate.getDay());const end=new Date(start);end.setDate(start.getDate()+6);rangeEvents=events.filter(e=>{const d=parseDate(e.date);return d>=start&&d<=end})}$('#resultCount').textContent=`일정 ${rangeEvents.length}개`;$('#monthGrid').classList.toggle('hidden',currentView!=='month');$('#agendaView').classList.toggle('hidden',currentView==='month');if(currentView!=='month'){renderAgenda(rangeEvents);return}const first=new Date(y,m,1),start=new Date(y,m,1-first.getDay()),today=dateStr(new Date()),selected=dateStr(currentDate);let html='';for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=dateStr(d),dayEvents=events.filter(e=>e.date===ds),hasHoliday=dayEvents.some(isHolidayEvent);html+=`<div class="day-cell ${d.getMonth()!==m?'other':''} ${ds===today?'today':''} ${ds===selected?'selected':''} ${hasHoliday?'has-holiday':''}" data-date="${ds}"><span class="day-number">${d.getDate()}</span><div>${dayEvents.slice(0,4).map(eventHtml).join('')}${dayEvents.length>4?`<div class="event-chip marker" style="--label-color:var(--accent)">+${dayEvents.length-4}개</div>`:''}</div></div>`}$('#monthGrid').innerHTML=html;bindCalendarEvents();$$('.day-cell').forEach(el=>{el.onclick=()=>{currentDate=parseDate(el.dataset.date);render()};el.ondragover=e=>{e.preventDefault();el.classList.add('drop-hover')};el.ondragleave=()=>el.classList.remove('drop-hover');el.ondrop=e=>{e.preventDefault();e.stopPropagation();el.classList.remove('drop-hover');moveEvent(e.dataTransfer.getData('text/plain'),el.dataset.date)}})}
 function bindCalendarEvents(){$$('.event-chip[data-id]').forEach(el=>{el.onclick=e=>{e.stopPropagation();openEvent(el.dataset.id)};el.ondragstart=e=>{e.stopPropagation();e.dataTransfer.setData('text/plain',el.dataset.id);el.classList.add('dragging')};el.ondragend=()=>el.classList.remove('dragging')})}
 function renderViewRange(){const y=currentDate.getFullYear(),m=currentDate.getMonth(),day=currentDate.getDate(),week=['일','월','화','수','목','금','토'],title=$('#viewRangeTitle');if(currentView==='week'){const start=new Date(currentDate);start.setDate(day-currentDate.getDay());const end=new Date(start);end.setDate(start.getDate()+6);title.textContent=`${start.getFullYear()}년 ${start.getMonth()+1}월 ${start.getDate()}일–${end.getMonth()+1}월 ${end.getDate()}일`}else if(currentView==='day')title.textContent=`${y}년 ${m+1}월 ${day}일 (${week[currentDate.getDay()]})`;else if(currentView==='list')title.textContent=`${y}년 ${m+1}월`;else title.textContent=`${y}년 ${m+1}월`;title.classList.toggle('holiday-range',currentView==='day'&&state.events.some(event=>event.date===dateStr(currentDate)&&isHolidayEvent(event)));renderDatePickerPanel()}
-function renderDatePickerPanel(){const panel=$('#datePickerPanel'),y=currentDate.getFullYear(),m=currentDate.getMonth(),start=new Date(y,m,1-new Date(y,m,1).getDay());let html=`<div class="picker-head"><strong>${y}년 ${m+1}월</strong><button type="button" data-picker-close>닫기</button></div><div class="picker-grid">${['일','월','화','수','목','금','토'].map((x,i)=>`<b class="${i===0?'sunday':i===6?'saturday':''}">${x}</b>`).join('')}`;for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);html+=`<button type="button" data-picker-date="${dateStr(d)}" class="${d.getMonth()!==m?'muted':''} ${dateStr(d)===dateStr(currentDate)?'selected':''} ${d.getDay()===0?'sunday':d.getDay()===6?'saturday':''}">${d.getDate()}</button>`}panel.innerHTML=html+'</div>';panel.querySelector('[data-picker-close]').onclick=()=>panel.classList.add('hidden');panel.querySelectorAll('[data-picker-date]').forEach(btn=>btn.onclick=()=>{currentDate=parseDate(btn.dataset.pickerDate);currentView='month';searchPageActive=false;labelPageActive=false;sidebarLabelFilter='';panel.classList.add('hidden');render()})}
+function renderDatePickerPanel(){const panel=$('#datePickerPanel'),y=currentDate.getFullYear(),m=currentDate.getMonth(),start=new Date(y,m,1-new Date(y,m,1).getDay());let html=`<div class="picker-head"><strong>${y}년 ${m+1}월</strong><button type="button" data-picker-close>닫기</button></div><div class="picker-grid">${['일','월','화','수','목','금','토'].map((x,i)=>`<b class="${i===0?'sunday':i===6?'saturday':''}">${x}</b>`).join('')}`;for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const dayKey=dateStr(d),holiday=state.events.some(event=>event.date===dayKey&&isHolidayEvent(event));html+=`<button type="button" data-picker-date="${dayKey}" class="${d.getMonth()!==m?'muted':''} ${dayKey===dateStr(currentDate)?'selected':''} ${holiday?'holiday-date':d.getDay()===0?'sunday':d.getDay()===6?'saturday':''}">${d.getDate()}</button>`}panel.innerHTML=html+'</div>';panel.querySelector('[data-picker-close]').onclick=()=>panel.classList.add('hidden');panel.querySelectorAll('[data-picker-date]').forEach(btn=>btn.onclick=()=>{currentDate=parseDate(btn.dataset.pickerDate);currentView='month';searchPageActive=false;labelPageActive=false;sidebarLabelFilter='';panel.classList.add('hidden');render()})}
 function repeatText(value){return({none:'반복 안 함',daily:'매일',weekly:'매주',monthly:'매월',yearly:'매년'})[value]||value||'반복 안 함'}
 function searchColumnValue(event,key){if(key==='label')return eventLabelName(event);if(key==='time')return event.start||'종일';if(key==='address')return event.address||'등록된 주소 없음';if(key==='guests')return event.guests||'참석자 없음';if(key==='repeat')return repeatText(event.repeat);if(key==='reminder')return event.reminder||'알림 없음';return event[key]||'-'}
 function filteredSearchEvents(events){return events.filter(event=>Object.entries(searchColumnFilters).every(([key,values])=>values.has(searchColumnValue(event,key)))).sort((a,b)=>{const av=searchColumnValue(a,searchTableSort.key),bv=searchColumnValue(b,searchTableSort.key),result=av.localeCompare(bv,'ko',{numeric:true});return searchTableSort.dir==='desc'?-result:result})}
@@ -493,6 +496,14 @@ async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
   const result=await window.MyCalendarCloud.init(async remote=>{
+   const localStamp=Date.parse(state.dataUpdatedAt||'')||0,remoteStamp=Date.parse(remote?.dataUpdatedAt||'')||0;
+   if(localStamp>remoteStamp){
+    cloudKeptNewerLocalState=true;
+    const newerLocal=structuredClone(state);
+    setTimeout(()=>window.MyCalendarCloud?.queueSave(newerLocal),0);
+    render({persist:false});
+    return;
+   }
    const activeThemeDraft=themePreviewDirty?Object.fromEntries(themePreviewKeys.map(key=>[key,structuredClone(state[key])])):null;
    state={...defaults,...remote};
    if(activeThemeDraft){
@@ -503,16 +514,16 @@ async function initializeCloud(){
     state.themeFollowSystem=false;
     state.systemThemeDefaultOffV1=true;
    }
-   currentDate=parseDate(state.current||defaults.current);
    const persistedRemote=structuredClone(state);
    if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persistedRemote[key]=structuredClone(themePreviewSnapshot[key]));
+   lastSavedSyncFingerprint=syncedStateFingerprint(persistedRemote);
    localStorage.setItem(STORE,JSON.stringify(persistedRemote));
    render({persist:false});
   });
   cloudReady=!!result.configured;renderAccount(result.user||null);
   if(result.providerToken){googleAccessToken=result.providerToken;googleTokenExpiresAt=Date.now()+50*60*1000;state.googleSetupComplete=true;renderGoogleStatus();setTimeout(()=>resumeGoogleAction(),300)}
   if(result.signedIn&&!result.hadRemote){window.MyCalendarCloud.queueSave(structuredClone(state));toast('이 기기의 캘린더를 클라우드에 저장했습니다')}
-  else if(result.signedIn&&result.hadRemote)toast('클라우드 캘린더를 불러왔습니다');
+  else if(result.signedIn&&result.hadRemote)toast(cloudKeptNewerLocalState?'이 기기의 최신 변경을 클라우드에 보존했습니다':'클라우드 캘린더를 불러왔습니다');
   // 로그인 복원만으로 동기화를 시작하지 않습니다. Google 작업은 사용자가 누른 버튼만 실행합니다.
  }catch(error){cloudReady=true;renderAccount();console.error('My Calendar cloud initialization failed:',error);toast('클라우드 연결에 실패했습니다')}
 }
