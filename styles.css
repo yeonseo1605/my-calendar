@@ -717,3 +717,48 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .google-disconnect-action{background:transparent!important;border:1px solid #ef5b68!important;color:#ef5b68!important}
 .google-action-row .btn:disabled{opacity:.42!important;filter:saturate(.35);cursor:not-allowed}
 @media(max-width:520px){.google-action-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Google 공휴일은 사용자 라벨이 아닌 읽기 전용 시스템 일정으로 표시합니다. */
+:root{--holiday-color:#E06473}
+.day-cell.has-holiday:not(.today):not(.selected)>.day-number{color:var(--holiday-color)!important}
+.event-chip.holiday-event{
+  padding-left:4px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--holiday-color)!important;
+  font-weight:800!important;
+  cursor:default!important;
+  box-shadow:none!important;
+  pointer-events:none
+}
+.event-chip.holiday-event::before{display:none!important}
+.holiday-title{color:var(--holiday-color)!important;font-weight:850!important}
+.range-title.holiday-range{color:var(--holiday-color)!important}
+.timeline-heads button.has-holiday b,.timeline-heads button.has-holiday span{color:var(--holiday-color)!important}
+.search-result-row.holiday-row{cursor:default}
+.search-result-row.holiday-row .search-label{min-height:1px}
+.agenda-list section.has-holiday>h3{color:var(--holiday-color)}
+.agenda-list-row.holiday-row{cursor:default}
+.agenda-list-row.holiday-row time{color:var(--holiday-color)}
+.timeline-event.holiday-event{border-color:color-mix(in srgb,var(--holiday-color) 48%,transparent);background:color-mix(in srgb,var(--holiday-color) 10%,transparent);color:var(--holiday-color);cursor:default}
+.today-mini.holiday-row,.widget-item.holiday-row{cursor:default}
+
+/* 연·월 선택기는 달력을 한눈에 보고 월간 화면으로 이동할 수 있는 크기로 유지합니다. */
+.date-picker-panel{
+  width:min(430px,calc(100vw - 32px))!important;
+  padding:20px!important;
+  border-radius:18px!important
+}
+.picker-head{margin-bottom:14px!important;font-size:17px}
+.picker-head button{min-width:48px;padding:7px 9px;border-radius:9px!important}
+.picker-grid{gap:7px!important}
+.picker-grid b{padding:7px 3px!important;font-size:12px!important}
+.picker-grid button{height:42px!important;border-radius:11px!important;font-size:15px!important}
+.picker-grid .sunday{color:var(--holiday-color)}
+.picker-grid .saturday{color:#7896E8}
+.picker-grid button.selected{color:#fff!important}
+@media(max-width:520px){
+  .date-picker-panel{width:calc(100vw - 20px)!important;padding:14px!important}
+  .picker-grid{gap:4px!important}
+  .picker-grid button{height:38px!important;font-size:14px!important}
+}
