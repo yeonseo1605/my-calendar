@@ -20,9 +20,10 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=180">
+  <link rel="stylesheet" href="styles.css?v=181">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script src="config.js" onerror="this.remove()"></script>
   <script src="cloud-store.js?v=6"></script>
 </head>
@@ -126,11 +127,11 @@
         <label><span>시작</span><input id="bulkStart" type="time"></label>
         <label><span>종료</span><input id="bulkEnd" type="time"></label>
         <label class="bulk-wide"><span>반복</span><select id="bulkRepeat"><option value="">기존 반복 유지</option><option value="none">반복 안 함</option><option value="daily">매일</option><option value="weekly">매주</option><option value="monthly">매월</option><option value="yearly">매년</option></select></label>
-        <label class="bulk-wide"><span>주소</span><div class="bulk-input-action"><input id="bulkAddress" placeholder="기존 주소 유지"><button type="button" class="btn secondary" id="bulkMapBtn">지도 검색</button></div></label>
+        <label class="bulk-wide"><span>주소</span><div class="bulk-input-action"><input id="bulkAddress" placeholder="기존 주소 유지"><button type="button" class="btn secondary" id="bulkMapBtn">주소 검색</button></div></label>
+        <label class="bulk-wide"><span>상세 주소</span><input id="bulkAddressDetail" placeholder="기존 상세 주소 유지"></label>
         <div class="map-preview bulk-map-preview bulk-wide hidden" id="bulkMapPreview">
-          <div class="map-pin">●</div>
+          <iframe id="bulkMapFrame" title="선택한 주소 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           <strong id="bulkMapAddressText"></strong>
-          <button type="button" class="text-btn" id="bulkOpenNaverMapBtn">네이버 지도에서 보기 ↗</button>
         </div>
         <label class="bulk-wide"><span>참석자</span><input id="bulkGuests" placeholder="기존 참석자 유지"></label>
         <label class="bulk-wide"><span>화상회의</span><input id="bulkVideo" placeholder="기존 회의 링크 유지"></label>
@@ -182,8 +183,10 @@
       </div>
       <div class="field map-field">
         <label for="eventAddress"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></span><span class="event-field-name">주소</span></label>
-        <div class="input-action"><input id="eventAddress" placeholder="주소를 입력하세요"><button type="button" class="btn secondary" id="mapPreviewBtn">지도</button></div>
-        <div class="map-preview hidden" id="mapPreview"><div class="map-pin">●</div><strong id="mapAddressText"></strong><button type="button" class="text-btn" id="openNaverMapBtn">네이버 지도에서 보기 ↗</button></div>
+        <div class="input-action"><input id="eventAddress" placeholder="주소를 입력하세요"><button type="button" class="btn secondary" id="mapPreviewBtn">주소 검색</button></div>
+        <label for="eventAddressDetail" class="detail-address-label"><span class="event-field-name">상세 주소</span></label>
+        <input id="eventAddressDetail" class="detail-address-input" placeholder="건물명, 층, 호수, 회의실 등을 입력하세요">
+        <div class="map-preview hidden" id="mapPreview"><iframe id="eventMapFrame" title="선택한 주소 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><strong id="mapAddressText"></strong></div>
       </div>
       <div class="field"><label for="eventGuests"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8M16 8h6M19 5v6"/></svg></span><span class="event-field-name">참석자</span></label><input id="eventGuests" placeholder="이름 또는 이메일, 쉼표로 구분"></div>
       <div class="field"><label for="eventVideo"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m16 13 5 3V8l-5 3M3 6h13v12H3z"/></svg></span><span class="event-field-name">화상회의</span></label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
@@ -237,6 +240,13 @@
 
   <div class="modal hidden" id="infoModal"><div class="modal-card integration-modal"><h2>외부 캘린더 연결</h2><section class="integration-card"><div class="integration-title"><span class="external-mark google-mark">G</span><div><strong>Google Calendar</strong><small id="googleConnectionStatus">연결되지 않음</small></div></div><label class="field"><span>OAuth 클라이언트 ID</span><input id="googleClientId" placeholder="123456789-xxxx.apps.googleusercontent.com"></label><p class="setting-help">Google Cloud에서 웹 애플리케이션 OAuth 클라이언트를 만들고 현재 주소를 승인된 JavaScript 원본으로 등록하세요. 연결되지 않은 상태에서는 선택한 작업을 누르면 로그인 후 자동으로 계속됩니다.</p><div class="settings-buttons google-action-row"><button class="btn google-send-action" id="googleUploadBtn">Google로 보내기</button><button class="btn google-sync-action" id="googleSyncBtn">가져오기·동기화</button><button class="btn google-disconnect-action hidden" id="googleDisconnectBtn">연결 해제</button></div><small class="sync-status" id="googleLastSync">동기화 기록 없음</small></section><section class="integration-card"><div class="integration-title"><span class="external-mark naver-mark">N</span><div><strong>네이버 캘린더 일정 가져오기</strong><small>ICS 파일 사용</small></div></div><p class="setting-help">네이버 캘린더에서 내보낸 ICS 파일을 선택하면 일정을 My Calendar로 가져옵니다.</p><div class="settings-buttons"><label class="btn primary import-label">네이버 일정 가져오기<input type="file" id="icsImportInput" accept=".ics,text/calendar"></label><button class="btn secondary" id="icsExportBtn">My Calendar ICS 내보내기</button></div></section><button class="btn primary full-btn" id="closeInfoBtn">확인</button></div></div>
 
+  <div class="modal hidden" id="addressSearchModal" role="dialog" aria-modal="true" aria-labelledby="addressSearchTitle">
+    <div class="modal-card address-search-card">
+      <div class="address-search-head"><div><h2 id="addressSearchTitle">주소 검색</h2><p>주소를 선택하면 일정에 자동으로 입력됩니다.</p></div><button type="button" class="icon-btn" id="closeAddressSearch" aria-label="주소 검색 닫기">×</button></div>
+      <div id="postcodeSearchLayer" class="postcode-search-layer"></div>
+    </div>
+  </div>
+
   <section class="login-gate hidden" id="loginGate" aria-labelledby="loginTitle">
     <div class="login-card">
       <img src="./assets/brand-calendar-transparent.png" alt="" aria-hidden="true">
@@ -248,6 +258,6 @@
   </section>
 
   <div class="toast" id="toast" aria-live="polite"></div>
-  <script src="app.js?v=212"></script>
+  <script src="app.js?v=213"></script>
 </body>
 </html>

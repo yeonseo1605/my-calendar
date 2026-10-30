@@ -852,3 +852,23 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .event-chip{font-size:calc(var(--event-font) * .78)}
   .event-chip .event-time,.event-chip time{display:none!important}
 }
+
+/* Address search and embedded map */
+#eventDrawer .map-field .detail-address-label{grid-column:1}
+#eventDrawer .map-field .detail-address-input{grid-column:2;width:100%}
+#eventDrawer .map-preview,#bulkEditor .bulk-map-preview{padding:0!important;display:block!important;overflow:hidden;background:var(--panel2);border:1px solid var(--border);min-height:0!important;text-align:left;color:var(--text)}
+#eventDrawer .map-preview.hidden,#bulkEditor .bulk-map-preview.hidden{display:none!important}
+.map-preview iframe{display:block;width:100%;height:190px;border:0;background:var(--panel2)}
+.map-preview strong{display:block;padding:10px 13px;color:var(--text);font-size:13px;line-height:1.45;overflow-wrap:anywhere;background:var(--panel2);border-top:1px solid var(--border)}
+.address-search-card{width:min(580px,100%);padding:0;overflow:hidden}
+.address-search-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border)}
+.address-search-head h2{margin:0 0 4px;font-size:20px}
+.address-search-head p{margin:0;font-size:13px;color:var(--muted)}
+.postcode-search-layer{width:100%;height:min(620px,72vh);background:#fff}
+@media(max-width:700px){
+  #eventDrawer .map-field .detail-address-label{grid-column:1}
+  #eventDrawer .map-field .detail-address-input{grid-column:2}
+  .map-preview iframe{height:170px}
+  .address-search-card{width:100%}
+  .postcode-search-layer{height:75vh}
+}
