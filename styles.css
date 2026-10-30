@@ -763,6 +763,16 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .picker-grid button{height:38px!important;font-size:14px!important}
 }
 
+/* 주소를 입력하거나 수정하면 일정 상세와 일괄 수정에서 같은 지도 카드를 즉시 표시합니다. */
+#eventDrawer .map-preview:not(.hidden),#bulkEditor .map-preview:not(.hidden){display:flex!important;width:100%;min-height:135px}
+#bulkEditor .bulk-map-preview{grid-column:1/-1;margin:2px 0 4px;padding:16px}
+#bulkEditor .bulk-map-preview strong{max-width:100%;overflow-wrap:anywhere}
+
+/* 데스크톱 왼쪽 메뉴는 본문 스크롤과 관계없이 항상 같은 자리에 유지합니다. */
+@media(min-width:901px){
+  .sidebar{position:fixed!important;z-index:36;left:0;top:0;width:276px;height:100dvh;min-height:0;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain}
+}
+
 /* 모바일은 별도 홈이 아니라 현재 PC 캘린더를 화면 폭에 맞춰 그대로 사용합니다. */
 @media(max-width:900px){
   html,body{width:100%;max-width:100%;overflow-x:hidden}
