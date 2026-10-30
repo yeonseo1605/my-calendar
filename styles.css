@@ -771,6 +771,24 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 /* 데스크톱 왼쪽 메뉴는 본문 스크롤과 관계없이 항상 같은 자리에 유지합니다. */
 @media(min-width:901px){
   .sidebar{position:fixed!important;z-index:36;left:0;top:0;width:276px;height:100dvh;min-height:0;max-height:none!important;overflow-y:auto!important;overscroll-behavior:contain}
+
+  /* 선택 항목 수정 패널이 열려도 표 열과 행 높이는 유지하고 표만 가로로 이동합니다. */
+  body.bulk-editor-open .search-results{overflow-x:auto!important;overflow-y:visible;overscroll-behavior-x:contain}
+  body.bulk-editor-open .search-results-head,
+  body.bulk-editor-open .search-table-head,
+  body.bulk-editor-open .search-result-row{min-width:1420px!important}
+  body.bulk-editor-open .search-table-head,
+  body.bulk-editor-open .search-result-row{
+    grid-template-columns:38px 118px 76px 120px 220px 180px 100px 90px 300px!important;
+    align-items:center!important
+  }
+  body.bulk-editor-open .search-result-row{height:58px;min-height:58px!important}
+  body.bulk-editor-open .search-result-row>span,
+  body.bulk-editor-open .search-result-row>button,
+  body.bulk-editor-open .search-result-row>strong{
+    min-width:0;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+    overflow-wrap:normal!important;word-break:keep-all!important
+  }
 }
 
 /* 모바일은 별도 홈이 아니라 현재 PC 캘린더를 화면 폭에 맞춰 그대로 사용합니다. */
