@@ -872,3 +872,15 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .address-search-card{width:100%}
   .postcode-search-layer{height:75vh}
 }
+
+/* Mobile navigation behaves like a temporary Google/Naver style drawer. */
+.sidebar-close{display:none}
+@media(max-width:900px){
+  body.sidebar-open{overflow:hidden;touch-action:none}
+  .sidebar{visibility:hidden;transition:transform .22s ease,visibility 0s linear .22s}
+  .sidebar.open{visibility:visible;transition:transform .22s ease,visibility 0s}
+  .sidebar-close{position:absolute;display:grid;place-items:center;z-index:2;top:14px;right:12px;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--text);font-size:28px;line-height:1;cursor:pointer}
+  .sidebar-close:hover{background:var(--panel2)}
+  .sidebar-brand{padding-right:44px}
+  .drawer-backdrop{background:rgba(8,12,22,.48);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
