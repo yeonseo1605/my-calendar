@@ -884,3 +884,40 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .sidebar-brand{padding-right:44px}
   .drawer-backdrop{background:rgba(8,12,22,.48);-webkit-backdrop-filter:none;backdrop-filter:none}
 }
+
+/* Mobile calendar mockup v1: one-line controls, compact lunar badges, fixed bottom navigation. */
+@media(max-width:900px){
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom))!important}
+  .topbar{display:none!important}
+  .mobile-home{display:none!important}
+  .mobile-nav{position:fixed;display:grid!important;grid-template-columns:repeat(5,1fr);z-index:35;left:0;right:0;bottom:0;height:calc(70px + env(safe-area-inset-bottom));padding:4px 4px env(safe-area-inset-bottom);background:var(--panel-solid,var(--panel));border-top:1px solid var(--border);box-shadow:0 -10px 28px rgba(0,0,0,.2);backdrop-filter:none}
+  .mobile-nav button{min-width:0;border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:700}
+  .mobile-nav button.active{color:var(--accent)}
+  .mobile-nav button>span:not(.nav-create){display:grid;place-items:center;width:26px;height:26px}
+  .mobile-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-nav small{font-size:10px;white-space:nowrap}
+  .nav-create{display:grid!important;place-items:center;width:46px!important;height:46px!important;margin-top:-18px!important;border-radius:50%;background:var(--accent);color:#fff;font-size:29px!important;line-height:1;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 38%,transparent)}
+  .main-content{padding:6px 4px calc(78px + env(safe-area-inset-bottom))!important}
+  .view-range{display:grid;grid-template-columns:auto minmax(0,1fr)!important;align-items:center;gap:4px!important;width:100%;min-height:46px;margin-bottom:6px;padding:5px!important}
+  .view-range .segmented{width:auto!important;justify-self:start!important;padding:2px}
+  .view-range .segmented button{flex:0 0 auto!important;padding:6px 10px!important;font-size:12px}
+  .range-navigation{width:100%;min-width:0;justify-content:flex-end;gap:0!important}
+  .range-navigation>.icon-btn{width:25px!important;height:32px!important;padding:0;font-size:20px}
+  .range-title{flex:1;min-width:0!important;padding:0 2px!important;font-size:12px!important;text-align:center;white-space:nowrap}
+  .today-segmented button{padding:6px 8px!important;font-size:11px!important}
+  .date-picker-panel{grid-column:1/-1;top:100%!important;margin-top:6px}
+  .week-header span{padding:8px 1px!important;font-size:11px}
+  .day-cell{min-height:100px!important;padding:4px 3px!important}
+  .day-date-line{align-items:center;gap:2px}
+  .day-number{width:21px!important;height:21px!important;font-size:11px!important}
+  .lunar-date{min-width:0;max-width:calc(100% - 22px);margin:0!important;padding:2px 4px!important;border-radius:4px!important;font-size:8px!important;line-height:1!important;overflow:hidden;text-overflow:ellipsis}
+  .event-chip{margin:3px 0!important;padding:3px 2px!important;font-size:calc(var(--event-font) * .76)!important;line-height:1.25!important}
+  .event-chip.marker{padding-left:8px!important}
+  .event-overflow{color:var(--accent)!important;font-weight:800}
+}
+@media(max-width:360px){
+  .view-range .segmented button{padding:6px 7px!important}
+  .range-title{font-size:11px!important}
+  .today-segmented button{padding:6px!important}
+  .day-cell{min-height:94px!important}
+}
