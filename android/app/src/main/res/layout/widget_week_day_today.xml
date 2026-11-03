@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    android:background="@drawable/widget_day_today">
+    <TextView android:id="@+id/widgetWeekday" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#E6DEFF" android:textSize="8sp" android:textStyle="bold" />
+    <TextView android:id="@+id/widgetWeekDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#FFFFFF" android:textSize="11sp" android:textStyle="bold" />
+    <TextView android:id="@+id/widgetWeekEvent" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="2" android:ellipsize="end" android:textColor="#FFFFFF" android:textSize="8sp" android:textStyle="bold" />
+    <TextView android:id="@+id/widgetWeekMore" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#E6DEFF" android:textSize="7sp" />
+</LinearLayout>

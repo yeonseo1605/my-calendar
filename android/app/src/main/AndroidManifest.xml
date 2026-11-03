@@ -27,6 +27,8 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.yeonseo.mycalendar.widget.PREVIOUS_MONTH" />
                 <action android:name="com.yeonseo.mycalendar.widget.NEXT_MONTH" />
+                <action android:name="com.yeonseo.mycalendar.widget.PREVIOUS_WEEK" />
+                <action android:name="com.yeonseo.mycalendar.widget.NEXT_WEEK" />
                 <action android:name="com.yeonseo.mycalendar.widget.TODAY" />
             </intent-filter>
             <meta-data
