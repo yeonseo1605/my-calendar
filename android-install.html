@@ -55,7 +55,35 @@
       text-align: center;
       text-decoration: none;
     }
-    ol { margin: 24px 0 0; padding-left: 24px; color: #ded7e3; line-height: 1.8; }
+    h2 { margin: 28px 0 14px; font-size: 19px; }
+    .steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: install-step; }
+    .steps li {
+      position: relative;
+      min-height: 54px;
+      padding: 13px 14px 13px 56px;
+      border: 1px solid #4a4350;
+      border-radius: 14px;
+      background: #302d35;
+      color: #ded7e3;
+      line-height: 1.55;
+      counter-increment: install-step;
+    }
+    .steps li::before {
+      content: counter(install-step);
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      display: grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      border-radius: 50%;
+      background: #9d72e9;
+      color: #fff;
+      font-weight: 900;
+    }
+    .steps strong { display: block; margin-bottom: 2px; color: #fff; }
+    .steps small { display: block; color: #bfb6c7; font-size: 13px; }
     .note {
       margin: 20px 0 0;
       padding: 14px 16px;
@@ -79,11 +107,14 @@
       <img src="assets/android-widget-install-qr.png" alt="My Calendar Android 위젯 설치 페이지 QR코드">
     </div>
     <a class="download" href="downloads/MyCalendar-Android-Widget-debug.apk" download>My Calendar 위젯 다운로드</a>
-    <ol>
-      <li>APK를 다운로드하고 설치합니다.</li>
-      <li>처음 설치할 때 표시되면 브라우저의 ‘알 수 없는 앱 설치’를 허용합니다.</li>
-      <li>앱을 열어 캘린더 접근 권한을 허용합니다.</li>
-      <li>홈 화면을 길게 누른 뒤 ‘위젯 → My Calendar’를 선택합니다.</li>
+    <h2>다운로드한 다음 이렇게 하세요</h2>
+    <ol class="steps">
+      <li><strong>다운로드 완료 알림을 누르세요.</strong><small>알림이 사라졌다면 ‘내 파일 → 다운로드 → MyCalendar-Android-Widget-debug.apk’를 누르세요.</small></li>
+      <li><strong>설치 차단 안내가 나오면 ‘설정’을 누르세요.</strong><small>현재 브라우저의 ‘이 출처 허용’ 또는 ‘알 수 없는 앱 설치 허용’을 켠 뒤 뒤로 이동합니다.</small></li>
+      <li><strong>‘설치’를 누르세요.</strong><small>기존 앱이 있다면 ‘업데이트’를 선택하세요. 설치가 끝나면 ‘열기’를 누릅니다.</small></li>
+      <li><strong>My Calendar에서 캘린더 권한을 허용하세요.</strong><small>‘캘린더 권한 허용’ 버튼을 한 번 누르고 Android 권한 창에서 허용합니다.</small></li>
+      <li><strong>웹 설정을 가져오세요.</strong><small>앱의 ‘웹 설정 가져오기’ → 표시 방식 선택 → ‘설정 적용 및 위젯 추가’를 누릅니다.</small></li>
+      <li><strong>Android의 위젯 추가 창에서 ‘추가’를 누르세요.</strong><small>추가 창이 나오지 않으면 홈 화면을 길게 누른 뒤 ‘위젯 → My Calendar’를 선택하세요.</small></li>
     </ol>
     <p class="note">Android 전용 시험 설치본입니다. QR코드는 다운로드 페이지를 여는 용도이며 Android의 설치 보안 확인을 우회하지 않습니다.</p>
     <a class="home" href="./">캘린더로 돌아가기</a>
