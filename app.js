@@ -29,7 +29,7 @@ const seedEvents=[
  {id:'e6',title:'주간 회의',date:'2026-10-19',start:'09:00',end:'10:00',labelId:'파랑-3',address:'회의실 A',guests:'업무팀',reminder:'10분 전',notes:'',repeat:'weekly',seriesId:'s-weekly'},
  {id:'e7',title:'건강검진',date:'2026-10-30',start:'09:30',end:'11:00',labelId:'초록-3',address:'서울특별시 서초구',guests:'',reminder:'1일 전',notes:'',repeat:'none',seriesId:''}
 ];
-const defaults={themeColor:'#20242D',themeBrightness:50,themeOpacity:0,themeBrightnessByColor:{'#F8FAFC':18,'#090B10':82,'#D6B85A':48,'#5B4A86':64},themePresets:['#F8FAFC','#090B10','#D6B85A','#5B4A86'],themePresetNames:{'#F8FAFC':'화이트','#090B10':'블랙','#D6B85A':'노랑','#5B4A86':'보라'},recentLabelColors:['#3B82F6','#22C55E','#F97316','#EC4899','#A855F7','#FACC15'],themeAutoContrast:true,themeFollowSystem:false,eventStyle:'fill',eventFontSize:100,showWeekends:true,compactMode:false,current:'2026-10-01',googleClientId:GOOGLE_CLIENT_ID,googleLastSync:'',googleDeletedIds:[],googleRecurringOps:[],googleSetupComplete:false,labels:defaultLabels(),events:seedEvents,hiddenLabels:[],tasks:[{id:'t1',title:'병원 예약 확인',due:'2026-10-14',labelId:'빨강-3',done:false},{id:'t2',title:'여행 준비물 정리',due:'2026-10-18',labelId:'초록-2',done:false},{id:'t3',title:'부모님께 전화',due:'2026-10-12',labelId:'보라-2',done:true}]};
+const defaults={themeColor:'#20242D',themeBrightness:50,themeOpacity:0,themeBrightnessByColor:{'#F8FAFC':18,'#090B10':82,'#D6B85A':48,'#5B4A86':64},themePresets:['#F8FAFC','#090B10','#D6B85A','#5B4A86'],themePresetNames:{'#F8FAFC':'화이트','#090B10':'블랙','#D6B85A':'노랑','#5B4A86':'보라'},recentLabelColors:['#3B82F6','#22C55E','#F97316','#EC4899','#A855F7','#FACC15'],themeAutoContrast:true,themeFollowSystem:false,eventStyle:'fill',eventFontSize:100,showWeekends:true,compactMode:false,current:'2026-10-01',googleClientId:GOOGLE_CLIENT_ID,googleLastSync:'',googleDeletedIds:[],googleRecurringOps:[],googleSetupComplete:false,labels:defaultLabels(),events:seedEvents,hiddenLabels:[],tasks:[],sampleTasksRemoved:true};
 defaults.themeTone='medium';
 Object.assign(defaults,{themeControlColor:'#3158B8',themeControlBrightness:50,themeControlOpacity:0});
 const hadStoredState=!!localStorage.getItem(STORE);
@@ -68,7 +68,9 @@ let googleAccessToken='',googleTokenClient=null,googleTokenClientId='',googleTok
 let cloudReady=false,autoSyncRunning=false,cloudKeptNewerLocalState=false;
 const systemThemeMedia=window.matchMedia('(prefers-color-scheme: dark)');
 function handleSystemThemeChange(){if(!state.themeFollowSystem)return;applyTheme();if(!$('#settingsDrawer')?.classList.contains('hidden'))renderSettings()}
-function load(){try{const stored=JSON.parse(localStorage.getItem(STORE)||'{}'),merged={...defaults,...stored};if(!merged.googleClientId)merged.googleClientId=GOOGLE_CLIENT_ID;if(!stored.themeColor){const oldColors={charcoal:'#20242D',navy:'#202938',warm:'#2D2927',black:'#111318'};merged.themeColor=oldColors[stored.darkColor]||defaults.themeColor;merged.themeBrightness=Number.isFinite(+stored.darkIntensity)?+stored.darkIntensity:defaults.themeBrightness;merged.themeBrightnessByColor={...defaults.themeBrightnessByColor,[merged.themeColor]:merged.themeBrightness}}if(!stored.presetPaletteV2){merged.themePresets=[...defaults.themePresets];merged.themeBrightnessByColor={...(merged.themeBrightnessByColor||{}),...defaults.themeBrightnessByColor};merged.presetPaletteV2=true}if(!Number.isFinite(+merged.eventFontSize))merged.eventFontSize=stored.fontSize==='small'?85:stored.fontSize==='large'?120:100;const personalLabel=(merged.labels||[]).find(label=>label.id==='노랑-5');if(personalLabel)personalLabel.name='내 일정';if(!stored.sampleEventsRemoved){const sampleIds=new Set(['e1','e2','e3','e4','e5','e6','e7']);merged.events=(merged.events||[]).filter(event=>!sampleIds.has(event.id));merged.sampleEventsRemoved=true}localStorage.setItem(STORE,JSON.stringify(merged));return merged}catch{const clean=structuredClone(defaults);clean.events=[];clean.sampleEventsRemoved=true;localStorage.setItem(STORE,JSON.stringify(clean));return clean}}
+const sampleTaskTitles={t1:'병원 예약 확인',t2:'여행 준비물 정리',t3:'부모님께 전화'};
+function removeSampleTasks(payload){if(!payload||payload.sampleTasksRemoved)return false;payload.tasks=(Array.isArray(payload.tasks)?payload.tasks:[]).filter(task=>sampleTaskTitles[task?.id]!==task?.title);payload.sampleTasksRemoved=true;return true}
+function load(){try{const stored=JSON.parse(localStorage.getItem(STORE)||'{}');removeSampleTasks(stored);const merged={...defaults,...stored};if(!merged.googleClientId)merged.googleClientId=GOOGLE_CLIENT_ID;if(!stored.themeColor){const oldColors={charcoal:'#20242D',navy:'#202938',warm:'#2D2927',black:'#111318'};merged.themeColor=oldColors[stored.darkColor]||defaults.themeColor;merged.themeBrightness=Number.isFinite(+stored.darkIntensity)?+stored.darkIntensity:defaults.themeBrightness;merged.themeBrightnessByColor={...defaults.themeBrightnessByColor,[merged.themeColor]:merged.themeBrightness}}if(!stored.presetPaletteV2){merged.themePresets=[...defaults.themePresets];merged.themeBrightnessByColor={...(merged.themeBrightnessByColor||{}),...defaults.themeBrightnessByColor};merged.presetPaletteV2=true}if(!Number.isFinite(+merged.eventFontSize))merged.eventFontSize=stored.fontSize==='small'?85:stored.fontSize==='large'?120:100;const personalLabel=(merged.labels||[]).find(label=>label.id==='노랑-5');if(personalLabel)personalLabel.name='내 일정';if(!stored.sampleEventsRemoved){const sampleIds=new Set(['e1','e2','e3','e4','e5','e6','e7']);merged.events=(merged.events||[]).filter(event=>!sampleIds.has(event.id));merged.sampleEventsRemoved=true}localStorage.setItem(STORE,JSON.stringify(merged));return merged}catch{const clean=structuredClone(defaults);clean.events=[];clean.sampleEventsRemoved=true;localStorage.setItem(STORE,JSON.stringify(clean));return clean}}
 function save(){state.current=dateStr(currentDate);const persisted=structuredClone(state);if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persisted[key]=structuredClone(themePreviewSnapshot[key]));const fingerprint=syncedStateFingerprint(persisted),syncChanged=fingerprint!==lastSavedSyncFingerprint;if(syncChanged){const changedAt=new Date().toISOString();state.dataUpdatedAt=changedAt;persisted.dataUpdatedAt=changedAt;lastSavedSyncFingerprint=fingerprint}localStorage.setItem(STORE,JSON.stringify(persisted));if(syncChanged)window.MyCalendarCloud?.queueSave(persisted)}
 function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function parseDate(s){return new Date(`${s}T00:00:00`)}
@@ -520,7 +522,17 @@ const openIntegrationSettings=()=>{$('#infoModal').classList.remove('hidden');re
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();closeDatePicker();$('#recurrenceModal').classList.add('hidden');closeAddressSearch()}})
 }
 let deferredInstallPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('#installBtn').classList.remove('hidden')});$('#installBtn').onclick=async()=>{if(!deferredInstallPrompt)return toast('브라우저 메뉴에서 홈 화면에 추가할 수 있습니다');deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('#installBtn').classList.add('hidden')};
-if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js?v=26',{updateViaCache:'none'}).then(registration=>registration.update()).catch(()=>{});
+const showUpdateBanner=()=>$('#updateBanner')?.classList.remove('hidden');
+$('#reloadForUpdate').onclick=()=>location.reload();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+ const hadController=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.register('./sw.js?v=27',{updateViaCache:'none'}).then(registration=>{
+  if(registration.waiting&&hadController)showUpdateBanner();
+  registration.addEventListener('updatefound',()=>{const worker=registration.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner()})});
+  registration.update()
+ }).catch(()=>{});
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController)showUpdateBanner()})
+}
 async function initializeCloud(){
  if(!window.MyCalendarCloud){cloudReady=true;renderAccount();return}
  try{
@@ -534,7 +546,8 @@ async function initializeCloud(){
     return;
    }
    const activeThemeDraft=themePreviewDirty?Object.fromEntries(themePreviewKeys.map(key=>[key,structuredClone(state[key])])):null;
-   state={...defaults,...remote};
+   const remoteState=structuredClone(remote||{}),removedRemoteSamples=removeSampleTasks(remoteState);
+   state={...defaults,...remoteState};
    if(activeThemeDraft){
     themePreviewSnapshot=Object.fromEntries(themePreviewKeys.map(key=>[key,structuredClone(state[key])]));
     Object.assign(state,activeThemeDraft);
@@ -547,6 +560,7 @@ async function initializeCloud(){
    if(themePreviewSnapshot)themePreviewKeys.forEach(key=>persistedRemote[key]=structuredClone(themePreviewSnapshot[key]));
    lastSavedSyncFingerprint=syncedStateFingerprint(persistedRemote);
    localStorage.setItem(STORE,JSON.stringify(persistedRemote));
+   if(removedRemoteSamples){persistedRemote.dataUpdatedAt=new Date().toISOString();state.dataUpdatedAt=persistedRemote.dataUpdatedAt;setTimeout(()=>window.MyCalendarCloud?.queueSave(persistedRemote),0)}
    render({persist:false});
   });
   cloudReady=!!result.configured;renderAccount(result.user||null);

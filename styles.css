@@ -980,3 +980,7 @@ body[data-calendar-view="week"] .timeline-heads{
   .today-segmented button{min-width:38px;padding:6px 4px!important}
   .day-cell{min-height:94px!important}
 }
+
+.update-banner{position:fixed;z-index:120;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;max-width:calc(100vw - 28px);padding:10px 12px 10px 16px;border:1px solid color-mix(in srgb,var(--button-accent) 62%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--panel) 94%,transparent);color:var(--text);box-shadow:0 12px 35px rgba(0,0,0,.28);backdrop-filter:blur(14px);font-size:13px;font-weight:750}
+.update-banner button{border:0;border-radius:9px;padding:9px 13px;background:var(--button-accent);color:var(--button-text);font-weight:850;cursor:pointer;white-space:nowrap}
+@media(max-width:520px){.update-banner{width:calc(100vw - 24px);justify-content:space-between;bottom:12px}}
