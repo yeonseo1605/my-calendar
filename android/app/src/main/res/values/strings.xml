@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Calendar</string>
+    <string name="widget_description">월간 달력과 다음 일정을 크기에 맞춰 표시합니다.</string>
+</resources>

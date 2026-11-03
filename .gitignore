@@ -3,3 +3,8 @@
 .env.*
 !.env.example
 supabase/.temp/
+.android-tooling/
+android/.gradle/
+android/local.properties
+android/**/build/
+*.apk
