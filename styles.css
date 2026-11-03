@@ -719,6 +719,30 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 2px color-mix(in srgb,var(--button-accent) 38%,transparent),0 7px 17px color-mix(in srgb,var(--button-accent) 24%,transparent)!important
 }
 
+/* Keep week/day navigation and their date headers visible while scrolling. */
+body[data-calendar-view="week"] .view-range,
+body[data-calendar-view="day"] .view-range{
+  position:sticky;
+  top:0;
+  z-index:34;
+  background:var(--panel-solid,var(--panel));
+  box-shadow:0 8px 18px color-mix(in srgb,var(--glass-shadow) 72%,transparent)
+}
+body[data-calendar-view="week"] .calendar-card,
+body[data-calendar-view="day"] .calendar-card{overflow:visible}
+body[data-calendar-view="week"] .timeline-head-spacer,
+body[data-calendar-view="week"] .timeline-heads{
+  position:sticky;
+  top:76px;
+  z-index:28;
+  background:var(--panel-solid,var(--panel));
+  box-shadow:0 5px 12px color-mix(in srgb,var(--glass-shadow) 55%,transparent)
+}
+@media(max-width:720px){
+  body[data-calendar-view="week"] .timeline-head-spacer,
+  body[data-calendar-view="week"] .timeline-heads{top:62px}
+}
+
 /* Google actions: connection status, send, sync and disconnect are distinct actions. */
 .google-action-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important;align-items:stretch}
 .google-action-row .btn{min-width:0!important;padding:9px 7px!important;white-space:nowrap;font-size:12px!important;border-radius:10px!important}
