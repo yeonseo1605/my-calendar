@@ -901,10 +901,10 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .mobile-nav small{font-size:10px;white-space:nowrap}
   .nav-create{display:grid!important;place-items:center;width:46px!important;height:46px!important;margin-top:-18px!important;border-radius:50%;background:var(--accent);color:#fff;font-size:29px!important;line-height:1;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 38%,transparent)}
   .main-content{padding:6px 4px calc(78px + env(safe-area-inset-bottom))!important}
-  .view-range{display:grid;grid-template-columns:124px minmax(0,1fr)!important;align-items:center;gap:6px!important;width:100%;min-height:52px;margin-bottom:6px;padding:6px!important}
-  .view-range .segmented{display:grid!important;grid-template-columns:repeat(3,1fr);width:124px!important;justify-self:start!important;padding:2px}
+  .view-range{display:grid;grid-template-columns:124px 28px minmax(88px,max-content) 28px 50px!important;align-items:center;justify-content:center;gap:3px!important;width:100%;min-height:52px;margin-bottom:6px;padding:6px!important}
+  .view-range .segmented{display:grid!important;grid-template-columns:repeat(3,1fr);width:124px!important;justify-self:center!important;padding:2px}
   .view-range .segmented button{min-width:0;flex:0 0 auto!important;padding:8px 0!important;font-size:13px}
-  .range-navigation{display:grid!important;grid-template-columns:28px minmax(88px,max-content) 28px auto;width:100%;min-width:0;align-items:center;justify-content:center;gap:2px!important}
+  .range-navigation{display:contents!important}
   .range-navigation>.icon-btn{width:28px!important;height:34px!important;padding:0;font-size:20px}
   .range-title{min-width:0!important;padding:0!important;font-size:13px!important;text-align:center;white-space:nowrap;overflow:hidden}
   .range-title>button{padding:5px 2px}
@@ -921,7 +921,7 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   .event-overflow{color:var(--accent)!important;font-weight:800}
 }
 @media(max-width:360px){
-  .view-range{grid-template-columns:108px minmax(0,1fr)!important;gap:3px!important;padding:4px!important}
+  .view-range{grid-template-columns:108px 28px minmax(78px,max-content) 28px 46px!important;gap:2px!important;padding:4px!important}
   .view-range .segmented{width:108px!important}
   .view-range .segmented button{font-size:12px!important}
   .range-title{font-size:12px!important}
