@@ -245,6 +245,8 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 #eventDrawer .time-row .field:first-child>input{grid-column:2}
 #eventDrawer .time-row .field:nth-child(2)>label{display:none}
 #eventDrawer .time-row .field:nth-child(2)>input{grid-column:3}
+input[type="time"].whole-time-picker{cursor:pointer}
+input[type="time"].whole-time-picker::-webkit-calendar-picker-indicator{display:none;width:0;height:0;margin:0;padding:0;opacity:0;pointer-events:none}
 #eventDrawer .repeat-details{margin:2px 0 4px 106px;padding:10px 12px;border-left:2px solid var(--border);background:color-mix(in srgb,var(--panel2) 55%,transparent)}
 #eventDrawer .repeat-details .field,#eventDrawer .repeat-details .two-col .field{grid-template-columns:92px minmax(0,1fr)}
 #eventDrawer .repeat-details .field>label{font-size:11px;color:var(--muted)}

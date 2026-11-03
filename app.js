@@ -75,6 +75,20 @@ function save(){state.current=dateStr(currentDate);const persisted=structuredClo
 function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function parseDate(s){return new Date(`${s}T00:00:00`)}
 function setEndOneHourAfterStart(){const value=$('#startTime').value;if(!/^\d{2}:\d{2}$/.test(value))return;const [hour,minute]=value.split(':').map(Number),total=(hour*60+minute+60)%1440;$('#endTime').value=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
+function enableWholeTimePickers(){
+ $$('input[type="time"]').forEach(input=>{
+  input.classList.add('whole-time-picker');
+  input.addEventListener('pointerdown',event=>{
+   if(event.button!==0||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
+   event.preventDefault();input.focus({preventScroll:true});
+   try{input.showPicker()}catch{}
+  });
+  input.addEventListener('keydown',event=>{
+   if(!['Enter',' ','ArrowDown'].includes(event.key)||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
+   event.preventDefault();try{input.showPicker()}catch{}
+  });
+ });
+}
 const HOLIDAY_COLOR='#E06473';
 function isHolidayCalendarId(id){let value=String(id||'').toLowerCase();try{value=decodeURIComponent(value)}catch{}return value.includes('#holiday@group.v.calendar.google.com')||value.endsWith('holiday@group.v.calendar.google.com')}
 function isHolidayEvent(event){return!!event?.systemHoliday||(event?.source==='google'&&isHolidayCalendarId(event?.googleCalendarId))}
@@ -482,6 +496,7 @@ const effectiveRemote=googleEffectiveRecurringEvent(remote,parent);const mapped=
  }catch(error){toast(error.message)}finally{button.textContent='가져오기·동기화';renderGoogleStatus()}
 }
 function bind(){
+ enableWholeTimePickers();
  $('#createBtn').onclick=()=>{closeSidebar();openNew()};$('#mobileAddBtn').onclick=()=>openNew(dateStr(new Date()));$('#mobileCreate').onclick=()=>openNew(dateStr(new Date()));$('#settingsBtn').onclick=()=>openDrawer('settingsDrawer');$('#mobileSettings').onclick=()=>openDrawer('settingsDrawer');$('#tasksBtn').onclick=()=>openDrawer('tasksDrawer');$('#backdrop').onclick=closeDrawers;$$('[data-close]').forEach(x=>x.onclick=closeDrawers);
  $('#appLoginBtn').onclick=()=>window.MyCalendarCloud?.signIn().catch(error=>toast(`로그인 실패: ${error.message}`));$('#accountChip').onclick=()=>window.MyCalendarCloud?.currentUser()?openIntegrationSettings():window.MyCalendarCloud?.signIn().catch(error=>toast(`로그인 실패: ${error.message}`));
  $('#calendarNavBtn').onclick=()=>{closeDrawers();labelPageActive=false;searchPageActive=false;sidebarLabelFilter='';selectedSearchIds.clear();currentView='month';render()};$('#brandHome').onclick=()=>$('#calendarNavBtn').click();$('#searchNavBtn').onclick=()=>{closeDrawers();searchPageActive=true;labelPageActive=false;sidebarLabelFilter='';selectedSearchIds.clear();render();setTimeout(()=>$('#detailSearchInput').focus(),50)};$('#settingsNavBtn').onclick=()=>openDrawer('settingsDrawer');$('#sidebarLabelAdd').onclick=()=>{closeSidebar();openLabelManagement()};$('#labelRenameFocusBtn').onclick=()=>$('#bulkTitle').focus();$('#labelColorFocusBtn').onclick=()=>$('#bulkLabel').focus();
@@ -526,7 +541,7 @@ const showUpdateBanner=()=>$('#updateBanner')?.classList.remove('hidden');
 $('#reloadForUpdate').onclick=()=>location.reload();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
  const hadController=!!navigator.serviceWorker.controller;
- navigator.serviceWorker.register('./sw.js?v=27',{updateViaCache:'none'}).then(registration=>{
+ navigator.serviceWorker.register('./sw.js?v=28',{updateViaCache:'none'}).then(registration=>{
   if(registration.waiting&&hadController)showUpdateBanner();
   registration.addEventListener('updatefound',()=>{const worker=registration.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner()})});
   registration.update()
