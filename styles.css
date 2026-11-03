@@ -709,6 +709,16 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
 .bulk-label-management #bulkManagedLabels:not(:empty){margin-bottom:10px}
 .bulk-label-management #bulkManagedLabels .bulk-managed-row:first-child{margin-top:0}
 
+/* Make the current calendar view unmistakable in every saved theme. */
+#viewTabs button{opacity:.72;box-shadow:none!important;transform:none}
+#viewTabs button.active{
+  opacity:1;
+  border-color:color-mix(in srgb,var(--button-accent) 82%,#fff 18%)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,#fff 24%,transparent),transparent 48%),linear-gradient(145deg,color-mix(in srgb,var(--button-accent) 82%,var(--glass-bg)),color-mix(in srgb,var(--button-accent) 58%,var(--glass-bg)))!important;
+  color:var(--button-text)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 2px color-mix(in srgb,var(--button-accent) 38%,transparent),0 7px 17px color-mix(in srgb,var(--button-accent) 24%,transparent)!important
+}
+
 /* Google actions: connection status, send, sync and disconnect are distinct actions. */
 .google-action-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important;align-items:stretch}
 .google-action-row .btn{min-width:0!important;padding:9px 7px!important;white-space:nowrap;font-size:12px!important;border-radius:10px!important}
