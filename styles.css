@@ -719,28 +719,46 @@ html,body{font-size:16px;background:var(--canvas,#f4f6fa)}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 2px color-mix(in srgb,var(--button-accent) 38%,transparent),0 7px 17px color-mix(in srgb,var(--button-accent) 24%,transparent)!important
 }
 
-/* Keep week/day navigation and their date headers visible while scrolling. */
+/* Keep week/day controls fixed and scroll only the timeline at every width. */
+body[data-calendar-view="week"] .main-content,
+body[data-calendar-view="day"] .main-content{
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+  min-height:0;
+  overflow:hidden
+}
 body[data-calendar-view="week"] .view-range,
 body[data-calendar-view="day"] .view-range{
-  position:sticky;
-  top:0;
+  position:relative;
+  top:auto;
   z-index:34;
+  flex:0 0 auto;
   background:var(--panel-solid,var(--panel));
   box-shadow:0 8px 18px color-mix(in srgb,var(--glass-shadow) 72%,transparent)
 }
 body[data-calendar-view="week"] .calendar-card,
-body[data-calendar-view="day"] .calendar-card{overflow:visible}
+body[data-calendar-view="day"] .calendar-card{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain
+}
 body[data-calendar-view="week"] .timeline-head-spacer,
 body[data-calendar-view="week"] .timeline-heads{
   position:sticky;
-  top:76px;
+  top:0;
   z-index:28;
   background:var(--panel-solid,var(--panel));
   box-shadow:0 5px 12px color-mix(in srgb,var(--glass-shadow) 55%,transparent)
 }
 @media(max-width:720px){
-  body[data-calendar-view="week"] .timeline-head-spacer,
-  body[data-calendar-view="week"] .timeline-heads{top:62px}
+  body[data-calendar-view="week"] .main-content,
+  body[data-calendar-view="day"] .main-content{
+    height:calc(100dvh - 70px - env(safe-area-inset-bottom));
+    min-height:0
+  }
 }
 
 /* Google actions: connection status, send, sync and disconnect are distinct actions. */
