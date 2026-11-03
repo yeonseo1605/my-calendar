@@ -53,6 +53,10 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
         private const val ACTION_PREVIOUS_WEEK = "com.yeonseo.mycalendar.widget.PREVIOUS_WEEK"
         private const val ACTION_NEXT_WEEK = "com.yeonseo.mycalendar.widget.NEXT_WEEK"
         private const val ACTION_TODAY = "com.yeonseo.mycalendar.widget.TODAY"
+        private const val EVENT_STYLE_KEY = "event_style"
+        private const val EVENT_STYLE_FILL = "fill"
+        private const val EVENT_STYLE_MARKER = "marker"
+        private const val EVENT_STYLE_TEXT = "text"
         private val monthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREAN)
         private val dateFormatter = DateTimeFormatter.ofPattern("M월 d일 EEEE", Locale.KOREAN)
         private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -62,6 +66,15 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             val component = ComponentName(context, MyCalendarWidgetProvider::class.java)
             manager.getAppWidgetIds(component).forEach { updateWidget(context, manager, it) }
         }
+
+        fun setEventStyle(context: Context, style: String) {
+            val safeStyle = if (style in setOf(EVENT_STYLE_FILL, EVENT_STYLE_MARKER, EVENT_STYLE_TEXT)) style else EVENT_STYLE_MARKER
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(EVENT_STYLE_KEY, safeStyle).apply()
+            updateAll(context)
+        }
+
+        fun eventStyle(context: Context): String = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(EVENT_STYLE_KEY, EVENT_STYLE_MARKER) ?: EVENT_STYLE_MARKER
 
         private fun updateWidget(context: Context, manager: AppWidgetManager, id: Int) {
             val options = manager.getAppWidgetOptions(id)
@@ -87,14 +100,16 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             if (!repository.hasPermission()) {
                 view.setTextViewText(R.id.widgetTitle, "캘린더 권한이 필요합니다")
                 view.setTextViewText(R.id.widgetTime, "앱을 열어 권한을 허용하세요")
+                clearEventStyle(view, R.id.widgetEventCard, R.id.widgetAccent, R.id.widgetTitle)
             } else if (events.isEmpty()) {
                 view.setTextViewText(R.id.widgetTitle, "오늘 일정이 없습니다")
                 view.setTextViewText(R.id.widgetTime, "여유로운 하루예요")
+                clearEventStyle(view, R.id.widgetEventCard, R.id.widgetAccent, R.id.widgetTitle)
             } else {
                 val first = events.first()
                 view.setTextViewText(R.id.widgetTitle, first.title)
                 view.setTextViewText(R.id.widgetTime, eventTime(first))
-                view.setTextColor(R.id.widgetAccent, first.color)
+                applyEventStyle(context, view, R.id.widgetEventCard, R.id.widgetAccent, R.id.widgetTitle, first.color)
             }
             view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
             return view
@@ -134,7 +149,11 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                 dayView.setTextColor(R.id.widgetWeekDate, dayColor)
                 dayView.setTextViewText(R.id.widgetWeekEvent, dayEvents.firstOrNull()?.title.orEmpty())
                 dayView.setTextViewText(R.id.widgetWeekMore, if (dayEvents.size > 1) "+${dayEvents.size - 1}" else "")
-                if (dayEvents.isNotEmpty()) dayView.setTextColor(R.id.widgetWeekEvent, dayEvents.first().color)
+                if (dayEvents.isNotEmpty()) {
+                    applyEventStyle(context, dayView, R.id.widgetWeekEventWrap, R.id.widgetWeekAccent, R.id.widgetWeekEvent, dayEvents.first().color)
+                } else {
+                    clearEventStyle(dayView, R.id.widgetWeekEventWrap, R.id.widgetWeekAccent, R.id.widgetWeekEvent)
+                }
                 view.addView(R.id.widgetWeekDays, dayView)
             }
             return view
@@ -172,7 +191,11 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                     val dayEvents = eventsByDate[date].orEmpty()
                     day.setTextViewText(R.id.widgetEventTitle, dayEvents.firstOrNull()?.title.orEmpty())
                     day.setTextViewText(R.id.widgetEventMore, if (dayEvents.size > 1) "+${dayEvents.size - 1}" else "")
-                    if (dayEvents.isNotEmpty()) day.setTextColor(R.id.widgetEventTitle, dayEvents.first().color)
+                    if (dayEvents.isNotEmpty()) {
+                        applyEventStyle(context, day, R.id.widgetEventWrap, R.id.widgetEventAccent, R.id.widgetEventTitle, dayEvents.first().color)
+                    } else {
+                        clearEventStyle(day, R.id.widgetEventWrap, R.id.widgetEventAccent, R.id.widgetEventTitle)
+                    }
                     row.addView(rowCellId(columnIndex), day)
                 }
                 view.addView(R.id.widgetCalendarRows, row)
@@ -191,11 +214,38 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                     val item = RemoteViews(context.packageName, R.layout.widget_agenda_item)
                     item.setTextViewText(R.id.widgetAgendaTitle, event.title)
                     item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
-                    item.setTextColor(R.id.widgetAgendaDot, event.color)
+                    applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
                     view.addView(R.id.widgetAgenda, item)
                 }
             }
             return view
+        }
+
+        private fun applyEventStyle(context: Context, view: RemoteViews, wrapperId: Int, accentId: Int, titleId: Int, labelColor: Int) {
+            when (eventStyle(context)) {
+                EVENT_STYLE_FILL -> {
+                    view.setViewVisibility(accentId, View.GONE)
+                    view.setInt(wrapperId, "setBackgroundColor", Color.argb(38, Color.red(labelColor), Color.green(labelColor), Color.blue(labelColor)))
+                    view.setTextColor(titleId, labelColor)
+                }
+                EVENT_STYLE_TEXT -> {
+                    view.setViewVisibility(accentId, View.GONE)
+                    view.setInt(wrapperId, "setBackgroundColor", Color.TRANSPARENT)
+                    view.setTextColor(titleId, labelColor)
+                }
+                else -> {
+                    view.setViewVisibility(accentId, View.VISIBLE)
+                    view.setTextColor(accentId, labelColor)
+                    view.setInt(wrapperId, "setBackgroundColor", Color.TRANSPARENT)
+                    view.setTextColor(titleId, Color.WHITE)
+                }
+            }
+        }
+
+        private fun clearEventStyle(view: RemoteViews, wrapperId: Int, accentId: Int, titleId: Int) {
+            view.setViewVisibility(accentId, View.GONE)
+            view.setInt(wrapperId, "setBackgroundColor", Color.TRANSPARENT)
+            view.setTextColor(titleId, Color.WHITE)
         }
 
         private fun eventTime(event: WidgetEvent): String = if (event.allDay) "종일" else Instant.ofEpochMilli(event.startMillis).atZone(ZoneId.systemDefault()).format(timeFormatter)

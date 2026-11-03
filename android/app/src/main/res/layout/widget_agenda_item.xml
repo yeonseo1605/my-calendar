@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="24dp" android:orientation="horizontal" android:gravity="center_vertical">
-    <TextView android:id="@+id/widgetAgendaDot" android:layout_width="16dp" android:layout_height="match_parent" android:gravity="center" android:text="●" android:textColor="#7D73E6" android:textSize="9sp" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/widgetAgendaWrap" android:layout_width="match_parent" android:layout_height="24dp" android:orientation="horizontal" android:gravity="center_vertical" android:paddingLeft="2dp" android:paddingRight="2dp">
+    <TextView android:id="@+id/widgetAgendaDot" android:layout_width="12dp" android:layout_height="match_parent" android:gravity="center" android:text="┃" android:textColor="#7D73E6" android:textSize="12sp" />
     <TextView android:id="@+id/widgetAgendaTitle" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical" android:maxLines="1" android:ellipsize="end" android:textColor="#FFFFFF" android:textSize="11sp" android:textStyle="bold" />
     <TextView android:id="@+id/widgetAgendaTime" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center_vertical" android:textColor="#AEB4C5" android:textSize="10sp" android:layout_marginStart="8dp" />
 </LinearLayout>

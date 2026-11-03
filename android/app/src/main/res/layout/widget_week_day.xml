@@ -9,6 +9,9 @@
     android:paddingRight="2dp">
     <TextView android:id="@+id/widgetWeekday" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#BDC2D1" android:textSize="8sp" android:textStyle="bold" />
     <TextView android:id="@+id/widgetWeekDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#FFFFFF" android:textSize="11sp" android:textStyle="bold" />
-    <TextView android:id="@+id/widgetWeekEvent" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:maxLines="2" android:ellipsize="end" android:textColor="#FFFFFF" android:textSize="8sp" android:textStyle="bold" />
+    <LinearLayout android:id="@+id/widgetWeekEventWrap" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:gravity="center_vertical">
+        <TextView android:id="@+id/widgetWeekAccent" android:layout_width="6dp" android:layout_height="match_parent" android:gravity="center" android:text="┃" android:textColor="#7D73E6" android:textSize="12sp" />
+        <TextView android:id="@+id/widgetWeekEvent" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:maxLines="2" android:ellipsize="end" android:textColor="#FFFFFF" android:textSize="8sp" android:textStyle="bold" />
+    </LinearLayout>
     <TextView android:id="@+id/widgetWeekMore" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#AEB4C5" android:textSize="7sp" />
 </LinearLayout>

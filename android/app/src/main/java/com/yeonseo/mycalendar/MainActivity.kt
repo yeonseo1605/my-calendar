@@ -15,14 +15,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
 
 class MainActivity : Activity() {
     private lateinit var permissionStatus: TextView
+    private lateinit var widgetStyleStatus: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(buildContent())
+        applyWidgetSettingsIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        applyWidgetSettingsIntent(intent)
     }
 
     override fun onResume() {
@@ -61,6 +70,12 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
         root.addView(permissionStatus, matchWrap(bottom = 18))
+        widgetStyleStatus = TextView(this).apply {
+            textSize = 14f
+            gravity = Gravity.CENTER
+            setTextColor(Color.rgb(205, 197, 255))
+        }
+        root.addView(widgetStyleStatus, matchWrap(bottom = 14))
         root.addView(actionButton("캘린더 권한 허용") {
             if (checkSelfPermission(Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.READ_CALENDAR), REQUEST_CALENDAR)
@@ -70,6 +85,9 @@ class MainActivity : Activity() {
         }, matchWrap(bottom = 10))
         root.addView(actionButton("My Calendar 열기") {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SITE_URL)))
+        }, matchWrap(bottom = 10))
+        root.addView(actionButton("웹 설정 가져오기") {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WIDGET_SETTINGS_URL)))
         }, matchWrap(bottom = 10))
         root.addView(actionButton("위젯 새로고침") {
             MyCalendarWidgetProvider.updateAll(this)
@@ -81,6 +99,26 @@ class MainActivity : Activity() {
         val granted = checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
         permissionStatus.text = if (granted) "캘린더 권한 허용됨 · 위젯 사용 가능" else "위젯에 일정을 표시하려면 캘린더 권한이 필요합니다."
         permissionStatus.setTextColor(if (granted) Color.rgb(102, 221, 164) else Color.rgb(255, 174, 96))
+        updateWidgetStyleStatus()
+    }
+
+    private fun applyWidgetSettingsIntent(sourceIntent: Intent?) {
+        val uri = sourceIntent?.data ?: return
+        if (uri.scheme != "mycalendar" || uri.host != "widget-settings") return
+        val style = uri.getQueryParameter("eventStyle") ?: return
+        MyCalendarWidgetProvider.setEventStyle(this, style)
+        updateWidgetStyleStatus()
+        Toast.makeText(this, "위젯 일정 표시 설정을 적용했습니다.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateWidgetStyleStatus() {
+        if (!::widgetStyleStatus.isInitialized) return
+        val label = when (MyCalendarWidgetProvider.eventStyle(this)) {
+            "fill" -> "배경색 채우기"
+            "text" -> "글씨에만 색상"
+            else -> "왼쪽 색상선"
+        }
+        widgetStyleStatus.text = "현재 위젯 일정 표시 · $label"
     }
 
     private fun actionButton(label: String, action: () -> Unit) = Button(this).apply {
@@ -101,5 +139,6 @@ class MainActivity : Activity() {
     companion object {
         private const val REQUEST_CALENDAR = 2001
         const val SITE_URL = "https://yeonseo1605.github.io/my-calendar/"
+        const val WIDGET_SETTINGS_URL = "${SITE_URL}widget-settings.html"
     }
 }
