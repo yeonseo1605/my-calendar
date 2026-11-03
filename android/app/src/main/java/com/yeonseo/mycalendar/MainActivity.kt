@@ -21,6 +21,7 @@ import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
 class MainActivity : Activity() {
     private lateinit var permissionStatus: TextView
     private lateinit var widgetStyleStatus: TextView
+    private lateinit var permissionButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,13 +77,14 @@ class MainActivity : Activity() {
             setTextColor(Color.rgb(205, 197, 255))
         }
         root.addView(widgetStyleStatus, matchWrap(bottom = 14))
-        root.addView(actionButton("캘린더 권한 허용") {
+        permissionButton = actionButton("캘린더 권한 허용") {
             if (checkSelfPermission(Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.READ_CALENDAR), REQUEST_CALENDAR)
             } else {
                 startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
             }
-        }, matchWrap(bottom = 10))
+        }
+        root.addView(permissionButton, matchWrap(bottom = 10))
         root.addView(actionButton("My Calendar 열기") {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SITE_URL)))
         }, matchWrap(bottom = 10))
@@ -99,6 +101,11 @@ class MainActivity : Activity() {
         val granted = checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
         permissionStatus.text = if (granted) "캘린더 권한 허용됨 · 위젯 사용 가능" else "위젯에 일정을 표시하려면 캘린더 권한이 필요합니다."
         permissionStatus.setTextColor(if (granted) Color.rgb(102, 221, 164) else Color.rgb(255, 174, 96))
+        if (::permissionButton.isInitialized) {
+            permissionButton.isEnabled = !granted
+            permissionButton.alpha = if (granted) 0.42f else 1f
+            permissionButton.text = if (granted) "캘린더 권한 허용 완료" else "캘린더 권한 허용"
+        }
         updateWidgetStyleStatus()
     }
 
