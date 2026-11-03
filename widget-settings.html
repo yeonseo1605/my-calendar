@@ -11,7 +11,7 @@
     main{width:min(520px,100%);background:#26252d;border:1px solid #46434f;border-radius:22px;padding:24px;box-shadow:0 24px 80px #0008}
     .brand{display:flex;gap:12px;align-items:center;margin-bottom:22px}.logo{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#8b7cff,#c276e8);font-size:24px}
     h1{font-size:22px;margin:0}.muted{color:#aaa5b4;font-size:14px;line-height:1.55}.status{background:#312f39;border:1px solid #4b4755;border-radius:14px;padding:14px;margin:18px 0}
-    .styles{display:grid;gap:10px;margin:16px 0 22px}.choice{display:flex;align-items:center;gap:12px;width:100%;border:1px solid #504c59;background:#302f37;color:#f7f5fb;border-radius:13px;padding:14px;text-align:left;font-size:15px;font-weight:700}.choice.active{border-color:#b682ef;background:linear-gradient(90deg,#60406f,#3b3446);box-shadow:0 0 0 1px #b682ef55}.preview{display:flex;align-items:center;gap:8px;min-width:112px}.line{width:4px;height:24px;background:#ffef75;border-radius:3px}.fill{padding:6px 9px;border-radius:7px;background:#ffef7526;color:#ffef75}.text{color:#ffef75}
+    .styles{display:grid;gap:10px;margin:16px 0 18px}.choice{display:flex;align-items:center;gap:12px;width:100%;border:1px solid #504c59;background:#302f37;color:#f7f5fb;border-radius:13px;padding:14px;text-align:left;font-size:15px;font-weight:700}.choice.active{border-color:#b682ef;background:linear-gradient(90deg,#60406f,#3b3446);box-shadow:0 0 0 1px #b682ef55}.preview{display:flex;align-items:center;gap:8px;min-width:112px}.line{width:4px;height:24px;background:#ffef75;border-radius:3px}.fill{padding:6px 9px;border-radius:7px;background:#ffef7526;color:#ffef75}.text{color:#ffef75}.apply-help{margin:0 2px 14px}
     button,a.button{appearance:none;border:0;border-radius:13px;padding:15px 18px;width:100%;font-size:16px;font-weight:800;text-align:center;text-decoration:none;display:block;cursor:pointer}.primary{background:linear-gradient(90deg,#7f91ff,#b36ce2);color:white}.secondary{background:#3b3944;color:#ddd8e5;margin-top:10px}.hidden{display:none!important}.error{color:#ff8d9c}.ok{color:#80e1aa}
   </style>
 </head>
@@ -25,7 +25,8 @@
         <button class="choice" data-style="marker"><span class="preview"><i class="line"></i>프로젝트 회의</span><span>왼쪽 색상선</span></button>
         <button class="choice" data-style="text"><span class="preview text">프로젝트 회의</span><span>글씨에만 색상</span></button>
       </div>
-      <button id="apply" class="primary">휴대폰 위젯에 적용</button>
+      <p class="muted apply-help">위젯이 없으면 Android의 홈 화면 추가 확인창이 열립니다. 이미 있으면 바로 갱신됩니다.</p>
+      <button id="apply" class="primary">설정 적용 및 위젯 추가</button>
     </section>
     <button id="login" class="primary hidden">Google 계정으로 로그인</button>
     <a class="button secondary" href="./android-install.html">Android 앱 설치 안내</a>

@@ -115,7 +115,31 @@ class MainActivity : Activity() {
         val style = uri.getQueryParameter("eventStyle") ?: return
         MyCalendarWidgetProvider.setEventStyle(this, style)
         updateWidgetStyleStatus()
-        Toast.makeText(this, "위젯 일정 표시 설정을 적용했습니다.", Toast.LENGTH_SHORT).show()
+        applyToExistingWidgetOrRequestAdd()
+    }
+
+    private fun applyToExistingWidgetOrRequestAdd() {
+        val manager = AppWidgetManager.getInstance(this)
+        val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
+        val widgetIds = manager.getAppWidgetIds(provider)
+
+        if (widgetIds.isNotEmpty()) {
+            MyCalendarWidgetProvider.updateAll(this)
+            Toast.makeText(this, "기존 위젯에 표시 설정을 적용했습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val requested = manager.isRequestPinAppWidgetSupported &&
+            manager.requestPinAppWidget(provider, null, null)
+        if (requested) {
+            Toast.makeText(this, "홈 화면에 추가할 위젯을 확인해 주세요.", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(
+                this,
+                "홈 화면을 길게 누른 뒤 위젯 → My Calendar를 선택해 주세요.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun updateWidgetStyleStatus() {
