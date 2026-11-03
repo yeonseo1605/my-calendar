@@ -541,7 +541,7 @@ const showUpdateBanner=()=>$('#updateBanner')?.classList.remove('hidden');
 $('#reloadForUpdate').onclick=()=>location.reload();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
  const hadController=!!navigator.serviceWorker.controller;
- navigator.serviceWorker.register('./sw.js?v=28',{updateViaCache:'none'}).then(registration=>{
+ navigator.serviceWorker.register('./sw.js?v=29',{updateViaCache:'none'}).then(registration=>{
   if(registration.waiting&&hadController)showUpdateBanner();
   registration.addEventListener('updatefound',()=>{const worker=registration.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner()})});
   registration.update()
