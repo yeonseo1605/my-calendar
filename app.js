@@ -189,11 +189,11 @@ function applyTheme(){
  document.documentElement.style.setProperty('--lunar-text',lunarText);
  document.documentElement.style.setProperty('--lunar-bg',lunarBg);
  document.documentElement.style.setProperty('--event-font-scale',fontScale);
- document.documentElement.style.setProperty('--event-font',`max(13px,${16*fontScale}px)`);
- document.documentElement.style.setProperty('--search-title-font',`max(18px,${19*fontScale}px)`);
- document.documentElement.style.setProperty('--search-head-font',`max(13px,${14*fontScale}px)`);
- document.documentElement.style.setProperty('--search-row-font',`max(15px,${16*fontScale}px)`);
- document.documentElement.style.setProperty('--search-row-pad',`max(12px,${12*fontScale}px)`);
+ document.documentElement.style.setProperty('--event-font',`${16*fontScale}px`);
+ document.documentElement.style.setProperty('--search-title-font',`${19*fontScale}px`);
+ document.documentElement.style.setProperty('--search-head-font',`${14*fontScale}px`);
+ document.documentElement.style.setProperty('--search-row-font',`${16*fontScale}px`);
+ document.documentElement.style.setProperty('--search-row-pad',`${12*fontScale}px`);
  document.body.classList.toggle('compact',!!state.compactMode);
  document.body.classList.toggle('hide-weekends',!state.showWeekends)
 }

@@ -215,6 +215,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                 dayView.setTextColor(R.id.widgetWeekDate, dayColor)
                 dayView.setTextViewText(R.id.widgetWeekEvent, dayEvents.firstOrNull()?.title.orEmpty())
                 dayView.setTextViewText(R.id.widgetWeekMore, if (dayEvents.size > 1) "+${dayEvents.size - 1}" else "")
+                applyTextScale(context, dayView, listOf(R.id.widgetWeekEvent to 8f, R.id.widgetWeekMore to 7f))
                 if (dayEvents.isNotEmpty()) {
                     applyEventStyle(context, dayView, R.id.widgetWeekEventWrap, R.id.widgetWeekAccent, R.id.widgetWeekEvent, dayEvents.first().color)
                 } else {
@@ -259,6 +260,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                     val dayEvents = eventsByDate[date].orEmpty()
                     day.setTextViewText(R.id.widgetEventTitle, dayEvents.firstOrNull()?.title.orEmpty())
                     day.setTextViewText(R.id.widgetEventMore, if (dayEvents.size > 1) "+${dayEvents.size - 1}" else "")
+                    applyTextScale(context, day, listOf(R.id.widgetEventTitle to 10f, R.id.widgetEventMore to 9f))
                     if (dayEvents.isNotEmpty()) {
                         applyEventStyle(context, day, R.id.widgetEventWrap, R.id.widgetEventAccent, R.id.widgetEventTitle, dayEvents.first().color)
                     } else {
@@ -282,6 +284,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                     val item = RemoteViews(context.packageName, R.layout.widget_agenda_item)
                     item.setTextViewText(R.id.widgetAgendaTitle, event.title)
                     item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
+                    applyTextScale(context, item, listOf(R.id.widgetAgendaTitle to 11f, R.id.widgetAgendaTime to 10f))
                     applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
                     view.addView(R.id.widgetAgenda, item)
                 }
@@ -306,6 +309,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                 val item = RemoteViews(context.packageName, R.layout.widget_agenda_item)
                 item.setTextViewText(R.id.widgetAgendaTitle, event.title)
                 item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
+                applyTextScale(context, item, listOf(R.id.widgetAgendaTitle to 11f, R.id.widgetAgendaTime to 10f))
                 applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
                 view.addView(R.id.widgetAgenda, item)
             }
@@ -321,10 +325,12 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                 else -> R.drawable.widget_background_100
             }
             view.setInt(R.id.widgetRoot, "setBackgroundResource", background)
+            applyTextScale(context, view, textViews)
+        }
+
+        private fun applyTextScale(context: Context, view: RemoteViews, textViews: List<Pair<Int, Float>>) {
             val scale = fontScale(context) / 100f
-            textViews.forEach { (id, size) ->
-                view.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, size * scale)
-            }
+            textViews.forEach { (id, size) -> view.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, size * scale) }
         }
 
         private fun applyEventStyle(context: Context, view: RemoteViews, wrapperId: Int, accentId: Int, titleId: Int, labelColor: Int) {
