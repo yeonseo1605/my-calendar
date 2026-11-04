@@ -973,7 +973,7 @@ body[data-calendar-view="week"] .timeline-heads{
   .day-cell{min-height:100px!important;padding:4px 3px!important}
   .day-date-line{align-items:center;gap:2px}
   .day-number{width:21px!important;height:21px!important;font-size:11px!important}
-  .lunar-date{min-width:0;max-width:calc(100% - 22px);margin:0!important;padding:2px 4px!important;border-radius:4px!important;font-size:8px!important;line-height:1!important;overflow:hidden;text-overflow:ellipsis}
+  .lunar-date{flex:0 0 auto;min-width:0;max-width:none;margin:0!important;padding:2px 3px!important;border-radius:4px!important;font-size:7.5px!important;letter-spacing:-.15px;line-height:1!important;white-space:nowrap;overflow:visible;text-overflow:clip}
   .event-chip{margin:3px 0!important;padding:3px 2px!important;font-size:calc(var(--event-font) * .76)!important;line-height:1.25!important}
   .event-chip.marker{padding-left:8px!important}
   .event-overflow{color:var(--accent)!important;font-weight:800}
