@@ -17,6 +17,6 @@
         <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:text="토" android:textColor="#789AE0" android:textSize="10sp" android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout android:id="@+id/widgetCalendarRows" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="vertical" />
-    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#40535A69" android:layout_marginTop="5dp" android:layout_marginBottom="4dp" />
+    <TextView android:layout_width="match_parent" android:layout_height="1dp" android:background="#40535A69" android:layout_marginTop="5dp" android:layout_marginBottom="4dp" />
     <LinearLayout android:id="@+id/widgetAgenda" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
 </LinearLayout>

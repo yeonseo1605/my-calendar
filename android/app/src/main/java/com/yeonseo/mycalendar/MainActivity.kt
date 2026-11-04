@@ -2,6 +2,7 @@ package com.yeonseo.mycalendar
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
@@ -17,6 +18,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
+import com.yeonseo.mycalendar.widget.TodayWidgetProvider
+import com.yeonseo.mycalendar.widget.WeekWidgetProvider
+import com.yeonseo.mycalendar.widget.AgendaWidgetProvider
+import com.yeonseo.mycalendar.widget.MonthAgendaWidgetProvider
 
 class MainActivity : Activity() {
     private lateinit var permissionStatus: TextView
@@ -87,7 +92,7 @@ class MainActivity : Activity() {
         }
         root.addView(permissionButton, matchWrap(bottom = 10))
         widgetAddButton = actionButton("홈 화면에 위젯 추가") {
-            addOrRefreshWidget()
+            chooseWidgetToAdd()
         }
         root.addView(widgetAddButton, matchWrap(bottom = 10))
         root.addView(actionButton("My Calendar 열기") {
@@ -124,23 +129,38 @@ class MainActivity : Activity() {
         val style = uri.getQueryParameter("eventStyle") ?: return
         MyCalendarWidgetProvider.setEventStyle(this, style)
         updateWidgetStyleStatus()
-        addOrRefreshWidget()
+        val manager = AppWidgetManager.getInstance(this)
+        val hasWidget = MyCalendarWidgetProvider.providerKinds.keys.any {
+            manager.getAppWidgetIds(ComponentName(this, it)).isNotEmpty()
+        }
+        if (hasWidget) MyCalendarWidgetProvider.updateAll(this) else chooseWidgetToAdd()
     }
 
-    private fun addOrRefreshWidget() {
+    private fun chooseWidgetToAdd() {
+        val choices = arrayOf(
+            "오늘 일정  ·  2×1",
+            "주간 일정  ·  4×2",
+            "월간 달력  ·  4×3",
+            "일정 목록  ·  4×2",
+            "월간 달력 + 일정  ·  4×5"
+        )
+        val providers = arrayOf(
+            TodayWidgetProvider::class.java,
+            WeekWidgetProvider::class.java,
+            MyCalendarWidgetProvider::class.java,
+            AgendaWidgetProvider::class.java,
+            MonthAgendaWidgetProvider::class.java
+        )
+        AlertDialog.Builder(this)
+            .setTitle("추가할 위젯 선택")
+            .setItems(choices) { _, index -> requestWidgetPin(providers[index]) }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun requestWidgetPin(providerClass: Class<out android.appwidget.AppWidgetProvider>) {
         val manager = AppWidgetManager.getInstance(this)
-        val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
-        val widgetIds = MyCalendarWidgetProvider.providerKinds.keys.flatMap {
-            manager.getAppWidgetIds(ComponentName(this, it)).toList()
-        }
-
-        if (widgetIds.isNotEmpty()) {
-            MyCalendarWidgetProvider.updateAll(this)
-            updateWidgetAddStatus()
-            Toast.makeText(this, "기존 위젯에 표시 설정을 적용했습니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
+        val provider = ComponentName(this, providerClass)
         val requested = manager.isRequestPinAppWidgetSupported &&
             manager.requestPinAppWidget(provider, null, null)
         if (requested) {
@@ -162,11 +182,11 @@ class MainActivity : Activity() {
         val hasWidget = MyCalendarWidgetProvider.providerKinds.keys.any {
             manager.getAppWidgetIds(ComponentName(this, it)).isNotEmpty()
         }
-        widgetAddButton.isEnabled = calendarPermissionGranted && !hasWidget
+        widgetAddButton.isEnabled = calendarPermissionGranted
         widgetAddButton.alpha = if (widgetAddButton.isEnabled) 1f else 0.42f
         widgetAddButton.text = when {
-            hasWidget -> "홈 화면 위젯 추가 완료"
             !calendarPermissionGranted -> "캘린더 권한 허용 후 위젯 추가"
+            hasWidget -> "다른 위젯 선택 및 추가"
             else -> "홈 화면에 위젯 추가"
         }
     }
