@@ -93,6 +93,9 @@ class MainActivity : Activity() {
         root.addView(actionButton("My Calendar 열기") {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SITE_URL)))
         }, matchWrap(bottom = 10))
+        root.addView(actionButton("위젯 설정") {
+            startActivity(Intent(this, WidgetSettingsActivity::class.java))
+        }, matchWrap(bottom = 10))
         root.addView(actionButton("웹 설정 가져오기") {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WIDGET_SETTINGS_URL)))
         }, matchWrap(bottom = 10))
@@ -127,7 +130,9 @@ class MainActivity : Activity() {
     private fun addOrRefreshWidget() {
         val manager = AppWidgetManager.getInstance(this)
         val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
-        val widgetIds = manager.getAppWidgetIds(provider)
+        val widgetIds = MyCalendarWidgetProvider.providerKinds.keys.flatMap {
+            manager.getAppWidgetIds(ComponentName(this, it)).toList()
+        }
 
         if (widgetIds.isNotEmpty()) {
             MyCalendarWidgetProvider.updateAll(this)
@@ -154,8 +159,9 @@ class MainActivity : Activity() {
     ) {
         if (!::widgetAddButton.isInitialized) return
         val manager = AppWidgetManager.getInstance(this)
-        val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
-        val hasWidget = manager.getAppWidgetIds(provider).isNotEmpty()
+        val hasWidget = MyCalendarWidgetProvider.providerKinds.keys.any {
+            manager.getAppWidgetIds(ComponentName(this, it)).isNotEmpty()
+        }
         widgetAddButton.isEnabled = calendarPermissionGranted && !hasWidget
         widgetAddButton.alpha = if (widgetAddButton.isEnabled) 1f else 0.42f
         widgetAddButton.text = when {

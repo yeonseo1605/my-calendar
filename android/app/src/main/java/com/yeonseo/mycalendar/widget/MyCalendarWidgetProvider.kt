@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import com.yeonseo.mycalendar.MainActivity
@@ -21,13 +22,17 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class MyCalendarWidgetProvider : AppWidgetProvider() {
+enum class WidgetKind { AUTO, TODAY, WEEK, MONTH, AGENDA, MONTH_AGENDA }
+
+open class MyCalendarWidgetProvider : AppWidgetProvider() {
+    protected open val widgetKind: WidgetKind = WidgetKind.MONTH
+
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        ids.forEach { updateWidget(context, manager, it) }
+        ids.forEach { safeUpdateWidget(context, manager, it, widgetKind, javaClass) }
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
-        updateWidget(context, manager, appWidgetId)
+        safeUpdateWidget(context, manager, appWidgetId, widgetKind, javaClass)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -43,7 +48,7 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             ACTION_TODAY -> prefs.edit().putInt(offsetKey(id), 0).putInt(weekOffsetKey(id), 0).apply()
             else -> return
         }
-        updateWidget(context, AppWidgetManager.getInstance(context), id)
+        safeUpdateWidget(context, AppWidgetManager.getInstance(context), id, widgetKind, javaClass)
     }
 
     companion object {
@@ -57,14 +62,26 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
         private const val EVENT_STYLE_FILL = "fill"
         private const val EVENT_STYLE_MARKER = "marker"
         private const val EVENT_STYLE_TEXT = "text"
+        private const val OPACITY_KEY = "background_opacity"
+        private const val FONT_SCALE_KEY = "font_scale"
         private val monthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREAN)
         private val dateFormatter = DateTimeFormatter.ofPattern("M월 d일 EEEE", Locale.KOREAN)
         private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+        val providerKinds = linkedMapOf<Class<out AppWidgetProvider>, WidgetKind>(
+            MyCalendarWidgetProvider::class.java to WidgetKind.MONTH,
+            TodayWidgetProvider::class.java to WidgetKind.TODAY,
+            WeekWidgetProvider::class.java to WidgetKind.WEEK,
+            AgendaWidgetProvider::class.java to WidgetKind.AGENDA,
+            MonthAgendaWidgetProvider::class.java to WidgetKind.MONTH_AGENDA
+        )
+
         fun updateAll(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
-            val component = ComponentName(context, MyCalendarWidgetProvider::class.java)
-            manager.getAppWidgetIds(component).forEach { updateWidget(context, manager, it) }
+            providerKinds.forEach { (providerClass, kind) ->
+                val component = ComponentName(context, providerClass)
+                manager.getAppWidgetIds(component).forEach { safeUpdateWidget(context, manager, it, kind, providerClass) }
+            }
         }
 
         fun setEventStyle(context: Context, style: String) {
@@ -76,20 +93,67 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
         fun eventStyle(context: Context): String = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getString(EVENT_STYLE_KEY, EVENT_STYLE_MARKER) ?: EVENT_STYLE_MARKER
 
-        private fun updateWidget(context: Context, manager: AppWidgetManager, id: Int) {
+        fun backgroundOpacity(context: Context): Int = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getInt(OPACITY_KEY, 75)
+
+        fun setBackgroundOpacity(context: Context, value: Int) {
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt(OPACITY_KEY, value.coerceIn(25, 100)).apply()
+            updateAll(context)
+        }
+
+        fun fontScale(context: Context): Int = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getInt(FONT_SCALE_KEY, 100)
+
+        fun setFontScale(context: Context, value: Int) {
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt(FONT_SCALE_KEY, value.coerceIn(70, 160)).apply()
+            updateAll(context)
+        }
+
+        private fun safeUpdateWidget(
+            context: Context,
+            manager: AppWidgetManager,
+            id: Int,
+            kind: WidgetKind,
+            providerClass: Class<out AppWidgetProvider>
+        ) {
+            val view = runCatching { buildWidget(context, manager, id, kind, providerClass) }
+                .getOrElse {
+                    RemoteViews(context.packageName, R.layout.widget_small).apply {
+                        setTextViewText(R.id.widgetDate, "My Calendar")
+                        setTextViewText(R.id.widgetTitle, "위젯을 새로고침해 주세요")
+                        setTextViewText(R.id.widgetTime, "앱을 열면 자동으로 다시 불러옵니다")
+                        setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
+                    }
+                }
+            manager.updateAppWidget(id, view)
+        }
+
+        private fun buildWidget(
+            context: Context,
+            manager: AppWidgetManager,
+            id: Int,
+            kind: WidgetKind,
+            providerClass: Class<out AppWidgetProvider>
+        ): RemoteViews {
             val options = manager.getAppWidgetOptions(id)
             val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 240)
             val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 180)
             val repository = CalendarRepository(context)
             val offset = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt(offsetKey(id), 0)
             val month = YearMonth.now().plusMonths(offset.toLong())
-            val view = when {
-                width < 230 || height < 95 -> buildSmall(context, id, repository)
-                height < 190 -> buildWeek(context, id, repository)
-                height < 285 -> buildMonth(context, id, repository, month, false)
-                else -> buildMonth(context, id, repository, month, true)
+            return when (kind) {
+                WidgetKind.TODAY -> buildSmall(context, id, repository)
+                WidgetKind.WEEK -> buildWeek(context, id, repository, providerClass)
+                WidgetKind.MONTH -> buildMonth(context, id, repository, month, false, providerClass)
+                WidgetKind.AGENDA -> buildAgenda(context, id, repository)
+                WidgetKind.MONTH_AGENDA -> buildMonth(context, id, repository, month, true, providerClass)
+                WidgetKind.AUTO -> when {
+                    width < 230 || height < 95 -> buildSmall(context, id, repository)
+                    height < 190 -> buildWeek(context, id, repository, providerClass)
+                    height < 285 -> buildMonth(context, id, repository, month, false, providerClass)
+                    else -> buildMonth(context, id, repository, month, true, providerClass)
+                }
             }
-            manager.updateAppWidget(id, view)
         }
 
         private fun buildSmall(context: Context, id: Int, repository: CalendarRepository): RemoteViews {
@@ -112,10 +176,11 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                 applyEventStyle(context, view, R.id.widgetEventCard, R.id.widgetAccent, R.id.widgetTitle, first.color)
             }
             view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
+            applyWidgetAppearance(context, view, listOf(R.id.widgetDate to 12f, R.id.widgetTitle to 15f, R.id.widgetTime to 11f))
             return view
         }
 
-        private fun buildWeek(context: Context, id: Int, repository: CalendarRepository): RemoteViews {
+        private fun buildWeek(context: Context, id: Int, repository: CalendarRepository, providerClass: Class<out AppWidgetProvider>): RemoteViews {
             val view = RemoteViews(context.packageName, R.layout.widget_week)
             val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             val offset = prefs.getInt(weekOffsetKey(id), 0)
@@ -124,9 +189,10 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             val weekStart = currentWeekStart.plusWeeks(offset.toLong())
             val weekEnd = weekStart.plusDays(6)
             view.setTextViewText(R.id.widgetWeekTitle, weekTitle(weekStart, weekEnd))
-            view.setOnClickPendingIntent(R.id.widgetPrevious, actionIntent(context, id, ACTION_PREVIOUS_WEEK))
-            view.setOnClickPendingIntent(R.id.widgetNext, actionIntent(context, id, ACTION_NEXT_WEEK))
-            view.setOnClickPendingIntent(R.id.widgetToday, actionIntent(context, id, ACTION_TODAY))
+            view.setOnClickPendingIntent(R.id.widgetPrevious, actionIntent(context, id, ACTION_PREVIOUS_WEEK, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetNext, actionIntent(context, id, ACTION_NEXT_WEEK, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetToday, actionIntent(context, id, ACTION_TODAY, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetSettings, settingsIntent(context, id))
             view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
             view.removeAllViews(R.id.widgetWeekDays)
 
@@ -156,16 +222,18 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                 }
                 view.addView(R.id.widgetWeekDays, dayView)
             }
+            applyWidgetAppearance(context, view, listOf(R.id.widgetWeekTitle to 13f))
             return view
         }
 
-        private fun buildMonth(context: Context, id: Int, repository: CalendarRepository, month: YearMonth, showAgenda: Boolean): RemoteViews {
+        private fun buildMonth(context: Context, id: Int, repository: CalendarRepository, month: YearMonth, showAgenda: Boolean, providerClass: Class<out AppWidgetProvider>): RemoteViews {
             val layout = if (showAgenda) R.layout.widget_large else R.layout.widget_medium
             val view = RemoteViews(context.packageName, layout)
             view.setTextViewText(R.id.widgetMonthTitle, month.format(monthFormatter))
-            view.setOnClickPendingIntent(R.id.widgetPrevious, actionIntent(context, id, ACTION_PREVIOUS))
-            view.setOnClickPendingIntent(R.id.widgetNext, actionIntent(context, id, ACTION_NEXT))
-            view.setOnClickPendingIntent(R.id.widgetToday, actionIntent(context, id, ACTION_TODAY))
+            view.setOnClickPendingIntent(R.id.widgetPrevious, actionIntent(context, id, ACTION_PREVIOUS, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetNext, actionIntent(context, id, ACTION_NEXT, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetToday, actionIntent(context, id, ACTION_TODAY, providerClass))
+            view.setOnClickPendingIntent(R.id.widgetSettings, settingsIntent(context, id))
             view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
             view.removeAllViews(R.id.widgetCalendarRows)
 
@@ -218,7 +286,45 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
                     view.addView(R.id.widgetAgenda, item)
                 }
             }
+            applyWidgetAppearance(context, view, listOf(R.id.widgetMonthTitle to 15f))
             return view
+        }
+
+        private fun buildAgenda(context: Context, id: Int, repository: CalendarRepository): RemoteViews {
+            val view = RemoteViews(context.packageName, R.layout.widget_agenda)
+            view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
+            view.setOnClickPendingIntent(R.id.widgetSettings, settingsIntent(context, id))
+            view.removeAllViews(R.id.widgetAgenda)
+            val upcoming = repository.eventsBetween(System.currentTimeMillis(), startOfDay(LocalDate.now().plusDays(31)))
+                .filterNot { isHolidayCalendar(it.calendarName) }
+                .take(6)
+            if (!repository.hasPermission() || upcoming.isEmpty()) {
+                val empty = RemoteViews(context.packageName, R.layout.widget_agenda_empty)
+                empty.setTextViewText(R.id.widgetAgendaEmpty, if (repository.hasPermission()) "예정된 일정이 없습니다" else "앱을 열어 캘린더 권한을 허용하세요")
+                view.addView(R.id.widgetAgenda, empty)
+            } else upcoming.forEach { event ->
+                val item = RemoteViews(context.packageName, R.layout.widget_agenda_item)
+                item.setTextViewText(R.id.widgetAgendaTitle, event.title)
+                item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
+                applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
+                view.addView(R.id.widgetAgenda, item)
+            }
+            applyWidgetAppearance(context, view, emptyList())
+            return view
+        }
+
+        private fun applyWidgetAppearance(context: Context, view: RemoteViews, textViews: List<Pair<Int, Float>>) {
+            val background = when {
+                backgroundOpacity(context) <= 37 -> R.drawable.widget_background_25
+                backgroundOpacity(context) <= 62 -> R.drawable.widget_background_50
+                backgroundOpacity(context) <= 87 -> R.drawable.widget_background_75
+                else -> R.drawable.widget_background_100
+            }
+            view.setInt(R.id.widgetRoot, "setBackgroundResource", background)
+            val scale = fontScale(context) / 100f
+            textViews.forEach { (id, size) ->
+                view.setTextViewTextSize(id, TypedValue.COMPLEX_UNIT_SP, size * scale)
+            }
         }
 
         private fun applyEventStyle(context: Context, view: RemoteViews, wrapperId: Int, accentId: Int, titleId: Int, labelColor: Int) {
@@ -263,8 +369,8 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             4 -> R.id.weekDay4; 5 -> R.id.weekDay5; else -> R.id.weekDay6
         }
 
-        private fun actionIntent(context: Context, id: Int, action: String): PendingIntent {
-            val intent = Intent(context, MyCalendarWidgetProvider::class.java).apply {
+        private fun actionIntent(context: Context, id: Int, action: String, providerClass: Class<out AppWidgetProvider>): PendingIntent {
+            val intent = Intent(context, providerClass).apply {
                 this.action = action
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
                 data = Uri.parse("mycalendar://widget/$id/$action")
@@ -276,5 +382,28 @@ class MyCalendarWidgetProvider : AppWidgetProvider() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(MainActivity.SITE_URL))
             return PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
+
+        fun settingsIntent(context: Context, id: Int): PendingIntent {
+            val intent = Intent(context, com.yeonseo.mycalendar.WidgetSettingsActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+            }
+            return PendingIntent.getActivity(context, 90000 + id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
     }
+}
+
+class TodayWidgetProvider : MyCalendarWidgetProvider() {
+    override val widgetKind = WidgetKind.TODAY
+}
+
+class WeekWidgetProvider : MyCalendarWidgetProvider() {
+    override val widgetKind = WidgetKind.WEEK
+}
+
+class AgendaWidgetProvider : MyCalendarWidgetProvider() {
+    override val widgetKind = WidgetKind.AGENDA
+}
+
+class MonthAgendaWidgetProvider : MyCalendarWidgetProvider() {
+    override val widgetKind = WidgetKind.MONTH_AGENDA
 }

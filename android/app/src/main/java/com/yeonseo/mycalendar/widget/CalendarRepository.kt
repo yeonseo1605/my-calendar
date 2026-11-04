@@ -40,22 +40,24 @@ class CalendarRepository(private val context: Context) {
             .appendPath(startMillis.toString())
             .appendPath(endMillis.toString())
             .build()
-        return context.contentResolver.query(uri, projection, null, null, "${CalendarContract.Instances.BEGIN} ASC")?.use { cursor ->
-            val events = mutableListOf<WidgetEvent>()
-            while (cursor.moveToNext()) {
-                val eventColor = cursor.getInt(5)
-                val calendarColor = cursor.getInt(6)
-                events += WidgetEvent(
-                    id = cursor.getLong(0),
-                    title = cursor.getString(1)?.takeIf { it.isNotBlank() } ?: "(제목 없음)",
-                    startMillis = cursor.getLong(2),
-                    endMillis = cursor.getLong(3),
-                    allDay = cursor.getInt(4) == 1,
-                    color = if (eventColor != 0) eventColor else if (calendarColor != 0) calendarColor else 0xFF7D73E6.toInt(),
-                    calendarName = cursor.getString(7).orEmpty()
-                )
-            }
-            events.distinctBy { "${it.id}:${it.startMillis}" }
-        } ?: emptyList()
+        return runCatching {
+            context.contentResolver.query(uri, projection, null, null, "${CalendarContract.Instances.BEGIN} ASC")?.use { cursor ->
+                val events = mutableListOf<WidgetEvent>()
+                while (cursor.moveToNext()) {
+                    val eventColor = cursor.getInt(5)
+                    val calendarColor = cursor.getInt(6)
+                    events += WidgetEvent(
+                        id = cursor.getLong(0),
+                        title = cursor.getString(1)?.takeIf { it.isNotBlank() } ?: "(제목 없음)",
+                        startMillis = cursor.getLong(2),
+                        endMillis = cursor.getLong(3),
+                        allDay = cursor.getInt(4) == 1,
+                        color = if (eventColor != 0) eventColor else if (calendarColor != 0) calendarColor else 0xFF7D73E6.toInt(),
+                        calendarName = cursor.getString(7).orEmpty()
+                    )
+                }
+                events.distinctBy { "${it.id}:${it.startMillis}" }
+            } ?: emptyList()
+        }.getOrElse { emptyList() }
     }
 }

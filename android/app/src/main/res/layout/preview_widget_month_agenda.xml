@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="12dp" android:background="@drawable/widget_background_100">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="2026년 11월" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
+    <TextView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3" android:gravity="center" android:lineSpacingExtra="5dp" android:text="일   월   화   수   목   금   토\n1    2    3    ④    5    6    7\n8    9   10   11   12   13   14\n15  16   17   18   19   20   21\n22  23   24   25   26   27   28\n29  30" android:textColor="#E8EAF2" android:textSize="10sp" />
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#55626A7A" />
+    <TextView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:text="┃ 오늘 10:00 프로젝트 회의\n┃ 금요일 14:00 병원 예약" android:textColor="#FFFFFF" android:textSize="11sp" />
+</LinearLayout>
