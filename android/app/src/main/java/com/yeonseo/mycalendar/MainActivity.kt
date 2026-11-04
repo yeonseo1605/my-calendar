@@ -22,6 +22,7 @@ class MainActivity : Activity() {
     private lateinit var permissionStatus: TextView
     private lateinit var widgetStyleStatus: TextView
     private lateinit var permissionButton: Button
+    private lateinit var widgetAddButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +86,10 @@ class MainActivity : Activity() {
             }
         }
         root.addView(permissionButton, matchWrap(bottom = 10))
+        widgetAddButton = actionButton("홈 화면에 위젯 추가") {
+            addOrRefreshWidget()
+        }
+        root.addView(widgetAddButton, matchWrap(bottom = 10))
         root.addView(actionButton("My Calendar 열기") {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SITE_URL)))
         }, matchWrap(bottom = 10))
@@ -106,6 +111,7 @@ class MainActivity : Activity() {
             permissionButton.alpha = if (granted) 0.42f else 1f
             permissionButton.text = if (granted) "캘린더 권한 허용 완료" else "캘린더 권한 허용"
         }
+        updateWidgetAddStatus(granted)
         updateWidgetStyleStatus()
     }
 
@@ -115,16 +121,17 @@ class MainActivity : Activity() {
         val style = uri.getQueryParameter("eventStyle") ?: return
         MyCalendarWidgetProvider.setEventStyle(this, style)
         updateWidgetStyleStatus()
-        applyToExistingWidgetOrRequestAdd()
+        addOrRefreshWidget()
     }
 
-    private fun applyToExistingWidgetOrRequestAdd() {
+    private fun addOrRefreshWidget() {
         val manager = AppWidgetManager.getInstance(this)
         val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
         val widgetIds = manager.getAppWidgetIds(provider)
 
         if (widgetIds.isNotEmpty()) {
             MyCalendarWidgetProvider.updateAll(this)
+            updateWidgetAddStatus()
             Toast.makeText(this, "기존 위젯에 표시 설정을 적용했습니다.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -139,6 +146,22 @@ class MainActivity : Activity() {
                 "홈 화면을 길게 누른 뒤 위젯 → My Calendar를 선택해 주세요.",
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    private fun updateWidgetAddStatus(
+        calendarPermissionGranted: Boolean = checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
+    ) {
+        if (!::widgetAddButton.isInitialized) return
+        val manager = AppWidgetManager.getInstance(this)
+        val provider = ComponentName(this, MyCalendarWidgetProvider::class.java)
+        val hasWidget = manager.getAppWidgetIds(provider).isNotEmpty()
+        widgetAddButton.isEnabled = calendarPermissionGranted && !hasWidget
+        widgetAddButton.alpha = if (widgetAddButton.isEnabled) 1f else 0.42f
+        widgetAddButton.text = when {
+            hasWidget -> "홈 화면 위젯 추가 완료"
+            !calendarPermissionGranted -> "캘린더 권한 허용 후 위젯 추가"
+            else -> "홈 화면에 위젯 추가"
         }
     }
 
