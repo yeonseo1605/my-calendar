@@ -134,6 +134,18 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             updateAll(context)
         }
 
+        fun setNewWidgetAutoResize(context: Context, auto: Boolean) {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val editor = prefs.edit()
+            // Changing a new-widget choice must not alter existing widgets.
+            providerKinds.keys.forEach { provider ->
+                AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, provider)).forEach { id ->
+                    editor.putBoolean("auto_resize_$id", autoResize(context, id))
+                }
+            }
+            editor.putBoolean("auto_resize_-1", auto).apply()
+        }
+
         private fun safeUpdateWidget(
             context: Context,
             manager: AppWidgetManager,

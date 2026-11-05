@@ -27,7 +27,9 @@ class WidgetSettingsActivity : Activity() {
         super.onCreate(savedInstanceState)
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) setResult(RESULT_CANCELED)
-        setContentView(ScrollView(this).apply { setBackgroundColor(Color.rgb(22, 24, 31)); addView(buildContent()) })
+        val scroll = ScrollView(this).apply { setBackgroundColor(Color.rgb(22, 24, 31)); addView(buildContent()) }
+        setContentView(scroll)
+        applySafeInsets(window, scroll)
     }
 
     private fun buildContent(): LinearLayout {

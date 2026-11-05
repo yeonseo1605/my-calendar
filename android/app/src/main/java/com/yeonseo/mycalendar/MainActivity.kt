@@ -22,6 +22,7 @@ import android.graphics.drawable.GradientDrawable
 import android.app.Dialog
 import android.widget.ImageView
 import android.widget.FrameLayout
+import android.widget.Switch
 import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
 import com.yeonseo.mycalendar.widget.TodayWidgetProvider
 import com.yeonseo.mycalendar.widget.WeekWidgetProvider
@@ -237,14 +238,40 @@ class MainActivity : Activity() {
         header.addView(TextView(this).apply { text = "×"; textSize = 30f; gravity = Gravity.CENTER; setTextColor(Color.WHITE); contentDescription = "닫기"; setOnClickListener { dialog.dismiss() } }, LinearLayout.LayoutParams(dp(44), dp(44)))
         root.addView(header)
         root.addView(TextView(this).apply { text = "추가할 위젯 선택"; textSize = 27f; setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE); setPadding(dp(22), dp(4), dp(22), dp(8)) })
+        val automatic = Switch(this).apply {
+            text = "크기에 맞춰 자동 전환"
+            textSize = 16f
+            setTextColor(Color.WHITE)
+            isChecked = MyCalendarWidgetProvider.autoResize(this@MainActivity, AppWidgetManager.INVALID_APPWIDGET_ID)
+            buttonTintList = android.content.res.ColorStateList.valueOf(Color.rgb(187, 125, 239))
+            setPadding(dp(6), dp(6), dp(6), dp(6))
+        }
+        root.addView(automatic, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { setMargins(dp(20), 0, dp(20), 0) })
+        val modeHelp = TextView(this).apply {
+            textSize = 12f
+            setTextColor(Color.rgb(188, 187, 200))
+            setPadding(dp(22), dp(2), dp(22), dp(6))
+        }
+        fun updateModeHelp() {
+            modeHelp.text = if (automatic.isChecked) "추가 후 크기를 조절하면 날짜·오늘·주간·월간으로 자동 전환됩니다."
+                else "선택한 위젯 형식을 유지합니다. 크기에 맞춰 내부 배치를 조절합니다."
+        }
+        automatic.setOnCheckedChangeListener { _, _ -> updateModeHelp() }
+        updateModeHelp()
+        root.addView(modeHelp)
         root.addView(ScrollView(this).apply { isFillViewport = false; addView(content) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         root.addView(Button(this).apply {
             text = "위젯 추가"; textSize = 22f; isAllCaps = false
             setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE)
             background = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(Color.rgb(161, 94, 237), Color.rgb(185, 106, 230))).apply { cornerRadius = dp(18).toFloat() }
-            setOnClickListener { dialog.dismiss(); requestWidgetPin(providers[selected]) }
+            setOnClickListener {
+                MyCalendarWidgetProvider.setNewWidgetAutoResize(this@MainActivity, automatic.isChecked)
+                dialog.dismiss()
+                requestWidgetPin(providers[selected])
+            }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(58)).apply { setMargins(dp(20), dp(8), dp(20), dp(16)) })
         dialog.setContentView(root)
+        dialog.window?.let { applySafeInsets(it, root) }
         dialog.window?.statusBarColor = Color.rgb(25, 25, 33)
         dialog.window?.navigationBarColor = Color.rgb(25, 25, 33)
         dialog.show()
