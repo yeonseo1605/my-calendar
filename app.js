@@ -76,17 +76,18 @@ function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart
 function parseDate(s){return new Date(`${s}T00:00:00`)}
 function setEndOneHourAfterStart(){const value=$('#startTime').value;if(!/^\d{2}:\d{2}$/.test(value))return;const [hour,minute]=value.split(':').map(Number),total=(hour*60+minute+60)%1440;$('#endTime').value=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
 function enableWholeTimePickers(){
- $$('input[type="time"]').forEach(input=>{
-  input.classList.add('whole-time-picker');
-  input.addEventListener('pointerdown',event=>{
-   if(event.button!==0||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
-   event.preventDefault();input.focus({preventScroll:true});
-   try{input.showPicker()}catch{}
-  });
-  input.addEventListener('keydown',event=>{
-   if(!['Enter',' ','ArrowDown'].includes(event.key)||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
+ // Keep native segmented inputs editable; opening the picker must not cancel focus/caret placement.
+ document.addEventListener('click',event=>{
+  const input=event.target.closest('input[type="date"],input[type="time"]');
+  if(!input||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
+  try{input.showPicker()}catch{}
+ });
+ document.addEventListener('keydown',event=>{
+  const input=event.target.closest('input[type="date"],input[type="time"]');
+  if(!input||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
+  if(event.key==='F4'||event.altKey&&event.key==='ArrowDown'){
    event.preventDefault();try{input.showPicker()}catch{}
-  });
+  }
  });
 }
 const HOLIDAY_COLOR='#E06473';

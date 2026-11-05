@@ -246,7 +246,7 @@ body[data-calendar-view="list"] .calendar-card>.week-header{display:none!importa
 #eventDrawer .time-row .field:nth-child(2)>label{display:none}
 #eventDrawer .time-row .field:nth-child(2)>input{grid-column:3}
 input[type="time"].whole-time-picker{cursor:pointer}
-input[type="time"].whole-time-picker::-webkit-calendar-picker-indicator{display:none;width:0;height:0;margin:0;padding:0;opacity:0;pointer-events:none}
+input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webkit-calendar-picker-indicator{display:none;width:0;height:0;margin:0;padding:0;opacity:0;pointer-events:none}
 .android-widget-setting-row{display:grid;grid-template-columns:minmax(0,1fr) 112px;align-items:center;gap:16px}
 .android-widget-copy{min-width:0}.android-widget-copy>strong{display:block;margin-bottom:3px}.android-widget-copy .settings-buttons{margin-top:10px;justify-content:flex-start;flex-wrap:wrap}.android-widget-copy .btn{text-decoration:none;text-align:center}
 .widget-install-qr{display:block;padding:7px;border:1px solid var(--border);border-radius:12px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.18)}.widget-install-qr img{display:block;width:100%;height:auto}
