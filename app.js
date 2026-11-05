@@ -76,19 +76,27 @@ function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart
 function parseDate(s){return new Date(`${s}T00:00:00`)}
 function setEndOneHourAfterStart(){const value=$('#startTime').value;if(!/^\d{2}:\d{2}$/.test(value))return;const [hour,minute]=value.split(':').map(Number),total=(hour*60+minute+60)%1440;$('#endTime').value=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
 function enableWholeTimePickers(){
- // Keep native segmented inputs editable; opening the picker must not cancel focus/caret placement.
- document.addEventListener('click',event=>{
-  const input=event.target.closest('input[type="date"],input[type="time"]');
-  if(!input||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
-  try{input.showPicker()}catch{}
- });
- document.addEventListener('keydown',event=>{
-  const input=event.target.closest('input[type="date"],input[type="time"]');
-  if(!input||input.disabled||input.readOnly||typeof input.showPicker!=='function')return;
-  if(event.key==='F4'||event.altKey&&event.key==='ArrowDown'){
-   event.preventDefault();try{input.showPicker()}catch{}
+ let panel=null,active=null;
+ const close=()=>{panel?.remove();panel=null;active=null};
+ const open=input=>{
+  if(active===input)return;
+  close();active=input;panel=document.createElement('div');panel.className='date-time-popover';document.body.append(panel);
+  const rect=input.getBoundingClientRect();panel.style.left=Math.max(8,Math.min(rect.left,innerWidth-300))+'px';panel.style.top=Math.min(rect.bottom+6,Math.max(8,innerHeight-330))+'px';
+  const apply=value=>{input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
+  if(input.type==='time'){
+   panel.innerHTML='<div class="picker-time-fields"><select aria-label="시"></select><span>:</span><select aria-label="분"></select></div><button type="button">완료</button>';
+   const [hours,minutes]=panel.querySelectorAll('select'),parts=(input.value||'09:00').split(':');
+   hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i<12?'오전':'오후'} ${i%12||12}시</option>`).join('');
+   minutes.innerHTML=Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i}분</option>`).join('');hours.value=parts[0];minutes.value=parts[1];
+   hours.onchange=minutes.onchange=()=>apply(hours.value+':'+minutes.value);panel.querySelector('button').onclick=close;
+  }else{
+   let month=parseDate(input.value||dateStr(new Date()));month.setDate(1);
+   const draw=()=>{const y=month.getFullYear(),m=month.getMonth();panel.innerHTML=`<div class="picker-month"><button type="button" data-prev>‹</button><strong>${y}년 ${m+1}월</strong><button type="button" data-next>›</button></div><div class="picker-days">${['일','월','화','수','목','금','토'].map(d=>`<span>${d}</span>`).join('')}${'<span></span>'.repeat(month.getDay())}${Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>{const v=dateStr(new Date(y,m,i+1));return `<button type="button" data-date="${v}" class="${input.value===v?'selected':''}">${i+1}</button>`}).join('')}</div>`;panel.querySelector('[data-prev]').onclick=()=>{month.setMonth(m-1);draw()};panel.querySelector('[data-next]').onclick=()=>{month.setMonth(m+1);draw()};panel.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{apply(button.dataset.date);close()})};draw();
   }
- });
+ };
+ document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
+ window.addEventListener('resize',close);document.addEventListener('scroll',event=>{if(!event.target.closest?.('.date-time-popover'))close()},true);
 }
 const HOLIDAY_COLOR='#E06473';
 function isHolidayCalendarId(id){let value=String(id||'').toLowerCase();try{value=decodeURIComponent(value)}catch{}return value.includes('#holiday@group.v.calendar.google.com')||value.endsWith('holiday@group.v.calendar.google.com')}
@@ -292,11 +300,14 @@ async function renderKakaoMap(container,address){
    if(container.dataset.mapRequest!==requestId)return;
    if(status!==maps.services.Status.OK||!result?.length){mapStatus(container,'주소의 지도 위치를 찾지 못했습니다.');return}
    const position=new maps.LatLng(Number(result[0].y),Number(result[0].x));container.innerHTML='';
+   const oldResults=container.parentElement.querySelector('.map-place-results');if(oldResults)oldResults.remove();
+   if(result[0].place_name){const choices=document.createElement('div');choices.className='map-place-results';choices.innerHTML=result.slice(0,5).map((place,i)=>`<button type="button" data-place="${i}"><strong>${escapeHtml(place.place_name)}</strong><small>${escapeHtml(place.road_address_name||place.address_name||'')}</small></button>`).join('');container.after(choices);choices.querySelectorAll('button').forEach(button=>button.onclick=()=>{const place=result[Number(button.dataset.place)],input=$(container.id==='bulkKakaoMap'?'#bulkAddress':'#eventAddress');input.value=[place.place_name,place.road_address_name||place.address_name].filter(Boolean).join(' · ');input.dispatchEvent(new Event('input',{bubbles:true}));choices.remove()})}
+
    const map=new maps.Map(container,{center:position,level:3});new maps.Marker({map,position});kakaoMapInstances.set(container,map);
    requestAnimationFrame(()=>map.relayout());
    if(window.ResizeObserver){const observer=new ResizeObserver(()=>map.relayout());observer.observe(container)}
   };
-  const addressOnly=address.match(/\(([^()]*(?:로|길|동|읍|면)[^()]*)\)/)?.[1]||address;
+  const addressOnly=address.match(/\(([^()]*(?:로|길|동|읍|면)[^()]*)\)/)?.[1]||address.split(' · ').pop();
   geocoder.addressSearch(addressOnly,(result,status)=>{
    if(container.dataset.mapRequest!==requestId)return;
    if(status===maps.services.Status.OK&&result?.length)return showResult(result,status);
