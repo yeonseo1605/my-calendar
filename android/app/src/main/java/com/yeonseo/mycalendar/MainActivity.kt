@@ -252,13 +252,31 @@ class MainActivity : Activity() {
             setTextColor(Color.rgb(188, 187, 200))
             setPadding(dp(22), dp(2), dp(22), dp(6))
         }
+        val initialSizeHeading = TextView(this).apply {
+            text = "처음 추가할 크기"
+            textSize = 17f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setTextColor(Color.rgb(196, 147, 239))
+            setPadding(dp(22), dp(8), dp(22), dp(2))
+        }
+        val initialSizeHelp = TextView(this).apply {
+            text = "선택한 크기로 추가한 뒤, 크기에 맞춰 자동 전환됩니다."
+            textSize = 12f
+            setTextColor(Color.rgb(188, 187, 200))
+            setPadding(dp(22), 0, dp(22), dp(6))
+        }
         fun updateModeHelp() {
             modeHelp.text = if (automatic.isChecked) "추가 후 크기를 조절하면 날짜·오늘·주간·월간으로 자동 전환됩니다."
                 else "선택한 위젯 형식을 유지합니다. 크기에 맞춰 내부 배치를 조절합니다."
+            val visibility = if (automatic.isChecked) android.view.View.VISIBLE else android.view.View.GONE
+            initialSizeHeading.visibility = visibility
+            initialSizeHelp.visibility = visibility
         }
         automatic.setOnCheckedChangeListener { _, _ -> updateModeHelp() }
         updateModeHelp()
         root.addView(modeHelp)
+        root.addView(initialSizeHeading)
+        root.addView(initialSizeHelp)
         root.addView(ScrollView(this).apply { isFillViewport = false; addView(content) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         root.addView(Button(this).apply {
             text = "위젯 추가"; textSize = 22f; isAllCaps = false
