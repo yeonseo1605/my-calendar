@@ -576,6 +576,10 @@ const openIntegrationSettings=()=>{$('#infoModal').classList.remove('hidden');re
  $$('[data-column-filter]').forEach(button=>button.onclick=e=>{e.stopPropagation();openColumnFilter(button.dataset.columnFilter,button)});
  $('#themeEyedropper').onclick=async()=>{if(!window.EyeDropper)return toast('이 브라우저는 화면 색상 추출을 지원하지 않습니다');try{const result=await new EyeDropper().open();setThemeColor(result.sRGBHex)}catch{}};
  document.addEventListener('click',e=>{if(!e.target.closest('#columnFilterMenu')&&!e.target.closest('[data-column-filter]'))$('#columnFilterMenu').classList.add('hidden');if(!e.target.closest('#datePickerPanel')&&!e.target.closest('#viewRangeTitle'))closeDatePicker()});
+ const dismissTitleSuggestions=e=>{if(!e.target.closest('#eventTitle,#suggestions'))$('#suggestions').classList.add('hidden')};
+ document.addEventListener('pointerdown',dismissTitleSuggestions,true);
+ document.addEventListener('focusin',dismissTitleSuggestions,true);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#suggestions').classList.add('hidden')},true);
  const searchScrollNav=$('.search-scroll-nav');let searchScrollIdleTimer;const wakeSearchScrollNav=()=>{searchScrollNav.classList.add('is-active');clearTimeout(searchScrollIdleTimer);searchScrollIdleTimer=setTimeout(()=>searchScrollNav.classList.remove('is-active'),1100)};$('#searchScrollTop').onclick=()=>{wakeSearchScrollNav();window.scrollTo({top:0,behavior:'smooth'})};$('#searchScrollBottom').onclick=()=>{wakeSearchScrollNav();window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})};searchScrollNav.onmouseenter=wakeSearchScrollNav;searchScrollNav.onfocusin=wakeSearchScrollNav;window.addEventListener('scroll',wakeSearchScrollNav,{passive:true});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawers();closeDatePicker();$('#recurrenceModal').classList.add('hidden');closeAddressSearch()}})
 }
