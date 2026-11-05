@@ -83,7 +83,7 @@ function enableWholeTimePickers(){
   close();active=input;panel=document.createElement('div');panel.className='date-time-popover';document.body.append(panel);
   const rect=input.getBoundingClientRect();panel.style.left=Math.max(8,Math.min(rect.left,innerWidth-300))+'px';panel.style.top=Math.min(rect.bottom+6,Math.max(8,innerHeight-330))+'px';
   const apply=value=>{input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
-  if(input.type==='time'){
+  if(input.type==='time'||input.hasAttribute?.('data-time-input')){
    panel.innerHTML='<div class="picker-time-fields"><select aria-label="시"></select><span>:</span><select aria-label="분"></select></div><button type="button">완료</button>';
    const [hours,minutes]=panel.querySelectorAll('select'),parts=(input.value||'09:00').split(':');
    hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}시</option>`).join('');
@@ -94,7 +94,7 @@ function enableWholeTimePickers(){
    const draw=()=>{const y=month.getFullYear(),m=month.getMonth();panel.innerHTML=`<div class="picker-month"><button type="button" data-prev>‹</button><strong>${y}년 ${m+1}월</strong><button type="button" data-next>›</button></div><div class="picker-days">${['일','월','화','수','목','금','토'].map(d=>`<span>${d}</span>`).join('')}${'<span></span>'.repeat(month.getDay())}${Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>{const v=dateStr(new Date(y,m,i+1));return `<button type="button" data-date="${v}" class="${input.value===v?'selected':''}">${i+1}</button>`}).join('')}</div>`;panel.querySelector('[data-prev]').onclick=()=>{month.setMonth(m-1);draw()};panel.querySelector('[data-next]').onclick=()=>{month.setMonth(m+1);draw()};panel.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{apply(button.dataset.date);close()})};sync=()=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(input.value))return;month=parseDate(input.value);month.setDate(1);draw()};draw();
   }
  };
- document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
+ document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"],input[data-time-input]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
  document.addEventListener('input',event=>{if(event.target===active)sync?.()});
  document.addEventListener('change',event=>{if(event.target===active)sync?.()});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
