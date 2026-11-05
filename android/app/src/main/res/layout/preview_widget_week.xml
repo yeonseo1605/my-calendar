@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="10dp" android:background="@drawable/widget_background_100">
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="11월 1일–7일" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
-    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal" android:layout_marginTop="8dp">
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="일\n1\n┃인천" android:textColor="#E06473" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="월\n2\n┃연습" android:textColor="#FFFFFF" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="화\n3\n┃회의" android:textColor="#FFFFFF" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="수\n4\n┃업무" android:textColor="#FFFFFF" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="목\n5" android:textColor="#FFFFFF" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="금\n6\n┃약속" android:textColor="#FFFFFF" android:textSize="10sp" />
-        <TextView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="top|center_horizontal" android:text="토\n7" android:textColor="#789AE0" android:textSize="10sp" />
-    </LinearLayout>
-</LinearLayout>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/chooser_week" android:scaleType="fitCenter" android:adjustViewBounds="true" android:contentDescription="@string/widget_week_description" />

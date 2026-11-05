@@ -1,7 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="13dp" android:background="@drawable/widget_background_100">
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="다가오는 일정                         ⚙" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="┃ 11/4 10:00  프로젝트 회의" android:textColor="#FFFFFF" android:textSize="12sp" />
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="┃ 11/6 14:00  병원 예약" android:textColor="#FFFFFF" android:textSize="12sp" />
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="┃ 11/8 18:30  저녁 약속" android:textColor="#FFFFFF" android:textSize="12sp" />
-</LinearLayout>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/chooser_agenda" android:scaleType="fitCenter" android:adjustViewBounds="true" android:contentDescription="@string/widget_agenda_description" />

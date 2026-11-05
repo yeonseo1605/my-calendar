@@ -3,6 +3,7 @@
     android:description="@string/widget_week_description"
     android:initialLayout="@layout/widget_week"
     android:previewLayout="@layout/preview_widget_week"
+    android:previewImage="@drawable/chooser_week"
     android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
     android:minWidth="250dp" android:minHeight="110dp"
     android:minResizeWidth="180dp" android:minResizeHeight="100dp"

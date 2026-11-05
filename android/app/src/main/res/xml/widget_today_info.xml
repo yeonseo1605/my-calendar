@@ -3,6 +3,7 @@
     android:description="@string/widget_today_description"
     android:initialLayout="@layout/widget_small"
     android:previewLayout="@layout/preview_widget_today"
+    android:previewImage="@drawable/chooser_today"
     android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
     android:minWidth="110dp" android:minHeight="70dp"
     android:minResizeWidth="110dp" android:minResizeHeight="70dp"

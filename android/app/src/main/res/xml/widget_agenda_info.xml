@@ -3,6 +3,7 @@
     android:description="@string/widget_agenda_description"
     android:initialLayout="@layout/widget_agenda"
     android:previewLayout="@layout/preview_widget_agenda"
+    android:previewImage="@drawable/chooser_agenda"
     android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
     android:minWidth="250dp" android:minHeight="110dp"
     android:minResizeWidth="180dp" android:minResizeHeight="100dp"
