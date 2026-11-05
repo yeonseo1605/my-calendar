@@ -41,36 +41,14 @@ class WidgetSettingsActivity : Activity() {
         root.addView(title("위젯 설정", 26f), params(bottom = 6))
         root.addView(description("변경 내용은 홈 화면 위젯에 바로 반영됩니다."), params(bottom = 24))
 
-        root.addView(title("위젯 크기 설정", 17f), params(bottom = 8))
-        var fixedKind = MyCalendarWidgetProvider.fixedKind(this, appWidgetId)
-        val formats = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
-        listOf(WidgetKind.DATE to "날짜", WidgetKind.TODAY to "오늘 일정", WidgetKind.WEEK to "주간 일정",
-            WidgetKind.MONTH to "월간 달력", WidgetKind.AGENDA to "일정 목록", WidgetKind.MONTH_AGENDA to "월간 달력 + 일정").forEach { (kind, label) ->
-            formats.addView(RadioButton(this).apply {
-                id = View.generateViewId(); text = label; tag = kind; setTextColor(Color.WHITE)
-                isChecked = fixedKind == kind
-            })
+        if (!intent.getBooleanExtra("appearanceOnly", false)) {
+            root.addView(actionButton("위젯 형식 · 자동 전환 설정") {
+                startActivity(Intent(this, MainActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    putExtra("openChooser", true)
+                })
+            }, params(bottom = 22))
         }
-        val automatic = Switch(this).apply {
-            text = "크기에 맞춰 자동 전환"; textSize = 16f; setTextColor(Color.WHITE)
-            isChecked = MyCalendarWidgetProvider.autoResize(this@WidgetSettingsActivity, appWidgetId)
-        }
-        fun updateFormats() {
-            formats.alpha = if (automatic.isChecked) .4f else 1f
-            for (i in 0 until formats.childCount) formats.getChildAt(i).isEnabled = !automatic.isChecked
-        }
-        automatic.setOnCheckedChangeListener { _, enabled ->
-            updateFormats(); MyCalendarWidgetProvider.setSizeMode(this, appWidgetId, enabled, fixedKind)
-        }
-        formats.setOnCheckedChangeListener { group, checkedId ->
-            fixedKind = group.findViewById<RadioButton>(checkedId)?.tag as? WidgetKind ?: return@setOnCheckedChangeListener
-            MyCalendarWidgetProvider.setSizeMode(this, appWidgetId, automatic.isChecked, fixedKind)
-        }
-        root.addView(automatic, params(bottom = 8))
-        root.addView(description("좁으면 날짜·오늘 일정, 넓어지면 주간·월간으로 전환합니다. 큰 공간에서는 달력과 목록을 함께 표시합니다."), params(bottom = 8))
-        root.addView(description("자동 전환을 끄면 아래 형식을 유지합니다. 글씨 크기는 기존 설정을 따릅니다."), params(bottom = 8))
-        updateFormats()
-        root.addView(formats, params(bottom = 22))
 
         root.addView(title("일정 표시", 17f), params(bottom = 8))
         val styles = RadioGroup(this).apply { orientation = RadioGroup.HORIZONTAL }

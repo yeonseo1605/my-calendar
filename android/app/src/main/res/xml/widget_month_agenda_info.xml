@@ -4,7 +4,7 @@
     android:initialLayout="@layout/widget_large"
     android:previewLayout="@layout/preview_widget_month_agenda"
     android:previewImage="@drawable/chooser_month_agenda"
-    android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
+    android:configure="com.yeonseo.mycalendar.MainActivity"
     android:minWidth="250dp" android:minHeight="300dp"
     android:minResizeWidth="40dp" android:minResizeHeight="40dp"
     android:resizeMode="horizontal|vertical"

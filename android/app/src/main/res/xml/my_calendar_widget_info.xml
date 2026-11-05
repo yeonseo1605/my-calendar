@@ -4,7 +4,7 @@
     android:initialLayout="@layout/widget_medium"
     android:previewLayout="@layout/preview_widget_month"
     android:previewImage="@drawable/chooser_month"
-    android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
+    android:configure="com.yeonseo.mycalendar.MainActivity"
     android:minWidth="250dp"
     android:minHeight="180dp"
     android:minResizeWidth="40dp"

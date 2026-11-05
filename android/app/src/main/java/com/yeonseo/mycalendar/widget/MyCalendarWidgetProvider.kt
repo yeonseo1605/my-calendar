@@ -34,7 +34,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
-        safeUpdateWidget(context, manager, appWidgetId, widgetKind, javaClass)
+        safeUpdateWidget(context, manager, appWidgetId, widgetKind, javaClass, newOptions)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -151,9 +151,10 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             manager: AppWidgetManager,
             id: Int,
             kind: WidgetKind,
-            providerClass: Class<out AppWidgetProvider>
+            providerClass: Class<out AppWidgetProvider>,
+            options: Bundle? = null
         ) {
-            val view = runCatching { buildWidget(context, manager, id, kind, providerClass) }
+            val view = runCatching { buildWidget(context, manager, id, kind, providerClass, options) }
                 .getOrElse {
                     RemoteViews(context.packageName, R.layout.widget_small).apply {
                         setTextViewText(R.id.widgetDate, "My Calendar")
@@ -170,17 +171,12 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             manager: AppWidgetManager,
             id: Int,
             kind: WidgetKind,
-            providerClass: Class<out AppWidgetProvider>
+            providerClass: Class<out AppWidgetProvider>,
+            latestOptions: Bundle? = null
         ): RemoteViews {
-            val options = manager.getAppWidgetOptions(id)
-            if (Build.VERSION.SDK_INT >= 31) {
-                val sizes = options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
-                if (!sizes.isNullOrEmpty()) {
-                    return RemoteViews(sizes.distinct().take(16).associateWith { size ->
-                        buildForSize(context, id, kind, providerClass, size.width, size.height)
-                    })
-                }
-            }
+            // Use the current resize event immediately. Some launchers retain the original
+            // responsive-size list and scale its old large layout instead of switching it.
+            val options = latestOptions ?: manager.getAppWidgetOptions(id)
             val landscape = context.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
             val width = options.getInt(if (landscape) AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH else AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 240).toFloat()
             val height = options.getInt(if (landscape) AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 180).toFloat()
@@ -464,8 +460,9 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
         }
 
         fun settingsIntent(context: Context, id: Int): PendingIntent {
-            val intent = Intent(context, com.yeonseo.mycalendar.WidgetSettingsActivity::class.java).apply {
+            val intent = Intent(context, MainActivity::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id)
+                putExtra("openChooser", true)
             }
             return PendingIntent.getActivity(context, 90000 + id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }

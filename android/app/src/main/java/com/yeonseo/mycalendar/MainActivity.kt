@@ -23,6 +23,7 @@ import android.app.Dialog
 import android.widget.ImageView
 import android.widget.FrameLayout
 import android.widget.Switch
+import com.yeonseo.mycalendar.widget.WidgetKind
 import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
 import com.yeonseo.mycalendar.widget.TodayWidgetProvider
 import com.yeonseo.mycalendar.widget.WeekWidgetProvider
@@ -34,11 +35,15 @@ class MainActivity : Activity() {
     private lateinit var widgetStyleStatus: TextView
     private lateinit var permissionButton: Button
     private lateinit var widgetAddButton: Button
+    private var configuringId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        configuringId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        if (configuringId != AppWidgetManager.INVALID_APPWIDGET_ID) setResult(RESULT_CANCELED)
         setContentView(buildContent())
         applyWidgetSettingsIntent(intent)
+        if (configuringId != AppWidgetManager.INVALID_APPWIDGET_ID || intent.getBooleanExtra("openChooser", false)) chooseWidgetToAdd()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -160,7 +165,8 @@ class MainActivity : Activity() {
         val previews = intArrayOf(R.drawable.chooser_today, R.drawable.chooser_week,
             R.drawable.chooser_month, R.drawable.chooser_agenda, R.drawable.chooser_month_agenda)
         val dialog = Dialog(this, android.R.style.Theme_Material_NoActionBar)
-        var selected = 2
+        val kinds = arrayOf(WidgetKind.TODAY, WidgetKind.WEEK, WidgetKind.MONTH, WidgetKind.AGENDA, WidgetKind.MONTH_AGENDA)
+        var selected = kinds.indexOf(MyCalendarWidgetProvider.fixedKind(this, configuringId)).takeIf { it >= 0 } ?: 2
         val cards = mutableListOf<FrameLayout>()
         val checks = mutableListOf<TextView>()
         fun decorate() {
@@ -242,7 +248,7 @@ class MainActivity : Activity() {
             text = "크기에 맞춰 자동 전환"
             textSize = 16f
             setTextColor(Color.WHITE)
-            isChecked = MyCalendarWidgetProvider.autoResize(this@MainActivity, AppWidgetManager.INVALID_APPWIDGET_ID)
+            isChecked = MyCalendarWidgetProvider.autoResize(this@MainActivity, configuringId)
             buttonTintList = android.content.res.ColorStateList.valueOf(Color.rgb(187, 125, 239))
             setPadding(dp(6), dp(6), dp(6), dp(6))
         }
@@ -277,18 +283,37 @@ class MainActivity : Activity() {
         root.addView(modeHelp)
         root.addView(initialSizeHeading)
         root.addView(initialSizeHelp)
+        root.addView(TextView(this).apply {
+            text = "일정 표시 · 글씨 크기 · 배경 설정  ›"
+            textSize = 13f; setTextColor(Color.rgb(196, 147, 239))
+            setPadding(dp(22), dp(6), dp(22), dp(6))
+            setOnClickListener {
+                startActivity(Intent(this@MainActivity, WidgetSettingsActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, configuringId)
+                    putExtra("appearanceOnly", true)
+                })
+            }
+        })
         root.addView(ScrollView(this).apply { isFillViewport = false; addView(content) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         root.addView(Button(this).apply {
             text = "위젯 추가"; textSize = 22f; isAllCaps = false
             setTypeface(null, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE)
             background = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(Color.rgb(161, 94, 237), Color.rgb(185, 106, 230))).apply { cornerRadius = dp(18).toFloat() }
             setOnClickListener {
-                MyCalendarWidgetProvider.setNewWidgetAutoResize(this@MainActivity, automatic.isChecked)
-                dialog.dismiss()
-                requestWidgetPin(providers[selected])
+                if (configuringId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    MyCalendarWidgetProvider.setSizeMode(this@MainActivity, configuringId, automatic.isChecked, kinds[selected])
+                    setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, configuringId))
+                    dialog.dismiss()
+                    finish()
+                } else {
+                    MyCalendarWidgetProvider.setNewWidgetAutoResize(this@MainActivity, automatic.isChecked)
+                    dialog.dismiss()
+                    requestWidgetPin(providers[selected])
+                }
             }
         }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(58)).apply { setMargins(dp(20), dp(8), dp(20), dp(16)) })
         dialog.setContentView(root)
+        dialog.setOnDismissListener { if (configuringId != AppWidgetManager.INVALID_APPWIDGET_ID) finish() }
         dialog.window?.let { applySafeInsets(it, root) }
         dialog.window?.statusBarColor = Color.rgb(25, 25, 33)
         dialog.window?.navigationBarColor = Color.rgb(25, 25, 33)
