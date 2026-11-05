@@ -919,8 +919,12 @@ body[data-calendar-view="week"] .timeline-heads{
 #eventDrawer .map-field .detail-address-input{grid-column:2;width:100%}
 #eventDrawer .map-preview,#bulkEditor .bulk-map-preview{padding:0!important;display:block!important;overflow:hidden;background:var(--panel2);border:1px solid var(--border);min-height:0!important;text-align:left;color:var(--text)}
 #eventDrawer .map-preview.hidden,#bulkEditor .bulk-map-preview.hidden{display:none!important}
-.map-preview iframe{display:block;width:100%;height:190px;border:0;background:var(--panel2)}
-.map-preview strong{display:block;padding:10px 13px;color:var(--text);font-size:13px;line-height:1.45;overflow-wrap:anywhere;background:var(--panel2);border-top:1px solid var(--border)}
+.kakao-map{display:block;width:100%;height:190px;background:var(--panel2)}
+.map-status{height:100%;display:grid;place-items:center;padding:20px;color:var(--muted);font-size:13px;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,var(--panel2) 92%,var(--control-accent) 8%),var(--panel2))}
+.map-preview-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 13px;background:var(--panel2);border-top:1px solid var(--border)}
+.map-preview strong{display:block;min-width:0;padding:0;color:var(--text);font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.naver-map-link{flex:0 0 auto;color:#70b9ff;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.naver-map-link:hover{text-decoration:underline}
 .address-search-card{width:min(580px,100%);padding:0;overflow:hidden}
 .address-search-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border)}
 .address-search-head h2{margin:0 0 4px;font-size:20px}
@@ -929,7 +933,8 @@ body[data-calendar-view="week"] .timeline-heads{
 @media(max-width:700px){
   #eventDrawer .map-field .detail-address-label{grid-column:1}
   #eventDrawer .map-field .detail-address-input{grid-column:2}
-  .map-preview iframe{height:170px}
+  .kakao-map{height:170px}
+  .map-preview-footer{align-items:flex-start;flex-direction:column;gap:7px}
   .address-search-card{width:100%}
   .postcode-search-layer{height:75vh}
 }

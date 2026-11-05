@@ -2,5 +2,6 @@
 // anonKey는 공개 가능한 키이지만 service_role 키는 절대로 넣지 마세요.
 window.MY_CALENDAR_CONFIG = {
   supabaseUrl: 'https://YOUR_PROJECT.supabase.co',
-  supabaseAnonKey: 'YOUR_SUPABASE_ANON_KEY'
+  supabaseAnonKey: 'YOUR_SUPABASE_ANON_KEY',
+  kakaoJavaScriptKey: 'YOUR_KAKAO_JAVASCRIPT_KEY'
 };

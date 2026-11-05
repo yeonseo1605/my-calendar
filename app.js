@@ -262,10 +262,52 @@ const renderAgendaTimeline=renderAgenda;
 renderAgenda=function(events){if(currentView==='list')return renderAgendaTable(events);return renderAgendaTimeline(events)};
 
 function openNew(date=dateStr(currentDate)){resetForm();$('#drawerTitle').textContent='새 일정';$('#eventDate').value=date;openDrawer('eventDrawer');setTimeout(()=>$('#eventTitle').focus(),50)}
-function mapEmbedUrl(address){return address?`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`:''}
-function updateMapCard(addressInput,detailInput,preview,mapText,mapFrame){const address=$(addressInput)?.value.trim()||'',detail=$(detailInput)?.value.trim()||'',card=$(preview);if(!card)return;card.classList.toggle('hidden',!address);if(!address)return;$(mapText).textContent=[address,detail].filter(Boolean).join(' ');const frame=$(mapFrame);if(frame&&frame.dataset.query!==address){frame.dataset.query=address;frame.src=mapEmbedUrl(address)}}
-function updateMapPreview(){updateMapCard('#eventAddress','#eventAddressDetail','#mapPreview','#mapAddressText','#eventMapFrame')}
-function updateBulkMapPreview(){updateMapCard('#bulkAddress','#bulkAddressDetail','#bulkMapPreview','#bulkMapAddressText','#bulkMapFrame')}
+let kakaoMapsPromise=null;
+const kakaoMapInstances=new WeakMap();
+function naverMapSearchUrl(address){return address?`https://map.naver.com/p/search/${encodeURIComponent(address)}`:'#'}
+function loadKakaoMaps(){
+ if(window.kakao?.maps?.services)return Promise.resolve(window.kakao.maps);
+ if(kakaoMapsPromise)return kakaoMapsPromise;
+ const key=String(window.MY_CALENDAR_CONFIG?.kakaoJavaScriptKey||'').trim();
+ if(!key)return Promise.reject(new Error('KAKAO_KEY_MISSING'));
+ kakaoMapsPromise=new Promise((resolve,reject)=>{
+  const ready=()=>window.kakao?.maps?.load?window.kakao.maps.load(()=>window.kakao?.maps?.services?resolve(window.kakao.maps):reject(new Error('KAKAO_SERVICES_UNAVAILABLE'))):reject(new Error('KAKAO_MAPS_UNAVAILABLE'));
+  const existing=document.querySelector('script[data-kakao-maps]');
+  if(existing){existing.addEventListener('load',ready,{once:true});existing.addEventListener('error',()=>reject(new Error('KAKAO_MAPS_LOAD_FAILED')),{once:true});return}
+  const script=document.createElement('script');script.dataset.kakaoMaps='true';script.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(key)}&autoload=false&libraries=services`;script.onload=ready;script.onerror=()=>reject(new Error('KAKAO_MAPS_LOAD_FAILED'));document.head.append(script)
+ });
+ return kakaoMapsPromise;
+}
+function mapStatus(container,message){container.innerHTML=`<div class="map-status">${escapeHtml(message)}</div>`}
+async function renderKakaoMap(container,address){
+ if(!container||!address)return;
+ const requestId=String(Date.now()+Math.random());container.dataset.mapRequest=requestId;
+ mapStatus(container,'카카오맵을 불러오는 중입니다…');
+ try{
+  const maps=await loadKakaoMaps();if(container.dataset.mapRequest!==requestId)return;
+  const geocoder=new maps.services.Geocoder();
+  const showResult=(result,status)=>{
+   if(container.dataset.mapRequest!==requestId)return;
+   if(status!==maps.services.Status.OK||!result?.length){mapStatus(container,'주소의 지도 위치를 찾지 못했습니다.');return}
+   const position=new maps.LatLng(Number(result[0].y),Number(result[0].x));container.innerHTML='';
+   const map=new maps.Map(container,{center:position,level:3});new maps.Marker({map,position});kakaoMapInstances.set(container,map);
+   requestAnimationFrame(()=>map.relayout());
+   if(window.ResizeObserver){const observer=new ResizeObserver(()=>map.relayout());observer.observe(container)}
+  };
+  const addressOnly=address.match(/\(([^()]*(?:로|길|동|읍|면)[^()]*)\)/)?.[1]||address;
+  geocoder.addressSearch(addressOnly,(result,status)=>{
+   if(container.dataset.mapRequest!==requestId)return;
+   if(status===maps.services.Status.OK&&result?.length)return showResult(result,status);
+   new maps.services.Places().keywordSearch(address,showResult);
+  });
+ }catch(error){
+  if(container.dataset.mapRequest!==requestId)return;
+  mapStatus(container,error?.message==='KAKAO_KEY_MISSING'?'카카오맵 연결 키를 설정하면 지도가 표시됩니다.':'카카오맵을 불러오지 못했습니다.');
+ }
+}
+function updateMapCard(addressInput,detailInput,preview,mapText,mapContainer,naverLink){const address=$(addressInput)?.value.trim()||'',detail=$(detailInput)?.value.trim()||'',fullAddress=[address,detail].filter(Boolean).join(' '),card=$(preview),container=$(mapContainer),link=$(naverLink);if(!card)return;card.classList.toggle('hidden',!address);if(!address){if(container)container.dataset.query='';return}$(mapText).textContent=fullAddress;if(link)link.href=naverMapSearchUrl(fullAddress);if(container&&container.dataset.query!==address){container.dataset.query=address;renderKakaoMap(container,address)}}
+function updateMapPreview(){updateMapCard('#eventAddress','#eventAddressDetail','#mapPreview','#mapAddressText','#eventKakaoMap','#eventNaverMapLink')}
+function updateBulkMapPreview(){updateMapCard('#bulkAddress','#bulkAddressDetail','#bulkMapPreview','#bulkMapAddressText','#bulkKakaoMap','#bulkNaverMapLink')}
 function closeAddressSearch(){$('#addressSearchModal').classList.add('hidden');$('#postcodeSearchLayer').innerHTML=''}
 function openAddressSearch(target='event'){const address=$(target==='bulk'?'#bulkAddress':'#eventAddress'),detail=$(target==='bulk'?'#bulkAddressDetail':'#eventAddressDetail');if(!window.daum?.Postcode)return toast('주소 검색 서비스를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요');const layer=$('#postcodeSearchLayer');layer.innerHTML='';$('#addressSearchModal').classList.remove('hidden');new window.daum.Postcode({oncomplete:data=>{address.value=data.roadAddress||data.jibunAddress||data.address||'';address.dispatchEvent(new Event('input',{bubbles:true}));closeAddressSearch();setTimeout(()=>detail.focus(),30)},width:'100%',height:'100%'}).embed(layer,{q:address.value.trim(),autoClose:false})}
 function updateRepeatEndUI(){const type=$('#repeatEndType').value,input=$('#repeatEndValue'),label=$('#repeatEndLabel'),unit=$('#repeatEndUnit'),help=$('#repeatEndHelp');input.disabled=type==='never';input.required=type!=='never';unit.classList.add('hidden');if(type==='date'){input.type='date';input.min=$('#eventDate').value||dateStr(new Date());input.removeAttribute('max');input.removeAttribute('step');label.textContent='종료 날짜';help.textContent='선택한 날짜까지 반복합니다.';input.placeholder=''}else if(type==='count'){input.type='number';input.min='1';input.max='120';input.step='1';label.textContent='반복 횟수';help.textContent='첫 일정을 포함한 전체 반복 횟수입니다. (1~120회)';input.placeholder='예: 10';unit.textContent='회';unit.classList.remove('hidden')}else{input.type='text';input.value='';input.removeAttribute('min');input.removeAttribute('max');input.removeAttribute('step');label.textContent='종료 값';help.textContent='종료 날짜 없이 계속 반복됩니다.';input.placeholder='종료 값 없음'}}

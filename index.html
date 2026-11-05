@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="./assets/favicon-64.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-180.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=196">
+  <link rel="stylesheet" href="styles.css?v=197">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -131,8 +131,8 @@
         <label class="bulk-wide"><span>주소</span><div class="bulk-input-action"><input id="bulkAddress" placeholder="기존 주소 유지"><button type="button" class="btn secondary" id="bulkMapBtn">주소 검색</button></div></label>
         <label class="bulk-wide"><span>상세 주소</span><input id="bulkAddressDetail" placeholder="기존 상세 주소 유지"></label>
         <div class="map-preview bulk-map-preview bulk-wide hidden" id="bulkMapPreview">
-          <iframe id="bulkMapFrame" title="선택한 주소 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <strong id="bulkMapAddressText"></strong>
+          <div class="kakao-map" id="bulkKakaoMap" role="img" aria-label="선택한 주소의 카카오맵"></div>
+          <div class="map-preview-footer"><strong id="bulkMapAddressText"></strong><a id="bulkNaverMapLink" class="naver-map-link" href="#" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 ↗</a></div>
         </div>
         <label class="bulk-wide"><span>참석자</span><input id="bulkGuests" placeholder="기존 참석자 유지"></label>
         <label class="bulk-wide"><span>화상회의</span><input id="bulkVideo" placeholder="기존 회의 링크 유지"></label>
@@ -187,7 +187,7 @@
         <div class="input-action"><input id="eventAddress" placeholder="주소를 입력하세요"><button type="button" class="btn secondary" id="mapPreviewBtn">주소 검색</button></div>
         <label for="eventAddressDetail" class="detail-address-label"><span class="event-field-name">상세 주소</span></label>
         <input id="eventAddressDetail" class="detail-address-input" placeholder="건물명, 층, 호수, 회의실 등을 입력하세요">
-        <div class="map-preview hidden" id="mapPreview"><iframe id="eventMapFrame" title="선택한 주소 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><strong id="mapAddressText"></strong></div>
+        <div class="map-preview hidden" id="mapPreview"><div class="kakao-map" id="eventKakaoMap" role="img" aria-label="선택한 주소의 카카오맵"></div><div class="map-preview-footer"><strong id="mapAddressText"></strong><a id="eventNaverMapLink" class="naver-map-link" href="#" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 ↗</a></div></div>
       </div>
       <div class="field"><label for="eventGuests"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8M16 8h6M19 5v6"/></svg></span><span class="event-field-name">참석자</span></label><input id="eventGuests" placeholder="이름 또는 이메일, 쉼표로 구분"></div>
       <div class="field"><label for="eventVideo"><span class="event-field-icon"><svg viewBox="0 0 24 24"><path d="m16 13 5 3V8l-5 3M3 6h13v12H3z"/></svg></span><span class="event-field-name">화상회의</span></label><div class="input-action"><input id="eventVideo" placeholder="회의 링크"><button type="button" class="btn secondary" id="videoBtn">링크 만들기</button></div></div>
@@ -266,7 +266,7 @@
 
   <div class="toast" id="toast" aria-live="polite"></div>
   <div class="update-banner hidden" id="updateBanner" role="status" aria-live="polite"><span>새 버전이 배포되었습니다.</span><button type="button" id="reloadForUpdate">새로고침</button></div>
-  <script src="app.js?v=226"></script>
+  <script src="app.js?v=227"></script>
   <script src="widget-launch.js?v=1"></script>
 </body>
 </html>
