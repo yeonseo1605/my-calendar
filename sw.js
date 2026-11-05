@@ -1,5 +1,5 @@
-const CACHE='my-calendar-v306';
-const FILES=['./','./index.html','./styles.css?v=197','./app.js?v=230','./cloud-store.js?v=6','./manifest.webmanifest','./assets/favicon-64.png','./assets/apple-touch-icon-180.png','./assets/icon-192.png','./assets/icon-512.png','./assets/my-calendar-share-1200x630.png','./assets/brand-calendar-transparent.png','./assets/android-widget-install-qr.png'];
+const CACHE='my-calendar-v307';
+const FILES=['./','./index.html','./styles.css?v=197','./app.js?v=231','./cloud-store.js?v=6','./manifest.webmanifest','./assets/favicon-64.png','./assets/apple-touch-icon-180.png','./assets/icon-192.png','./assets/icon-512.png','./assets/my-calendar-share-1200x630.png','./assets/brand-calendar-transparent.png','./assets/android-widget-install-qr.png'];
 self.addEventListener('install',event=>event.waitUntil(Promise.all([
   caches.open(CACHE).then(cache=>cache.addAll(FILES)),
   self.skipWaiting()
