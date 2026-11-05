@@ -84,20 +84,33 @@ function enableWholeTimePickers(){
   const rect=input.getBoundingClientRect();panel.style.left=Math.max(8,Math.min(rect.left,innerWidth-300))+'px';panel.style.top=Math.min(rect.bottom+6,Math.max(8,innerHeight-330))+'px';
   const apply=value=>{input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
   if(input.type==='time'||input.hasAttribute?.('data-time-input')){
-   panel.innerHTML='<div class="picker-time-fields"><select aria-label="시"></select><span>:</span><select aria-label="분"></select></div><button type="button">완료</button>';
-   const [hours,minutes]=panel.querySelectorAll('select'),parts=(input.value||'09:00').split(':');
-   hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}시</option>`).join('');
-   minutes.innerHTML=Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}분</option>`).join('');hours.value=parts[0];minutes.value=parts[1];
-   sync=()=>{if(!/^\d{2}:\d{2}$/.test(input.value))return;[hours.value,minutes.value]=input.value.split(':')};hours.onchange=minutes.onchange=()=>apply(hours.value+':'+minutes.value);panel.querySelector('button').onclick=close;
+   panel.innerHTML='<div class="picker-time-wheels"><div class="time-wheel" role="listbox" aria-label="시간"></div><span>:</span><div class="time-wheel" role="listbox" aria-label="분"></div></div><button type="button" class="time-picker-done">완료</button>';
+   const wheels=[...panel.querySelectorAll('.time-wheel')],values=(input.value||'09:00').split(':');
+   wheels.forEach((wheel,index)=>{
+    wheel.innerHTML=Array.from({length:index?60:24},(_,i)=>`<button type="button" role="option" data-number="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</button>`).join('');
+    const select=(number,scroll=true)=>{values[index]=String(number).padStart(2,'0');wheel.querySelectorAll('button').forEach(button=>{const selected=button.dataset.number===values[index];button.classList.toggle('selected',selected);button.setAttribute('aria-selected',String(selected))});if(scroll)wheel.scrollTop=Number(number)*40};
+    wheel.querySelectorAll('button').forEach(button=>button.onclick=()=>{select(button.dataset.number);apply(values.join(':'))});
+    let timer;wheel.onscroll=()=>{clearTimeout(timer);timer=setTimeout(()=>{if(!wheel.isConnected)return;const number=Math.max(0,Math.min(index?59:23,Math.round(wheel.scrollTop/40)));if(Number(values[index])===number)return;select(number);apply(values.join(':'))},100)};
+    wheel.selectNumber=select;select(values[index]);
+   });
+   sync=()=>{if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(input.value))return;input.value.split(':').forEach((value,index)=>wheels[index].selectNumber(value))};panel.querySelector('.time-picker-done').onclick=close;
   }else{
    let month=parseDate(input.value||dateStr(new Date()));month.setDate(1);
    const draw=()=>{const y=month.getFullYear(),m=month.getMonth();panel.innerHTML=`<div class="picker-month"><button type="button" data-prev>‹</button><strong>${y}년 ${m+1}월</strong><button type="button" data-next>›</button></div><div class="picker-days">${['일','월','화','수','목','금','토'].map(d=>`<span>${d}</span>`).join('')}${'<span></span>'.repeat(month.getDay())}${Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>{const v=dateStr(new Date(y,m,i+1));return `<button type="button" data-date="${v}" class="${input.value===v?'selected':''}">${i+1}</button>`}).join('')}</div>`;panel.querySelector('[data-prev]').onclick=()=>{month.setMonth(m-1);draw()};panel.querySelector('[data-next]').onclick=()=>{month.setMonth(m+1);draw()};panel.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{apply(button.dataset.date);close()})};sync=()=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(input.value))return;month=parseDate(input.value);month.setDate(1);draw()};draw();
   }
  };
- document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"],input[data-time-input]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
- document.addEventListener('input',event=>{if(event.target===active)sync?.()});
+ document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"],input[data-time-input],input[data-date-input]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
+ document.addEventListener('input',event=>{const input=event.target;if(input.matches?.('[data-date-input]')){const valid=/^\d{4}-\d{2}-\d{2}$/.test(input.value)&&!isNaN(parseDate(input.value))&&dateStr(parseDate(input.value))===input.value;input.setCustomValidity(valid?'':'올바른 날짜를 YYYY-MM-DD 형식으로 입력하세요.')}if(input===active)sync?.()});
  document.addEventListener('change',event=>{if(event.target===active)sync?.()});
- document.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape')close();
+  const input=event.target;
+  if(!input?.matches?.('[data-date-input]')||!/^\d$/.test(event.key)||event.ctrlKey||event.metaKey||event.altKey)return;
+  event.preventDefault();const position=input.selectionStart||0,index=position<=4?0:position<=7?1:2,ranges=[[0,4],[5,7],[8,10]],length=index===0?4:2;
+  const buffer=input._dateSegment===index?(input._dateDigits||'')+event.key:event.key;input._dateSegment=index;input._dateDigits=buffer;
+  const parts=(/^\d{4}-\d{2}-\d{2}$/.test(input.value)?input.value:dateStr(new Date())).split('-');parts[index]=buffer.padStart(length,'0');input.value=parts.join('-');
+  const next=buffer.length>=length?Math.min(2,index+1):index;if(buffer.length>=length){input._dateDigits='';input._dateSegment=-1}input.setSelectionRange(...ranges[next]);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));
+ });
  window.addEventListener('resize',close);document.addEventListener('scroll',event=>{if(!event.target.closest?.('.date-time-popover'))close()},true);
 }
 const HOLIDAY_COLOR='#E06473';
