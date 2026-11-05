@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'utf8');
+const context={state:{events:[]},isHolidayEvent:e=>!!e.holiday};vm.createContext(context);
+vm.runInContext(source.split('\n').find(line=>line.startsWith('function previousScheduleSuggestions(')),context);
+const base={title:'라르고',address:'장소 A',start:'18:00',end:'21:00'};
+const fixtures=[{...base,id:'old'},{...base,id:'venueB',address:'장소 B'},{...base,id:'detail',addressDetail:'연습실 C홀'},{...base,id:'time',start:'19:00'},{...base,id:'holiday',holiday:true},{...base,id:'latest'}];
+const result=context.previousScheduleSuggestions('라르',fixtures);
+assert.equal(result.length,4);
+assert.equal(result[0].id,'latest');
+assert(result.some(e=>e.id==='venueB'));
+assert(result.some(e=>e.id==='detail'));
+assert(result.some(e=>e.id==='time'));
+assert(!result.some(e=>e.id==='old'||e.id==='holiday'));
+assert.equal(context.previousScheduleSuggestions('없는제목',fixtures).length,0);
+console.log('PASS: different venues, detail addresses and times retained; exact repeats collapsed; holidays excluded');
