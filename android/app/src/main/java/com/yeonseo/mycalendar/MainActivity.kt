@@ -17,6 +17,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ScrollView
+import android.graphics.drawable.GradientDrawable
 import com.yeonseo.mycalendar.widget.MyCalendarWidgetProvider
 import com.yeonseo.mycalendar.widget.TodayWidgetProvider
 import com.yeonseo.mycalendar.widget.WeekWidgetProvider
@@ -151,9 +153,56 @@ class MainActivity : Activity() {
             AgendaWidgetProvider::class.java,
             MonthAgendaWidgetProvider::class.java
         )
+        val previews = intArrayOf(R.layout.preview_widget_today, R.layout.preview_widget_week,
+            R.layout.preview_widget_month, R.layout.preview_widget_agenda, R.layout.preview_widget_month_agenda)
+        var selected = 2
+        val cards = mutableListOf<LinearLayout>()
+        fun decorate() {
+            cards.forEachIndexed { index, card ->
+                card.background = GradientDrawable().apply {
+                    setColor(Color.rgb(48, 48, 59))
+                    cornerRadius = dp(16).toFloat()
+                    setStroke(dp(if (selected == index) 2 else 1), if (selected == index) Color.rgb(187, 125, 239) else Color.rgb(70, 70, 83))
+                }
+                card.contentDescription = choices[index] + if (selected == index) " 선택됨" else ""
+            }
+        }
+        val content = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            setBackgroundColor(Color.rgb(30, 30, 38))
+        }
+        for (rowIndex in 0..2) {
+            val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+            for (index in rowIndex * 2..minOf(rowIndex * 2 + 1, 4)) {
+                val card = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding(dp(10), dp(10), dp(10), dp(10))
+                    isClickable = true
+                    isFocusable = true
+                }
+                card.addView(layoutInflater.inflate(previews[index], card, false), LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, dp(if (index == 4) 230 else 155)))
+                card.addView(TextView(this).apply {
+                    text = choices[index].replace("  ·  ", "\n")
+                    textSize = 16f
+                    setTextColor(Color.WHITE)
+                    setPadding(0, dp(10), 0, dp(4))
+                })
+                card.setOnClickListener { selected = index; decorate() }
+                cards.add(card)
+                row.addView(card, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    setMargins(dp(4), dp(4), dp(4), dp(4))
+                })
+            }
+            content.addView(row)
+        }
+        decorate()
+        val scroll = ScrollView(this).apply { addView(content) }
         AlertDialog.Builder(this)
             .setTitle("추가할 위젯 선택")
-            .setItems(choices) { _, index -> requestWidgetPin(providers[index]) }
+            .setView(scroll)
+            .setPositiveButton("위젯 추가") { _, _ -> requestWidgetPin(providers[selected]) }
             .setNegativeButton("취소", null)
             .show()
     }
