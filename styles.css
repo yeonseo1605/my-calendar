@@ -1019,4 +1019,4 @@ body[data-calendar-view="week"] .timeline-heads{
 .calendar-date-line{flex-wrap:nowrap;justify-content:flex-start}
 .calendar-date-line .day-date-line{flex:0 0 auto;min-width:0}
 .calendar-date-line .holiday-date-label{display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;flex:1 1 auto}
-@container calendar-day (min-width:90px){.calendar-date-line .holiday-date-label{display:block}}
+
