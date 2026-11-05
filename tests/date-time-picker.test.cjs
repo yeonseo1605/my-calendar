@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'utf8');
+const listeners={},selects=[{value:''},{value:''}],panel={style:{},innerHTML:'',remove(){},querySelector(){return{}},querySelectorAll(selector){return selector==='select'?selects:[]}};
+const context={document:{addEventListener(type,fn){listeners[type]=fn},createElement(){return panel},body:{append(){}}},window:{addEventListener(){}},innerWidth:1000,innerHeight:900,parseDate:s=>new Date(s+'T00:00:00'),dateStr:d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,Date,Event:class{}};
+vm.createContext(context);vm.runInContext(source.slice(source.indexOf('function enableWholeTimePickers(){'),source.indexOf('const HOLIDAY_COLOR')),context);context.enableWholeTimePickers();
+const input={type:'date',value:'2026-11-05',getBoundingClientRect(){return{left:10,bottom:30}},closest(){return this}};
+listeners.click({target:input});assert(panel.innerHTML.includes('2026년 11월'));
+input.value='2025-02-15';listeners.input({target:input});assert(panel.innerHTML.includes('2025년 2월'));assert(panel.innerHTML.includes('data-date="2025-02-15" class="selected"'));assert(!panel.innerHTML.includes('2025-02-29'));
+input.value='';listeners.input({target:input});assert(panel.innerHTML.includes('2025년 2월'));
+listeners.keydown({key:'Escape'});input.type='time';input.value='09:00';listeners.click({target:input});input.value='14:37';listeners.input({target:input});assert.equal(selects[0].value,'14');assert.equal(selects[1].value,'37');
+console.log('PASS: typed year/month/day updates visible month and selection; incomplete input tolerated; typed hours/minutes update time picker');

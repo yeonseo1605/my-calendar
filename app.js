@@ -76,8 +76,8 @@ function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart
 function parseDate(s){return new Date(`${s}T00:00:00`)}
 function setEndOneHourAfterStart(){const value=$('#startTime').value;if(!/^\d{2}:\d{2}$/.test(value))return;const [hour,minute]=value.split(':').map(Number),total=(hour*60+minute+60)%1440;$('#endTime').value=`${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`}
 function enableWholeTimePickers(){
- let panel=null,active=null;
- const close=()=>{panel?.remove();panel=null;active=null};
+ let panel=null,active=null,sync=null;
+ const close=()=>{panel?.remove();panel=null;active=null;sync=null};
  const open=input=>{
   if(active===input)return;
   close();active=input;panel=document.createElement('div');panel.className='date-time-popover';document.body.append(panel);
@@ -88,13 +88,15 @@ function enableWholeTimePickers(){
    const [hours,minutes]=panel.querySelectorAll('select'),parts=(input.value||'09:00').split(':');
    hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i<12?'오전':'오후'} ${i%12||12}시</option>`).join('');
    minutes.innerHTML=Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i}분</option>`).join('');hours.value=parts[0];minutes.value=parts[1];
-   hours.onchange=minutes.onchange=()=>apply(hours.value+':'+minutes.value);panel.querySelector('button').onclick=close;
+   sync=()=>{if(!/^\d{2}:\d{2}$/.test(input.value))return;[hours.value,minutes.value]=input.value.split(':')};hours.onchange=minutes.onchange=()=>apply(hours.value+':'+minutes.value);panel.querySelector('button').onclick=close;
   }else{
    let month=parseDate(input.value||dateStr(new Date()));month.setDate(1);
-   const draw=()=>{const y=month.getFullYear(),m=month.getMonth();panel.innerHTML=`<div class="picker-month"><button type="button" data-prev>‹</button><strong>${y}년 ${m+1}월</strong><button type="button" data-next>›</button></div><div class="picker-days">${['일','월','화','수','목','금','토'].map(d=>`<span>${d}</span>`).join('')}${'<span></span>'.repeat(month.getDay())}${Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>{const v=dateStr(new Date(y,m,i+1));return `<button type="button" data-date="${v}" class="${input.value===v?'selected':''}">${i+1}</button>`}).join('')}</div>`;panel.querySelector('[data-prev]').onclick=()=>{month.setMonth(m-1);draw()};panel.querySelector('[data-next]').onclick=()=>{month.setMonth(m+1);draw()};panel.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{apply(button.dataset.date);close()})};draw();
+   const draw=()=>{const y=month.getFullYear(),m=month.getMonth();panel.innerHTML=`<div class="picker-month"><button type="button" data-prev>‹</button><strong>${y}년 ${m+1}월</strong><button type="button" data-next>›</button></div><div class="picker-days">${['일','월','화','수','목','금','토'].map(d=>`<span>${d}</span>`).join('')}${'<span></span>'.repeat(month.getDay())}${Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>{const v=dateStr(new Date(y,m,i+1));return `<button type="button" data-date="${v}" class="${input.value===v?'selected':''}">${i+1}</button>`}).join('')}</div>`;panel.querySelector('[data-prev]').onclick=()=>{month.setMonth(m-1);draw()};panel.querySelector('[data-next]').onclick=()=>{month.setMonth(m+1);draw()};panel.querySelectorAll('[data-date]').forEach(button=>button.onclick=()=>{apply(button.dataset.date);close()})};sync=()=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(input.value))return;month=parseDate(input.value);month.setDate(1);draw()};draw();
   }
  };
  document.addEventListener('click',event=>{const input=event.target.closest('input[type="date"],input[type="time"]');if(input&&!input.disabled&&!input.readOnly)open(input);else if(!event.target.closest('.date-time-popover'))close()});
+ document.addEventListener('input',event=>{if(event.target===active)sync?.()});
+ document.addEventListener('change',event=>{if(event.target===active)sync?.()});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')close()});
  window.addEventListener('resize',close);document.addEventListener('scroll',event=>{if(!event.target.closest?.('.date-time-popover'))close()},true);
 }
