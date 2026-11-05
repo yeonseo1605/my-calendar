@@ -1013,3 +1013,10 @@ body[data-calendar-view="week"] .timeline-heads{
 .date-time-popover.compact-time-popover{width:180px;padding:8px}.compact-time-popover .time-picker-done{padding:6px}
 
 .calendar-date-line{display:flex;align-items:center;gap:5px;min-width:0}.holiday-date-label{color:#E06473;font-size:11px;font-weight:700;line-height:1.3;min-width:0;overflow-wrap:anywhere}.calendar-date-line .day-number{flex-shrink:0}.timeline-heads .holiday-date-label{display:block;font-size:10px}#viewRangeTitle .holiday-date-label{font-size:12px}
+
+/* Use the actual calendar-cell width, including Fold and split-screen resizing. */
+#monthGrid .day-cell{container-type:inline-size;container-name:calendar-day}
+.calendar-date-line{flex-wrap:nowrap;justify-content:flex-start}
+.calendar-date-line .day-date-line{flex:0 0 auto;min-width:0}
+.calendar-date-line .holiday-date-label{display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;flex:1 1 auto}
+@container calendar-day (min-width:90px){.calendar-date-line .holiday-date-label{display:block}}
