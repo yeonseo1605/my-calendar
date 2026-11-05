@@ -86,8 +86,8 @@ function enableWholeTimePickers(){
   if(input.type==='time'){
    panel.innerHTML='<div class="picker-time-fields"><select aria-label="시"></select><span>:</span><select aria-label="분"></select></div><button type="button">완료</button>';
    const [hours,minutes]=panel.querySelectorAll('select'),parts=(input.value||'09:00').split(':');
-   hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i<12?'오전':'오후'} ${i%12||12}시</option>`).join('');
-   minutes.innerHTML=Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${i}분</option>`).join('');hours.value=parts[0];minutes.value=parts[1];
+   hours.innerHTML=Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}시</option>`).join('');
+   minutes.innerHTML=Array.from({length:60},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}분</option>`).join('');hours.value=parts[0];minutes.value=parts[1];
    sync=()=>{if(!/^\d{2}:\d{2}$/.test(input.value))return;[hours.value,minutes.value]=input.value.split(':')};hours.onchange=minutes.onchange=()=>apply(hours.value+':'+minutes.value);panel.querySelector('button').onclick=close;
   }else{
    let month=parseDate(input.value||dateStr(new Date()));month.setDate(1);
