@@ -5,5 +5,6 @@
         <TextView android:id="@+id/widgetEventAccent" android:layout_width="5dp" android:layout_height="match_parent" android:gravity="center" android:text="┃" android:textColor="#7D73E6" android:textSize="12sp" android:includeFontPadding="false" />
         <TextView android:id="@+id/widgetEventTitle" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical" android:maxLines="1" android:ellipsize="end" android:textColor="#FFFFFF" android:textSize="10sp" android:textStyle="bold" android:includeFontPadding="false" />
     </LinearLayout>
+    <LinearLayout android:id="@+id/widgetExtraEvents" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
     <TextView android:id="@+id/widgetEventMore" android:layout_width="match_parent" android:layout_height="12dp" android:gravity="center" android:maxLines="1" android:textColor="#AEB4C5" android:textSize="9sp" android:includeFontPadding="false" />
 </LinearLayout>

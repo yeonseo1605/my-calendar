@@ -9,6 +9,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Build
+import android.util.SizeF
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -22,7 +24,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-enum class WidgetKind { AUTO, TODAY, WEEK, MONTH, AGENDA, MONTH_AGENDA }
+enum class WidgetKind { AUTO, DATE, TODAY, WEEK, MONTH, AGENDA, MONTH_AGENDA }
 
 open class MyCalendarWidgetProvider : AppWidgetProvider() {
     protected open val widgetKind: WidgetKind = WidgetKind.MONTH
@@ -109,6 +111,29 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             updateAll(context)
         }
 
+        fun autoResize(context: Context, id: Int): Boolean {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            return prefs.getBoolean("auto_resize_$id", prefs.getBoolean("auto_resize_-1", true))
+        }
+
+        fun fixedKind(context: Context, id: Int): WidgetKind {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val saved = prefs.getString("fixed_kind_$id", null)
+            return WidgetKind.values().firstOrNull { it.name == saved }
+                ?: providerKinds.entries.firstOrNull { AppWidgetManager.getInstance(context)
+                    .getAppWidgetIds(ComponentName(context, it.key)).contains(id) }?.value ?: WidgetKind.MONTH
+        }
+
+        fun setSizeMode(context: Context, id: Int, auto: Boolean, fixed: WidgetKind) {
+            val editor = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            val ids = if (id == AppWidgetManager.INVALID_APPWIDGET_ID) providerKinds.keys.flatMap {
+                AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, it)).toList()
+            } + id else listOf(id)
+            ids.forEach { editor.putBoolean("auto_resize_$it", auto).putString("fixed_kind_$it", fixed.name) }
+            editor.apply()
+            updateAll(context)
+        }
+
         private fun safeUpdateWidget(
             context: Context,
             manager: AppWidgetManager,
@@ -136,24 +161,44 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             providerClass: Class<out AppWidgetProvider>
         ): RemoteViews {
             val options = manager.getAppWidgetOptions(id)
-            val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 240)
-            val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 180)
+            if (Build.VERSION.SDK_INT >= 31) {
+                val sizes = options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+                if (!sizes.isNullOrEmpty()) {
+                    return RemoteViews(sizes.distinct().take(16).associateWith { size ->
+                        buildForSize(context, id, kind, providerClass, size.width, size.height)
+                    })
+                }
+            }
+            val landscape = context.resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            val width = options.getInt(if (landscape) AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH else AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 240).toFloat()
+            val height = options.getInt(if (landscape) AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 180).toFloat()
+            return buildForSize(context, id, kind, providerClass, width, height)
+        }
+
+        private fun buildForSize(context: Context, id: Int, providerKind: WidgetKind,
+            providerClass: Class<out AppWidgetProvider>, width: Float, height: Float): RemoteViews {
+            val auto = autoResize(context, id)
+            val kind = if (auto) WidgetSizing.kind(width, height) else fixedKind(context, id)
             val repository = CalendarRepository(context)
             val offset = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt(offsetKey(id), 0)
             val month = YearMonth.now().plusMonths(offset.toLong())
             return when (kind) {
+                WidgetKind.DATE -> buildDate(context, id)
                 WidgetKind.TODAY -> buildSmall(context, id, repository)
                 WidgetKind.WEEK -> buildWeek(context, id, repository, providerClass)
-                WidgetKind.MONTH -> buildMonth(context, id, repository, month, false, providerClass)
-                WidgetKind.AGENDA -> buildAgenda(context, id, repository)
-                WidgetKind.MONTH_AGENDA -> buildMonth(context, id, repository, month, true, providerClass)
-                WidgetKind.AUTO -> when {
-                    width < 230 || height < 95 -> buildSmall(context, id, repository)
-                    height < 190 -> buildWeek(context, id, repository, providerClass)
-                    height < 285 -> buildMonth(context, id, repository, month, false, providerClass)
-                    else -> buildMonth(context, id, repository, month, true, providerClass)
-                }
+                WidgetKind.MONTH -> buildMonth(context, id, repository, month, false, providerClass, width, height)
+                WidgetKind.AGENDA -> buildAgenda(context, id, repository, height)
+                WidgetKind.MONTH_AGENDA -> buildMonth(context, id, repository, month, true, providerClass, width, height)
+                WidgetKind.AUTO -> buildSmall(context, id, repository)
             }
+        }
+
+        private fun buildDate(context: Context, id: Int): RemoteViews = RemoteViews(context.packageName, R.layout.widget_date).apply {
+            val date = LocalDate.now()
+            setTextViewText(R.id.widgetDate, "${date.monthValue}월 · ${date.format(DateTimeFormatter.ofPattern("E", Locale.KOREAN))}")
+            setTextViewText(R.id.widgetTitle, date.dayOfMonth.toString())
+            setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
+            applyWidgetAppearance(context, this, emptyList())
         }
 
         private fun buildSmall(context: Context, id: Int, repository: CalendarRepository): RemoteViews {
@@ -227,8 +272,9 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             return view
         }
 
-        private fun buildMonth(context: Context, id: Int, repository: CalendarRepository, month: YearMonth, showAgenda: Boolean, providerClass: Class<out AppWidgetProvider>): RemoteViews {
-            val layout = if (showAgenda) R.layout.widget_large else R.layout.widget_medium
+        private fun buildMonth(context: Context, id: Int, repository: CalendarRepository, month: YearMonth, showAgenda: Boolean, providerClass: Class<out AppWidgetProvider>, width: Float = 300f, height: Float = 300f): RemoteViews {
+            val wide = showAgenda && WidgetSizing.wide(width, height)
+            val layout = if (wide) R.layout.widget_wide else if (showAgenda) R.layout.widget_large else R.layout.widget_medium
             val view = RemoteViews(context.packageName, layout)
             view.setTextViewText(R.id.widgetMonthTitle, month.format(monthFormatter))
             view.setOnClickPendingIntent(R.id.widgetPrevious, actionIntent(context, id, ACTION_PREVIOUS, providerClass))
@@ -243,7 +289,11 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             val allEvents = repository.eventsBetween(startOfDay(gridStart), startOfDay(gridEnd))
             val eventsByDate = allEvents.filterNot { isHolidayCalendar(it.calendarName) }.groupBy { it.localDate() }
             val holidays = allEvents.filter { isHolidayCalendar(it.calendarName) }.map { it.localDate() }.toSet()
-            repeat(6) { rowIndex ->
+            val rowCount = ((month.lengthOfMonth() + month.atDay(1).dayOfWeek.value % 7 + 6) / 7)
+            val calendarHeight = if (showAgenda && !wide) height * .67f else height
+            val lineHeight = 18f * fontScale(context) / 100f
+            val cellCapacity = (((calendarHeight - 90) / rowCount - 30) / lineHeight).toInt().coerceIn(1, 4)
+            repeat(rowCount) { rowIndex ->
                 val row = RemoteViews(context.packageName, R.layout.widget_week_row)
                 repeat(7) { columnIndex ->
                     val date = gridStart.plusDays((rowIndex * 7 + columnIndex).toLong())
@@ -259,7 +309,17 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                     day.setTextColor(R.id.widgetDayNumber, dayColor)
                     val dayEvents = eventsByDate[date].orEmpty()
                     day.setTextViewText(R.id.widgetEventTitle, dayEvents.firstOrNull()?.title.orEmpty())
-                    day.setTextViewText(R.id.widgetEventMore, if (dayEvents.size > 1) "+${dayEvents.size - 1}" else "")
+                    day.setTextViewText(R.id.widgetEventMore, if (dayEvents.size > cellCapacity) "+${dayEvents.size - cellCapacity}" else "")
+                    day.removeAllViews(R.id.widgetExtraEvents)
+                    dayEvents.drop(1).take(cellCapacity - 1).forEach { event ->
+                        val extra = RemoteViews(context.packageName, R.layout.widget_cell_event)
+                        extra.setTextViewText(R.id.widgetEventTitle, event.title)
+                        applyTextScale(context, extra, listOf(R.id.widgetEventTitle to 10f))
+                        applyEventStyle(context, extra, R.id.widgetEventWrap, R.id.widgetEventAccent, R.id.widgetEventTitle, event.color)
+                        if (Build.VERSION.SDK_INT >= 31) extra.setViewLayoutHeight(R.id.widgetEventWrap, lineHeight, TypedValue.COMPLEX_UNIT_DIP)
+                        day.addView(R.id.widgetExtraEvents, extra)
+                    }
+                    if (Build.VERSION.SDK_INT >= 31) day.setViewLayoutHeight(R.id.widgetEventWrap, lineHeight, TypedValue.COMPLEX_UNIT_DIP)
                     applyTextScale(context, day, listOf(R.id.widgetEventTitle to 10f, R.id.widgetEventMore to 9f))
                     if (dayEvents.isNotEmpty()) {
                         applyEventStyle(context, day, R.id.widgetEventWrap, R.id.widgetEventAccent, R.id.widgetEventTitle, dayEvents.first().color)
@@ -275,7 +335,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                 view.removeAllViews(R.id.widgetAgenda)
                 val upcoming = repository.eventsBetween(System.currentTimeMillis(), startOfDay(LocalDate.now().plusDays(31)))
                     .filterNot { isHolidayCalendar(it.calendarName) }
-                    .take(5)
+                    .take(WidgetSizing.agendaCount(height, fontScale(context)/100f, true, wide))
                 if (!repository.hasPermission() || upcoming.isEmpty()) {
                     val empty = RemoteViews(context.packageName, R.layout.widget_agenda_empty)
                     empty.setTextViewText(R.id.widgetAgendaEmpty, if (repository.hasPermission()) "예정된 일정이 없습니다" else "앱을 열어 캘린더 권한을 허용하세요")
@@ -285,6 +345,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                     item.setTextViewText(R.id.widgetAgendaTitle, event.title)
                     item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
                     applyTextScale(context, item, listOf(R.id.widgetAgendaTitle to 11f, R.id.widgetAgendaTime to 10f))
+                    if (Build.VERSION.SDK_INT >= 31) item.setViewLayoutHeight(R.id.widgetAgendaWrap, 30f * fontScale(context)/100f, TypedValue.COMPLEX_UNIT_DIP)
                     applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
                     view.addView(R.id.widgetAgenda, item)
                 }
@@ -293,14 +354,14 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             return view
         }
 
-        private fun buildAgenda(context: Context, id: Int, repository: CalendarRepository): RemoteViews {
+        private fun buildAgenda(context: Context, id: Int, repository: CalendarRepository, height: Float): RemoteViews {
             val view = RemoteViews(context.packageName, R.layout.widget_agenda)
             view.setOnClickPendingIntent(R.id.widgetRoot, openCalendarIntent(context, id))
             view.setOnClickPendingIntent(R.id.widgetSettings, settingsIntent(context, id))
             view.removeAllViews(R.id.widgetAgenda)
             val upcoming = repository.eventsBetween(System.currentTimeMillis(), startOfDay(LocalDate.now().plusDays(31)))
                 .filterNot { isHolidayCalendar(it.calendarName) }
-                .take(6)
+                .take(WidgetSizing.agendaCount(height, fontScale(context)/100f, false, false))
             if (!repository.hasPermission() || upcoming.isEmpty()) {
                 val empty = RemoteViews(context.packageName, R.layout.widget_agenda_empty)
                 empty.setTextViewText(R.id.widgetAgendaEmpty, if (repository.hasPermission()) "예정된 일정이 없습니다" else "앱을 열어 캘린더 권한을 허용하세요")
@@ -310,6 +371,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
                 item.setTextViewText(R.id.widgetAgendaTitle, event.title)
                 item.setTextViewText(R.id.widgetAgendaTime, "${event.localDate().monthValue}/${event.localDate().dayOfMonth} ${eventTime(event)}")
                 applyTextScale(context, item, listOf(R.id.widgetAgendaTitle to 11f, R.id.widgetAgendaTime to 10f))
+                if (Build.VERSION.SDK_INT >= 31) item.setViewLayoutHeight(R.id.widgetAgendaWrap, 30f * fontScale(context)/100f, TypedValue.COMPLEX_UNIT_DIP)
                 applyEventStyle(context, item, R.id.widgetAgendaWrap, R.id.widgetAgendaDot, R.id.widgetAgendaTitle, event.color)
                 view.addView(R.id.widgetAgenda, item)
             }

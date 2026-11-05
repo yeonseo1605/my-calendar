@@ -6,7 +6,7 @@
     android:previewImage="@drawable/chooser_today"
     android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
     android:minWidth="110dp" android:minHeight="70dp"
-    android:minResizeWidth="110dp" android:minResizeHeight="70dp"
+    android:minResizeWidth="40dp" android:minResizeHeight="40dp"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="2" android:targetCellHeight="1"
     android:updatePeriodMillis="3600000"

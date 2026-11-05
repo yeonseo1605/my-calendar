@@ -6,7 +6,7 @@
     android:previewImage="@drawable/chooser_month_agenda"
     android:configure="com.yeonseo.mycalendar.WidgetSettingsActivity"
     android:minWidth="250dp" android:minHeight="300dp"
-    android:minResizeWidth="180dp" android:minResizeHeight="240dp"
+    android:minResizeWidth="40dp" android:minResizeHeight="40dp"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="4" android:targetCellHeight="5"
     android:updatePeriodMillis="3600000"
