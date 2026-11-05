@@ -5,7 +5,7 @@ const source=fs.readFileSync(require('node:path').join(__dirname,'../app.js'),'u
 const context={state:{events:[]},pendingAction:null,parseDate:s=>new Date(s+'T00:00:00'),dateStr:d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,
  clearGoogleEventAppearance(){},queueGoogleRecurringOp(){return false},rememberGoogleDeletes(){},toast(){},closeDrawers(){},render(){},$:()=>({classList:{add(){}}})};
 vm.createContext(context);
-for(const name of ['commit','createOccurrences'])vm.runInContext(source.split('\n').find(line=>line.startsWith(`function ${name}(`)),context);
+for(const name of ['commit','updateRecurringOccurrences','createOccurrences'])vm.runInContext(source.split('\n').find(line=>line.startsWith(`function ${name}(`)),context);
 const original={id:'original',title:'연습',date:'2026-10-12',start:'19:00',end:'20:00',repeat:'none',seriesId:'',labelId:'mine',googleEventId:'remote-original',source:'google'};
 const unrelated={id:'other',title:'다른 일정',date:'2026-10-20'};
 context.state.events=[{...original},unrelated];
@@ -34,3 +34,16 @@ context.state.events=[];
 context.createOccurrences({...original,repeat:'weekly',repeatDays:[1],repeatEndType:'date',repeatEndValue:'2026-10-26'});
 assert.equal(context.state.events.length,3);
 console.log('PASS: single-to-weekly save, next Monday, unique identities, Google identity isolation, unrelated events, one-off edits, end date');
+
+function seed(){context.state.events=[];context.createOccurrences({...original,date:'2026-10-27',seriesId:'four',repeat:'weekly',repeatDays:[2],repeatEndType:'count',repeatEndValue:'4'});}
+seed();context.pendingAction={type:'update',data:{...context.state.events[0],date:'2026-10-20'}};context.commit('all');
+assert.deepEqual(Array.from(context.state.events,e=>e.date),['2026-10-20','2026-10-27','2026-11-03','2026-11-10']);
+seed();context.pendingAction={type:'update',data:{...context.state.events[1],date:'2026-11-04',repeatDays:[3]}};context.commit('future');
+assert.deepEqual(Array.from(context.state.events,e=>e.date),['2026-10-27','2026-11-04','2026-11-11','2026-11-18','2026-11-25']);
+assert.notEqual(context.state.events[0].seriesId,context.state.events[1].seriesId);
+seed();context.pendingAction={type:'update',data:{...context.state.events[0],date:'2026-10-20'}};context.commit('single');
+assert.deepEqual(Array.from(context.state.events,e=>e.date),['2026-10-20','2026-11-03','2026-11-10','2026-11-17']);
+seed();context.pendingAction={type:'update',data:{...context.state.events[1],title:'모두 변경'}};context.commit('all');assert(context.state.events.every(e=>e.title==='모두 변경'));
+assert.deepEqual(Array.from(context.state.events,e=>e.date),['2026-10-27','2026-11-03','2026-11-10','2026-11-17']);
+seed();context.pendingAction={type:'update',data:{...context.state.events[0],repeatEndValue:'2'}};context.commit('all');assert.equal(context.state.events.length,2);
+console.log('PASS: changed start regenerates four dates; future preserves past; single changes only one; metadata keeps dates; count changes regenerate');
