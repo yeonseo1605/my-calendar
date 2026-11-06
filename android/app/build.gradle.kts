@@ -11,8 +11,8 @@ android {
         applicationId = "com.yeonseo.mycalendar"
         minSdk = 26
         targetSdk = 35
-        versionCode = 15
-        versionName = "1.4.3"
+        versionCode = 16
+        versionName = "1.4.4"
     }
 
     buildTypes {

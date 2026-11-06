@@ -41,6 +41,11 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
         val id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return
+        if (intent.action == "com.yeonseo.mycalendar.widget.PIN_CONFIGURED") {
+            val selected = WidgetKind.values().firstOrNull { it.name == intent.getStringExtra("selected_kind") } ?: widgetKind
+            setSizeMode(context, id, intent.getBooleanExtra("selected_auto", true), selected)
+            return
+        }
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         when (intent.action) {
             ACTION_PREVIOUS -> prefs.edit().putInt(offsetKey(id), prefs.getInt(offsetKey(id), 0) - 1).apply()
@@ -129,7 +134,7 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
             val ids = if (id == AppWidgetManager.INVALID_APPWIDGET_ID) providerKinds.keys.flatMap {
                 AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, it)).toList()
             } + id else listOf(id)
-            ids.forEach { editor.putBoolean("auto_resize_$it", auto).putString("fixed_kind_$it", fixed.name) }
+            ids.forEach { editor.putBoolean("auto_resize_$it", auto).putString("fixed_kind_$it", fixed.name).remove("initial_width_$it").remove("initial_height_$it") }
             editor.apply()
             updateAll(context)
         }
@@ -186,7 +191,15 @@ open class MyCalendarWidgetProvider : AppWidgetProvider() {
         private fun buildForSize(context: Context, id: Int, providerKind: WidgetKind,
             providerClass: Class<out AppWidgetProvider>, width: Float, height: Float): RemoteViews {
             val auto = autoResize(context, id)
-            val kind = if (auto) WidgetSizing.kind(width, height) else fixedKind(context, id)
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val firstWidth = prefs.getFloat("initial_width_$id", -1f)
+            val firstHeight = prefs.getFloat("initial_height_$id", -1f)
+            if (firstWidth < 0f || firstHeight < 0f) {
+                prefs.edit().putFloat("initial_width_$id", width).putFloat("initial_height_$id", height).apply()
+            }
+            val resized = firstWidth >= 0f && firstHeight >= 0f &&
+                (kotlin.math.abs(width - firstWidth) > 8f || kotlin.math.abs(height - firstHeight) > 8f)
+            val kind = if (auto && resized) WidgetSizing.kind(width, height) else fixedKind(context, id)
             val repository = CalendarRepository(context)
             val offset = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt(offsetKey(id), 0)
             val month = YearMonth.now().plusMonths(offset.toLong())

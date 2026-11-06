@@ -325,7 +325,12 @@ class MainActivity : Activity() {
         val manager = AppWidgetManager.getInstance(this)
         val provider = ComponentName(this, providerClass)
         val requested = manager.isRequestPinAppWidgetSupported &&
-            manager.requestPinAppWidget(provider, null, null)
+            manager.requestPinAppWidget(provider, null, android.app.PendingIntent.getBroadcast(
+                this, providerClass.name.hashCode(), Intent(this, providerClass).apply {
+                    action = "com.yeonseo.mycalendar.widget.PIN_CONFIGURED"
+                    putExtra("selected_kind", MyCalendarWidgetProvider.providerKinds[providerClass]?.name ?: "MONTH")
+                    putExtra("selected_auto", MyCalendarWidgetProvider.autoResize(this@MainActivity, AppWidgetManager.INVALID_APPWIDGET_ID))
+                }, android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE))
         if (requested) {
             Toast.makeText(this, "홈 화면에 추가할 위젯을 확인해 주세요.", Toast.LENGTH_LONG).show()
         } else {
