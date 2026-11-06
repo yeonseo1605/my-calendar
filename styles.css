@@ -1026,3 +1026,10 @@ body[data-calendar-view="week"] .timeline-heads{
 /* A narrow cover-screen cell hides names; wider unfolded cells show them. */
 #monthGrid .calendar-date-line .holiday-date-label{display:none!important}
 @container calendar-day (min-width:70px){#monthGrid .calendar-date-line .holiday-date-label{display:block!important;width:auto!important;flex:1 1 auto!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+
+@container calendar-day (min-width:70px) and (max-width:140px){
+ #monthGrid .calendar-date-line{gap:3px}
+ #monthGrid .calendar-date-line .day-number{width:18px!important;height:20px!important;font-size:11px!important;margin:0!important;padding:0!important}
+ #monthGrid .calendar-date-line .lunar-date{font-size:8px!important;padding:2px!important;letter-spacing:-.3px;flex:0 0 auto}
+ #monthGrid .calendar-date-line .holiday-date-label{font-size:10px!important;letter-spacing:-.4px}
+}
