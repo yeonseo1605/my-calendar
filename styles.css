@@ -1020,3 +1020,5 @@ body[data-calendar-view="week"] .timeline-heads{
 .calendar-date-line .day-date-line{flex:0 0 auto;min-width:0}
 .calendar-date-line .holiday-date-label{display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;flex:1 1 auto}
 
+
+#monthGrid .calendar-date-line{width:100%}#monthGrid .calendar-date-line .day-date-line{width:max-content;justify-content:flex-start;gap:2px}
