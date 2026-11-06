@@ -1022,3 +1022,7 @@ body[data-calendar-view="week"] .timeline-heads{
 
 
 #monthGrid .calendar-date-line{width:100%}#monthGrid .calendar-date-line .day-date-line{width:max-content;justify-content:flex-start;gap:2px}
+
+/* A narrow cover-screen cell hides names; wider unfolded cells show them. */
+#monthGrid .calendar-date-line .holiday-date-label{display:none!important}
+@container calendar-day (min-width:70px){#monthGrid .calendar-date-line .holiday-date-label{display:block!important;width:auto!important;flex:1 1 auto!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
